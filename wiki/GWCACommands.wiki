@@ -22,6 +22,8 @@ For instruction on how to use these 'Callbacks' please have a look at some of th
 =List of Commands=
 The commands follow a distinct identifier pattern because they are a custom enumeration. To use them in AutoIt3, this enumeration has been pre-declared in 'GWCAConstants.au3' so you don't have to remember all the numbers though.
 
+General commands:
+
   * CA_GETCURRENTTARGET (0x401): No parameters, returns an integer with the id of the current target.
 
   * CA_GETMYID (0x402): No parameters, returns an integer with the id of your own agent.
@@ -49,6 +51,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
   * CA_CHANGEMAXZOOM (0x40C): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
 
 
+Action-related commands:
 
   * CA_ATTACK (0x410): Parameter = id of target, attacks the specified target with weapon.
 
