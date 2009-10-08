@@ -11,11 +11,11 @@ In AutoIt3, simply look at some of the scripts in the Source section to get an i
 
 You can register up to 3 different messages with GWCA:
 
-* The WndCallback (0x500): This is used for all general input/output commands, pretty much a requirement to register this message to use GWCA.
+  * The WndCallback (0x500): This is used for all general input/output commands, pretty much a requirement to register this message to use GWCA.
 
-* The SkillLogCallback (0x4A): This uses the WM_COPYDATA message to send a structure from GWCA which contains information about skills being cast.
+  * The SkillLogCallback (0x4A): This uses the WM_COPYDATA message to send a structure from GWCA which contains information about skills being cast.
 
-* The SkillCancelCallback (0x501): Which is commonly used with the SkillLogCallback if you wish to track which skills are cancelled/interrupted aswell.
+  * The SkillCancelCallback (0x501): Which is commonly used with the SkillLogCallback if you wish to track which skills are cancelled/interrupted aswell.
 
 For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Source section.
 
