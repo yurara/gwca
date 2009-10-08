@@ -11,50 +11,50 @@ In AutoIt3, simply look at some of the scripts in the Source section to get an i
 
 You can register up to 3 different messages with GWCA:
 
-  * The WndCallback (0x500): This is used for all general input/output commands, pretty much a requirement to register this message to use GWCA.
+  *The WndCallback (0x500): This is used for all general input/output commands, pretty much a requirement to register this message to use GWCA.
 
-  * The SkillLogCallback (0x4A): This uses the WM_COPYDATA message to send a structure from GWCA which contains information about skills being cast.
+  *The SkillLogCallback (0x4A): This uses the WM_COPYDATA message to send a structure from GWCA which contains information about skills being cast.
 
-  * The SkillCancelCallback (0x501): Which is commonly used with the SkillLogCallback if you wish to track which skills are cancelled/interrupted aswell.
+  *The SkillCancelCallback (0x501): Which is commonly used with the SkillLogCallback if you wish to track which skills are cancelled/interrupted aswell.
 
 For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Source section.
 
 =List of Commands=
 The commands follow a distinct identifier pattern because they are a custom enumeration. To use them in AutoIt3, this enumeration has been pre-declared in 'GWCAConstants.au3' so you don't have to remember all the numbers though.
 
-# CA_GETCURRENTTARGET (0x401): No parameters, returns an integer with the id of the current target.
+  #CA_GETCURRENTTARGET (0x401): No parameters, returns an integer with the id of the current target.
 
-# CA_GETMYID (0x402): No parameters, returns an integer with the id of your own agent.
+  #CA_GETMYID (0x402): No parameters, returns an integer with the id of your own agent.
 
-#CA_CASTING (0x403): No parameters, returns a boolean which tells whether or not you're using a skill.
+  #CA_CASTING (0x403): No parameters, returns a boolean which tells whether or not you're using a skill.
 
-#CA_SKILLRECHARGE (0x403): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
+  #CA_SKILLRECHARGE (0x403): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
 
-#CA_SKILLADRENALINE (0x404): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
+  #CA_SKILLADRENALINE (0x404): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
 
-#CA_STOREVAR (0x405): Obsolete, so don't use it.
+  #CA_STOREVAR (0x405): Obsolete, so don't use it.
 
-#CA_SETLOGANDHWND (0x406): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
+  #CA_SETLOGANDHWND (0x406): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
 
-#CA_GETAGENTANDTARGETPTR (0x407): No parameters, used for debugging purposes.
+  #CA_GETAGENTANDTARGETPTR (0x407): No parameters, used for debugging purposes.
 
-#CA_GETSKILLBARSKILLID (0x408): Parameter = skillslot, obsolete.
+  #CA_GETSKILLBARSKILLID (0x408): Parameter = skillslot, obsolete.
 
-#CA_GETMYMAXHP (0x409): No parameters, returns an integer with your max hp and an integer with your current hp.
+  #CA_GETMYMAXHP (0x409): No parameters, returns an integer with your max hp and an integer with your current hp.
 
-#CA_GETMYMAXENERGY (0x40A): No parameters, returns an integer with your max energy and an integer with your current energy.
+  #CA_GETMYMAXENERGY (0x40A): No parameters, returns an integer with your max energy and an integer with your current energy.
 
-#CA_GETBUILDNUMBER (0x40B): No parameters, returns an integer with the current build number of the GW client you're running.
+  #CA_GETBUILDNUMBER (0x40B): No parameters, returns an integer with the current build number of the GW client you're running.
 
-#CA_CHANGEMAXZOOM (0x40C): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
+  #CA_CHANGEMAXZOOM (0x40C): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
 
 
-#CA_ATTACK (0x410): Parameter = id of target, attacks the specified target with weapon.
+  #CA_ATTACK (0x410): Parameter = id of target, attacks the specified target with weapon.
 
-#CA_MOVE (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
+  #CA_MOVE (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
 
-#CA_USESKILL (0x412): Obsolete, use CA_USESKILLBARSKILL instead.
+  #CA_USESKILL (0x412): Obsolete, use CA_USESKILLBARSKILL instead.
 
-#CA_CHANGEWEAPONSET (0x413): Parameter = weapon slot, changes weapon set.
+  #CA_CHANGEWEAPONSET (0x413): Parameter = weapon slot, changes weapon set.
 
-#CA_ZONEMAP (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
+  #CA_ZONEMAP (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
