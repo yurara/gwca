@@ -183,7 +183,7 @@ Agent info commands:
 
   * CA_GETNAMEPROPERTIES (0x464): Obsolete.
 
-  * CA_GETMAXID (0x465): No parameters, returns integer with the size of the agent array divided by 4 (because the agent array is Agent*).
+  * CA_GETMAXID (0x465): No parameters, returns integer with the size of the agent array divided by 4 (because the agent array consists of Agent pointers (pointer = 4 bytes)).
 
   * CA_GETMYNEARESTAGENT (0x466): No parameters, returns id of your nearest agent.
 
