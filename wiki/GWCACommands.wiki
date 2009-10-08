@@ -58,3 +58,5 @@ The commands follow a distinct identifier pattern because they are a custom enum
   * CA_CHANGEWEAPONSET (0x413): Parameter = weapon slot, changes weapon set.
 
   * CA_ZONEMAP (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
+
+*_INCOMPLETE_*
