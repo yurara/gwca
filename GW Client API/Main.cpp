@@ -5,9 +5,7 @@
 	Uses Window Messages for communicating by hooking the WndProc of GW, allowing you
 	to SendMessage directly to the Guild Wars window.
 	Protocol rules are, if your Message expects a reply, then you have to provide the
-	window handle of your application in lParam. The reply is sent with code 0x500.
-	All work by Sune C apart from most of the SendPacket stuff which has been done
-	by ExJam. Cheers!	*/
+	window handle of your application in lParam. The reply is sent with code 0x500. */
 
 byte* BaseOffset = NULL;
 byte* PacketSendFunction = NULL;
@@ -1101,7 +1099,7 @@ void WriteJMP(byte* location, byte* newFunction){
 
 void InjectErr(const char* lpzText){
 	char* buf = new char[100];
-	sprintf(buf, "The %s could not be found!\nPlease contact Harboe about this issue.", lpzText);
+	sprintf(buf, "The %s could not be found!\nPlease contact SOMEONE about this issue.", lpzText);
 	MessageBox(NULL, buf, "Hooking error!", MB_OK);
 }
 
