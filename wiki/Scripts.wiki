@@ -1,6 +1,6 @@
 #Description of the available scripts
 
-This page will try to describe the different scripts available in the `trunk/Scripts/` folder which can be located by pressing 'Source'.
+This page will try to describe the different scripts available in the `trunk/Scripts/` folder which can be located by pressing 'Source':
 [http://code.google.com/p/gwca/source/browse/#svn/trunk/Scripts trunk/Source/-link]
 
 =GWCAConstants.au3=
