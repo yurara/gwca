@@ -2,8 +2,7 @@
 #define _SKILLBAR_H
 
 /*	Structure definition of the Skillbar and it's associated SkillbarSkill structs.
-	Also contains SkillLogSkill struct for the SkillLogQueue.
-	Reversed by Sune C.	*/
+	Also contains SkillLogSkill struct for the SkillLogQueue. */
 
 struct SkillbarSkill {
 	long Adrenaline;

@@ -3,8 +3,7 @@
 
 /*	Structure definition of the Agent struct and it's associated AgentArray class for handling.
 	Hint: unknown does in most cases just mean not fully understood yet and/or insignificant.
-	Also contains CSectionA class.
-	Reversed by Sune C.	*/
+	Also contains CSectionA class. */
 
 struct Agent {
 	byte unknown1[28];
