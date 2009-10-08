@@ -19,8 +19,8 @@ You can register up to 3 different messages with GWCA:
 
 For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Source section.
 
-Also note, that when using the GWCA functions in AutoIt3, remember to set the $cbType variable to the right type before you use a command. For example, when you use CA_GETCOORDS, remember to set $cbType to "float", so that the values are automatically un-packed.
-Return values are always in the $cbVar array. $cbVar[0] = first value, $cbVar[1] = last value.
+Also note, that when using the GWCA functions in AutoIt3, remember to set the `$cbType` variable to the right type before you use a command. For example, when you use CA_GETCOORDS, remember to set `$cbType` to "float", so that the values are automatically un-packed.
+Return values are always in the `$cbVar` array. `$cbVar[0]` = first value, `$cbVar[1]` = last value.
 
 
 And last, but still very important:
