@@ -19,6 +19,14 @@ You can register up to 3 different messages with GWCA:
 
 For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Source section.
 
+Also note, that when using the GWCA functions in AutoIt3, remember to set the $cbType variable to the right type before you use a command. For example, when you use CA_GETCOORDS, remember to set $cbType to "float", so that the values are automatically un-packed.
+Return values are always in the $cbVar array. $cbVar[0] = first value, $cbVar[1] = last value.
+
+
+And last, but still very important:
+When using commands that require an id (of an agent), specifying -1 will automatically use your current target, and -2 will automatically use your self.
+
+
 =List of Commands=
 The commands follow a distinct identifier pattern because they are a custom enumeration. To use them in AutoIt3, this enumeration has been pre-declared in 'GWCAConstants.au3' so you don't have to remember all the numbers though.
 
@@ -63,4 +71,168 @@ Action-related commands:
 
   * CA_ZONEMAP (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
 
-*_INCOMPLETE_*
+  * CA_DROPGOLD (0x415): Parameter = amount of gold, drops the gold on the ground.
+
+  * CA_GONPC (0x416): Parameter = id of NPC, goes to specified NPC.
+
+  * CA_GOPLAYER (0x417): Parameter = id of player, goes to specified player (for use in outposts/cities).
+
+  * CA_GOSIGNPOST (0x418): Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name).
+
+  * CA_USEATTACKSKILL (0x419): Obsolete, use CA_USESKILLBARATTACKSKILL instead.
+
+  * CA_ENTERCHALLENGE (0x41A): No parameters, enters the challenge if you're in a Challenge Mission outpost.
+
+  * CA_OPENCHEST (0x41B): No parameters, opens the nearest chest if you're within 'close range'.
+
+  * CA_SETEVENTSKILLMODE (0x41C): Obsolete, don't use it.
+
+  * CA_USESKILLBARSKILL (0x41D): Parameter = skillslot, parameter 2 = id of target.
+
+  * CA_PICKUPITEM (0x41E): Parameter = id of item, picks up the specified item.
+
+  * CA_USESKILLBARATTACKSKILL (0x41F): Parameter = skillslot, parameter 2 = id of target.
+
+  * CA_DIALOG (0x420): Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by debugging the PacketSendFunction, only for very advanced users.
+
+  * CA_CHANGETARGET (0x421): Parameter = id of target, changes target.
+
+  * CA_STATUSBOT (0x422): Kinda obsolete.
+
+  * CA_TARGETNEARESTFOE (0x423): No parameters, targets the nearest foe.
+
+  * CA_TARGETNEARESTALLY (0x424): No parameters, targets the nearest ally.
+
+  * CA_TARGETNEARESTITEM (0x425): No parameters, targets the nearest item/signpost/chest.
+
+  * CA_STATUSDELAY (0x426): Kinda obsolete aswell.
+
+  * CA_TARGETCALLEDTARGET (0x427): No parameters, targets the currently called target of the party.
+
+  * CA_USEHERO1SKILL (0x428): Parameter = skillslot, parameter 2 = id of target.
+
+  * CA_USEHERO2SKILL (0x429): Parameter = skillslot, parameter 2 = id of target.
+
+  * CA_USEHERO3SKILL (0x42A): Parameter = skillslot, parameter 2 = id of target.
+
+  * CA_STATUSMISS (0x42B): Kinda obsolete, yay.
+
+  * CA_CANCELACTION (0x42C): No parameters, cancels your current action. Just like pressing ESC.
+
+  * CA_STATUSTAB (0x42D): Yay for obsolete.
+
+  * CA_GETNAMEPTR (0x42E): Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed.
+
+
+Specific memory commands:
+
+  * CA_GETMAPLOADING (0x440): No parameters, returns an integer which is 0, 1 or 2.
+
+  * CA_GETMAPID (0x441): No parameters, returns the id of the current map/zone.
+
+  * CA_GETPING (0x442): No parameters, returns the current ping displayed on the Performance Monitor in GW.
+
+  * CA_GETLOGGEDIN (0x443): No parameters, returns boolean.
+
+  * CA_GETDEAD (0x444): No parameters, returns boolean, but kinda obsolete though.
+
+  * CA_GETBALTHFACTION (0x445): No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction.
+
+
+Agent info commands:
+
+  * CA_GETAGENTEXIST (0x450): Parameter = id of agent/target, returns boolean.
+
+  * CA_GETPROFESSIONS (0x451): Parameter = id of agent, returns integer of primary and integer of secondary profession.
+
+  * CA_GETPLAYERNUMBER (0x452): Parameter = id of agent, returns integer of player number or, if the agent is an NPC/monster, the 'Model number'.
+
+  * CA_GETHP (0x453): Parameter = id of agent, returns float between 0 and 1 with the health in percent.
+
+  * CA_GETROTATION (0x454): Parameter = id of agent, returns float of rotation in degrees.
+
+  * CA_GETSKILL (0x455): Parameter = id of agent, returns integer of current skill being used by agent.
+
+  * CA_GETCOORDS (0x456): Parameter = id of agent, returns float of X and float of Y coordinate, packed of course.
+
+  * CA_GETWEAPONSPEEDS (0x457): Parameter = id of agent, returns floats of the weapon speeds (figure them out yourself if you really need them).
+
+  * CA_GETSPIRITRANGE (0x458): Obsolete and unfunctional.
+
+  * CA_GETTEAMID (0x459): Parameter = id of agent, returns integer of team id. 1 = blue, 2 = red, 3 = yellow and so on.
+
+  * CA_GETCOMBATMODE (0x45A): Obsolete, don't use it.
+
+  * CA_GETMODELMODE (0x45B): Also obsolete.
+
+  * CA_GETHPPIPS (0x45C): Parameter = id of agent, returns integer of how many pips the target has.
+
+  * CA_GETEFFECTS (0x45D): Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc.
+
+  * CA_GETHEX (0x45E): Parameter = id of agent, returns bitmap. If non-zero the target is hexed.
+
+  * CA_GETMODELANIMATON (0x45F): Obsolete.
+
+  * CA_GETENERGY (0x460): Obsolete, as it only works for yourself. Just use CA_GETMYMAXENERGY.
+
+  * CA_GETAGENTPTR (0x461): Parameter = id of agent, returns pointer to the agent structure of target in GW memory.
+
+  * CA_GETTYPE (0x462): Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up.
+
+  * CA_GETLEVEL (0x463): Parameter = id of agent, returns integer with the level.
+
+  * CA_GETNAMEPROPERTIES (0x464): Obsolete.
+
+  * CA_GETMAXID (0x465): No parameters, returns integer with the size of the agent array divided by 4 (because the agent array is Agent*).
+
+  * CA_GETMYNEARESTAGENT (0x466): No parameters, returns id of your nearest agent.
+
+  * CA_GETMYDISTANCETOAGENT (0x467): Parameter = id of agent, returns float with distance.
+
+  * CA_GETNEARESTAGENTTOAGENT (0x468): Parameter = id of agent, returns id of the nearest agent to the specified agent.
+
+  * CA_GETDISTANCEFROMAGENTTOAGENT (0x469): Obsolete, so don't bother using it.
+
+  * CA_GETNEARESTAGENTTOAGENTEX (0x46A): Parameter = id of agent, same as CA_GETNEARESTAGENTTOAGENT, but also returns float with distance between them.
+
+  * CA_GETMODELSTATE (0x46B): Kinda obsolete.
+
+  * CA_GETISATTACKING (0x46C): Parameter = id of agent, returns boolean.
+
+  * CA_GETISKNOCKEDDOWN (0x46D): Parameter = id of agent, returns boolean.
+
+  * CA_GETISMOVING (0x46E): Same as the other 'IS' commands.
+
+  * CA_GETISDEAD (0x46F): Same as the other 'IS' commands.
+
+  * CA_GETISCASTING (0x470): Obsolete when there's CA_GETSKILL, but whatever.
+
+  * CA_GETFIRSTAGENTBYPLAYERNUMBER (0x471): Parameter = player/model number, returns the first (id-wise) agent with that number.
+
+  * CA_GETALLEGIANCE (0x472): Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet.
+
+  * CA_GETNEARESTENEMYTOAGENTEX (0x473): Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance.
+
+  * CA_GETISATTACKEDMELEE (0x474): Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function.
+
+  * CA_GETNEARESTITEMTOAGENTEX (0x475): Parameter = id of agent, returns id of item and distance as float.
+
+  * CA_GETNEARESTAGENTBYPLAYERNUMBER (0x476): Same as CA_GETFIRSTAGENTBYPLAYERNUMBER except it returns the nearest agent to you.
+
+  * CA_GETSPEED (0x477): Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units).
+
+  * CA_GETNEARESTENEMYTOAGENTBYALLEGIANCE (0x478): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
+
+  * CA_GETNEARESTALIVEENEMYTOAGENT (0x479): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
+
+  * CA_WEAPONTYPE (0x47A): Parameter = id of agent, returns integer with weapon type. 1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand.
+
+  * CA_GETNEARESTSIGNPOSTTOAGENT (0x47B): Parameter = id of agent, returns id of the nearest signpost/chest.
+
+  * CA_GETNEARESTNPCTOAGENTBYALLEGIANCE (0x47C): Parameter = id of agent, returns id of the nearest NPC.
+
+  * CA_GETNEARESTAGENTTOCOORDS (0x47D): Don't use this command, instead, use the wrapper function GetNearestAgentToCoords() declared in 'GWCAConstants.au3'.
+
+  * CA_GETVARS (0x47E): Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though.
+
+  * CA_GETNEARESTNPCTOCOORDS (0x47E): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
