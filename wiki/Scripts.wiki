@@ -7,7 +7,7 @@ This page will try to describe the different scripts available in the `trunk/Scr
 This file contains the basis for all GWCA scripts to function. There are the command enum declaration, the basic variables and the functions.
 
 Not much to say about this file really, but remember that it does nothing by itself - at all!
-Just `include "GWCAConstants.au3"` at the top of your scripts like it is the procedure in all the other scripts and you will never have to care about this file to be honest.
+Just `#include "GWCAConstants.au3"` at the top of your scripts like it is the procedure in all the other scripts and you will never have to care about this file to be honest.
 
 
 =GWCA Commander.au3=
