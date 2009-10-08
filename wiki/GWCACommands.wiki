@@ -3,7 +3,7 @@
 This page contains documentation of all of the GWCA commands and how they are interacted with.
 
 =How-to use=
-First of all, to use GWCA you must inject the .Dll into Guild Wars. This can be done by either renaming the .Dll to 'Graphics.dll' without the quotes, or by using a Dll Injector application (search google).
+First of all, to use GWCA you must inject the .Dll into Guild Wars. This can be done by either renaming the .Dll to 'Graphics.dll' without the quotes and putting it in the Guild Wars folder, or by using a Dll Injector application (search google).
 
 Communication between GWCA and your script is performed using Window Messages, and therefore, your script must have a valid Window hwnd to retrieve information.
 
