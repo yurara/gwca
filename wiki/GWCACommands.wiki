@@ -49,6 +49,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
   * CA_CHANGEMAXZOOM (0x40C): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
 
 
+
   * CA_ATTACK (0x410): Parameter = id of target, attacks the specified target with weapon.
 
   * CA_MOVE (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
