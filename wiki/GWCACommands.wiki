@@ -235,4 +235,4 @@ Agent info commands:
 
   * CA_GETVARS (0x47E): Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though.
 
-  * CA_GETNEARESTNPCTOCOORDS (0x47E): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
+  * CA_GETNEARESTNPCTOCOORDS (0x47F): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
