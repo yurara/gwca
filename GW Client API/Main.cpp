@@ -368,6 +368,12 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x445: //Get current and max balthazar faction : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->CurrentBalthFaction(), MySectionA->MaxBalthFaction());
 			break;
+		case 0x446: //Get current and max kurzick faction : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->CurrentKurzickFaction(), MySectionA->MaxKurzickFaction());
+			break;
+		case 0x447: //Get current and max luxon faction : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->CurrentLuxonFaction(), MySectionA->MaxLuxonFaction());
+			break;
 
 		//Agent Related Commands
 		case 0x450: //Check for agent existency : Return int/bool
