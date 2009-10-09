@@ -138,6 +138,10 @@ Specific memory commands:
 
   * CA_GETBALTHFACTION (0x445): No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction.
 
+  * CA_GETKURZFACTION (0x446): No parameters, returns integer of current kurzick faction and integer of maximum kurzick faction.
+
+  * CA_GETLUXONFACTION (0x447): No parameters, returns integer of current luxon faction and integer of maximum luxon faction.
+
 
 Agent info commands:
 
