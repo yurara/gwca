@@ -128,4 +128,15 @@ Func GetNearestNPCToCoords($x, $y)
 	Return $cbVar[1]
 EndFunc
 
+Func TravelTo($iMapId)
+	$tMap = TimerInit()
+	Cmd($CA_ZONEMAP, $iMapId)
+	Do
+		Sleep(200)
+		$aLoad = CmdCB($CA_GETMAPLOADING)
+		If TimerDiff($tMap) > 20000 AND $aLoad[0] <> 2 Then Cmd($CA_ZONEMAP, $iMapId)
+		$aTmpMap = CmdCB($CA_GETMAPID)
+	Until $aLoad[0] = 0 AND $aTmpMap[0] = $iMapId
+EndFunc
+
 ; END OF FILE
