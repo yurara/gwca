@@ -348,6 +348,26 @@ void _declspec(naked) CustomMsgHandler(){
 			pName = GetAgentName(MsgWParam);
 			PostMessage((HWND)MsgLParam, 0x500, (WPARAM)pName, 0);
 			break;
+		case 0x42F: //Command hero 1 to location : No return
+			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
+			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
+			CommandHero(0x1A, MsgFloat, MsgFloat2);
+			break;
+		case 0x430: //Command hero 2 to location : No return
+			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
+			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
+			CommandHero(0x1B, MsgFloat, MsgFloat2);
+			break;
+		case 0x431: //Command hero 3 to location : No return
+			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
+			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
+			CommandHero(0x1C, MsgFloat, MsgFloat2);
+			break;
+		case 0x432: //Command all to location : No return
+			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
+			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
+			CommandAll(MsgFloat, MsgFloat2);
+			break;
 
 		//SectionA related commands
 		case 0x440: //Check if map is loading : Return int/long
