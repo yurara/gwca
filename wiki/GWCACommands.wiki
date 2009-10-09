@@ -123,6 +123,14 @@ Action-related commands:
 
   * CA_GETNAMEPTR (0x42E): Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed.
 
+  * CA_COMMANDHERO1 (0x42F): Parameters = X and Y floats packed of course.
+
+  * CA_COMMANDHERO2 (0x430): Same as CA_COMMANDHERO1.
+
+  * CA_COMMANDHERO3 (0x431): Same as CA_COMMANDHERO1.
+
+  * CA_COMMANDALL (0x432): Same as CA_COMMANDHERO1.
+
 
 Specific memory commands:
 
