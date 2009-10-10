@@ -1,4 +1,5 @@
 #summary Documentation of all GWCA commands
+#labels Featured
 
 This page contains documentation of all of the GWCA commands and how they are interacted with.
 
