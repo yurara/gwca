@@ -1,0 +1,85 @@
+#summary Guide for all first-time users or those
+#labels Featured
+
+=First-time User Guide=
+
+If you have never used GWCA before, then you may need some information before you start or you'll end up being pretty damn confused probably!
+
+First of all, you need to choose whether you use the pre-compiled .dll or compile the project yourself. The last option is only for advanced users who have Visual Studio 2008 or Visual Express C++ installed on their computers. For all normal users I suggest simply using the .dll that I have compiled for you.
+
+==Using the pre-compiled Dll==
+First, go and download [http://gwca.googlecode.com/files/GWCliAPI.dll GWCliAPI.dll] by clicking this link.
+Now move it to your Guild Wars folder (the one where Gw.dat and Gw.exe are located) and after doing this, rename the file to 'Graphics.dll' without the quotes (`Graphics.dll`).
+
+The next time you launch Guild Wars, GWCA will automatically load, and when you log in, the window title will change to `Guild Wars - <Character Name>` where `<Character Name>` is your character's name of course.
+
+Skip the next paragraph.
+
+==Compiling the project==
+Download the latest source. This can be found by going to the Downloads tab and getting the .rar archive with the highest revision number or simply choosing the one with the tag `Featured`.
+
+Un-pack the archive and open the solution by double-clicking `GW Client API.sln`. Now switch the compile mode from `Debug` to `Release` and `Build Solution`.
+
+A few warnings should appear - but no errors! When compiled, locate the file `GWCliAPI.dll` and do the same procedure as above, moving it to your Guild Wars folder and renaming it to `Graphics.dll`.
+
+==How do I use GWCA now?==
+A good idea would be to download all of the example scripts from [http://code.google.com/p/gwca/source/browse/#svn/trunk/Scripts]. Remember also to get `new list.txt` and `gwca-skillset.ini` - otherwise the Skill Log and Interrupt Bot will not function optimally.
+
+To use the scripts you will of course need to have the latest version of AutoIt3 installed on your computer. Go to [http://www.autoitscript.com/autoit3/downloads.shtml] to download and install the latest version.
+
+After you've tried the example scripts and taken a few peeks at their code, you may want to try making a script by yourself.
+
+==Making your own scripts==
+There are a few mandatory things you will need to do in each and everyone of your scripts using GWCA.
+
+ * Include the `GWCAConstants.au3` file, which contains the basic functions and declarations of variables that GWCA uses. Necessary for all GWCA scripts.
+
+ * Create a GUI for communication between the script and Guild Wars. Necessary for almost all GWCA scripts. If you want to receive information with GWCA you _have_ to create one.
+
+ * Register the necessary callbacks. Kind of necessary too.
+
+
+So basically, if you were to make a standard script that just accessed the standard GWCA functionalities you would start out with:
+
+{{{
+#include "GWCAConstants.au3"
+
+$cGUI = GUICreate("GWCA")
+
+GUIRegisterMsg(0x500, "WndCallback")
+
+;Insert your own code now
+}}}
+
+And that's basically it! Now there are also the SkillLogCallback and the SkillCancelCallback, but I don't think they are for first-time users, so if you want to learn more about them I suggest taking a look at `GWCA Interrupt Bot.au3` and studying it's mechanics thoroughly.
+
+Now, lets add some commands to our script!
+
+
+{{{
+#include "GWCAConstants.au3"
+
+$cGUI = GUICreate("GWCA")
+
+GUIRegisterMsg(0x500, "WndCallback")
+
+$cbType = "float" ;Change return type to float value
+CmdCB($CA_GETCOORDS, -2) ;Get your own coordinates
+
+ConsoleWrite("[Check 1] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;Print to chat
+
+Cmd($CA_MOVE, _FloatToInt($cbVar[0]+250), _FloatToInt($cbVar[1]-150)) ;Now move to position X+250,Y-150 - remember to pack the float values
+
+Sleep(2000) ;Wait 2 seconds
+
+MoveEx($cbVar[0], $cbVar[1], 0) ;Now using MoveEx(), go to the exact same spot as you stood on before
+
+Sleep(2000) ;Wait another 2 seconds
+
+CmdCB($CA_GETCOORDS, -2) ;Get your coordinates again
+ConsoleWrite("[Check 2] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;And print them to chat like before! Should be the same coordinates.
+}}}
+
+The comments pretty much say what's going on, so I'll just let you execute this script by yourself and let you observe what happens!
+
+Good luck with your future GWCA-based scripts for Guild Wars!
