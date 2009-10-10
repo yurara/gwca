@@ -64,15 +64,15 @@ $cGUI = GUICreate("GWCA")
 GUIRegisterMsg(0x500, "WndCallback")
 
 $cbType = "float" ;Change return type to float value
-CmdCB($CA_GETCOORDS, -2) ;Get your own coordinates
+$myCoords = CmdCB($CA_GETCOORDS, -2) ;Get your own coordinates
 
-ConsoleWrite("[Check 1] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;Print to chat
+ConsoleWrite("[Check 1] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;Print to chat, notice that I use $cbVar array and not $myCoords. $cbVar only works until the next call to Cmd() or CmdCB(), but $myCoords will exist forever.
 
 Cmd($CA_MOVE, _FloatToInt($cbVar[0]+250), _FloatToInt($cbVar[1]-150)) ;Now move to position X+250,Y-150 - remember to pack the float values
 
 Sleep(2000) ;Wait 2 seconds
 
-MoveEx($cbVar[0], $cbVar[1], 0) ;Now using MoveEx(), go to the exact same spot as you stood on before
+MoveEx($myCoords[0], $myCoords[1], 0) ;Now using MoveEx(), go to the exact same spot as you stood on before
 
 Sleep(2000) ;Wait another 2 seconds
 
