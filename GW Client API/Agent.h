@@ -135,13 +135,13 @@ public:
 		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x74C);
 	}
 	long CurrentKurzickFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6E8);
+		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6E4);
 	}
 	long MaxKurzickFaction(){
 		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x744);
 	}
 	long CurrentLuxonFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6f8);
+		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6f4);
 	}
 	long MaxLuxonFaction(){
 		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x748);
