@@ -132,6 +132,8 @@ Action-related commands:
 
   * CA_COMMANDALL (0x432): Same as CA_COMMANDHERO1.
 
+  * CA_CHANGEDISTRICT (0x433): Parameter = region (0 = america, 1 = asia, 2 = europe), parameter 2 = language (experiment around with this!).
+
 
 Specific memory commands:
 
