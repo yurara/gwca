@@ -368,7 +368,7 @@ void _declspec(naked) CustomMsgHandler(){
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
 			CommandAll(MsgFloat, MsgFloat2);
 			break;
-		case 0x433: //Change district and region : No return
+		case 0x433: //Change region and language : No return
 			ChangeDistrict(MsgWParam, MsgLParam);
 			break;
 
