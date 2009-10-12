@@ -70,11 +70,11 @@ ConsoleWrite("[Check 1] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;Print to chat, 
 
 Cmd($CA_MOVE, _FloatToInt($cbVar[0]+450), _FloatToInt($cbVar[1]-150)) ;Now move to position X+450,Y-150 - remember to pack the float values
 
-Sleep(2000) ;Wait 2 seconds
+Sleep(4000) ;Wait 4 seconds
 
 MoveEx($myCoords[0], $myCoords[1], 0) ;Now using MoveEx(), go to the exact same spot as you stood on before
 
-Sleep(2000) ;Wait another 2 seconds
+Sleep(4000) ;Wait another 4 seconds
 
 CmdCB($CA_GETCOORDS, -2) ;Get your coordinates again
 ConsoleWrite("[Check 2] X: "&$cbVar[0]&", Y: "&$cbVar[1]&@CRLF) ;And print them to chat like before! Should be the same coordinates.
