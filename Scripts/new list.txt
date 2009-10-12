@@ -2316,12 +2316,17 @@
 2924|Oath of Protection
 2925|Sloth Hunter's Shot (PvP)
 2959|Expert's Dexterity (PVP)
+2962|Grentch Form
 2965|Signet of Spirits (PvP)
 2966|Signet of Ghostly Might (PvP)
 2967|Avatar of Grenth (PvP)
+2968|Oversized Tonic Warning
 2969|Read the Wind (PvP)
+2970|Mursaat Form
+2997|Seed of Resurrection
 2998|Fragility (PvP)
 2999|Strength of Honor (PvP)
+3000|Gunther's Gaze
 3002|Warrior's Endurance (PvP)
 3003|Armor of Unfeeling (PvP)
 3004|Signet of Creation (PvP)
@@ -2361,3 +2366,17 @@
 3038|Agony (PvP)
 3039|Rejuvenation (PvP)
 3040|Anthem of Disruption (PvP)
+3041|Shadowsong (Master Riyo)
+3044|Spirit Siphon (Master Riyo)
+3045|Comfort Animal (PvP)
+3047|Melandru's Assault (PvP)
+3048|Shroud of Distress (PvP)
+3049|Unseen Fury (PvP)
+3050|Predatory Bond (PvP)
+3051|Enraged Lunge (PvP)
+3052|Conviction (PvP)
+3053|Signet of Deadly Corruption (PvP)
+3054|Masochism (PvP)
+3055|Pain (attack) (Signet of Spirits)
+3056|Pain (attack) (Signet of Spirits)
+3057|Pain (attack) (Signet of Spirits)
