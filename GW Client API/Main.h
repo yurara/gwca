@@ -22,6 +22,7 @@ extern byte* AgentArrayMaxPtr;
 #include "Skillbar.h"
 #include "GuildWarsFunctions.h"
 
+extern CSectionA* MySectionA;
 extern AgentArray Agents;
 
 void SendPacket(CPacket* pak);

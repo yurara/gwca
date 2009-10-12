@@ -5,6 +5,7 @@ void MovePlayer(float nX, float nY, float nZ = 0);
 void SendChat(char channel, char* message);
 void SendChat(char channel, wchar_t* message);
 void MoveMap(dword MapID, dword Region = 2, dword District = 0, dword Language = 0);
+void ChangeDistrict(dword Region = 2, dword Language = 0);
 void UseSkill(dword SkillID, dword TargetID, dword Event = 0);
 void ChangeWeaponSet(dword WeaponSet);
 void PickUpItem(long TargetID);
