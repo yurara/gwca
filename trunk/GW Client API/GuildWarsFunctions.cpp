@@ -28,7 +28,17 @@ void MoveMap(dword MapID, dword Region, dword District, dword Language){
 	newPak->Set<dword>(4, MapID);
 	newPak->Set<dword>(8, Region);
 	newPak->Set<dword>(12, District);
-	newPak->Set<dword>(16, 0/*Language*/);
+	newPak->Set<dword>(16, Language);
+	newPak->Set<dword>(20, 1);
+	SendPacket(newPak);
+}
+
+void ChangeDistrict(dword Region, dword Language){
+	NEWPAK(a9, 18);
+	newPak->Set<dword>(4, MySectionA->MapId());
+	newPak->Set<dword>(8, Region);
+	newPak->Set<dword>(12, 0);
+	newPak->Set<dword>(16, Language);
 	newPak->Set<dword>(20, 1);
 	SendPacket(newPak);
 }
