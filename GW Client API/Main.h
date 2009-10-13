@@ -12,6 +12,9 @@ typedef unsigned int dword;
 extern byte* AgentArrayPtr;
 extern byte* AgentArrayMaxPtr;
 
+struct Bag;
+struct Item;
+
 #define maxAgent *(unsigned int*)AgentArrayMaxPtr
 #define mapLoading *(long*)(CurrentTarget+0x410)
 #define myId *(long*)(AgentArrayPtr-0x54)
@@ -24,6 +27,8 @@ extern byte* AgentArrayMaxPtr;
 
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
+
+#include "Item.h"
 
 void SendPacket(CPacket* pak);
 void ReloadSkillbar();
