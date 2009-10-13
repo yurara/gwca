@@ -8,8 +8,8 @@ If you have never used GWCA before, then you may need some information before yo
 First of all, you need to choose whether you use the pre-compiled .dll or compile the project yourself. The last option is only for advanced users who have Visual Studio 2008 or Visual Express C++ installed on their computers. For all normal users I suggest simply using the .dll that I have compiled for you.
 
 ==Using the pre-compiled Dll==
-First, go and download [http://gwca.googlecode.com/files/GWCliAPI.dll GWCliAPI.dll] by clicking this link.
-Now move it to your Guild Wars folder (the one where Gw.dat and Gw.exe are located) and after doing this, rename the file to 'Graphics.dll' without the quotes (`Graphics.dll`).
+First, go and download [http://gwca.googlecode.com/files/Graphics.dll Graphics.dll] by clicking this link.
+Now move it to your Guild Wars folder (the one where Gw.dat and Gw.exe are located).
 
 The next time you launch Guild Wars, GWCA will automatically load, and when you log in, the window title will change to `Guild Wars - <Character Name>` where `<Character Name>` is your character's name of course.
 
@@ -20,7 +20,7 @@ Download the latest source. This can be found by going to the Downloads tab and 
 
 Un-pack the archive and open the solution by double-clicking `GW Client API.sln`. Now switch the compile mode from `Debug` to `Release` and `Build Solution`.
 
-A few warnings should appear - but no errors! When compiled, locate the file `GWCliAPI.dll` and do the same procedure as above, moving it to your Guild Wars folder and renaming it to `Graphics.dll`.
+A few warnings should appear - but no errors! When compiled, locate the file `GWCliAPI.dll` and do the same procedure as above, moving it to your Guild Wars folder.
 
 ==How do I use GWCA now?==
 A good idea would be to download all of the example scripts from [http://code.google.com/p/gwca/source/browse/#svn/trunk/Scripts]. Remember also to get `new list.txt` and `gwca-skillset.ini` - otherwise the Skill Log and Interrupt Bot will not function optimally.
