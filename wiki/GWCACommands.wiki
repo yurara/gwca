@@ -251,3 +251,26 @@ Agent info commands:
   * CA_GETVARS (0x47E): Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though.
 
   * CA_GETNEARESTNPCTOCOORDS (0x47F): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
+
+
+Item related commands:
+
+  * CA_GETGOLD (0x510): No parameters. Returns integer with gold on your character and integer with gold in your storage.
+
+  * CA_GETBAGSIZE (0x511): Parameter = bag index (1 = backpack to 5 = equip pack). Returns integer with number of slots in the bag.
+
+  * CA_GETBACKPACKITEMID (0x512): Parameter = item slot (1-20). Returns item id of the specified slot.
+
+  * CA_GETBELTPOUCHITEMID (0x513): Parameter = item slot (1-5). Returns item id of the specified slot.
+
+  * CA_GETBAG1ITEMID (0x514): Parameter = item slot (1-10). Returns item id of the specified slot.
+
+  * CA_GETBAG2ITEMID (0x515): Parameter = item slot (1-10). Returns item id of the specified slot.
+
+  * CA_GETEQUIPMENTPACKITEMID (0x516): Parameter = item slot (1-20). Returns item id of the specified slot.
+
+  * CA_GETIDKIT (0x517): No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory.
+
+  * CA_IDENTIFYITEM (0x518): Parameter = bag index, parameter 2 = item slot.
+
+  * CA_IDENTIFYITEMBYID (0x519): Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IDENTIFYITEM.
