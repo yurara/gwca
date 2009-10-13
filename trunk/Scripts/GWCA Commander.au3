@@ -61,13 +61,12 @@ While 1
 
 			$sendL = Number(GUICtrlRead($inputLparam))
 
-			If $sendCmd = $CA_MOVE OR $sendCmd = $CA_GETNEARESTAGENTTOCOORDS OR $sendCmd = $CA_GETNEARESTNPCTOCOORDS Then
+			If $sendCmd = $CA_MOVE OR $sendCmd = $CA_GETNEARESTAGENTTOCOORDS OR $sendCmd = $CA_GETNEARESTNPCTOCOORDS OR _
+				$sendCmd = $CA_COMMANDHERO1 OR $sendCmd = $CA_COMMANDHERO2 OR $sendCmd = $CA_COMMANDHERO3 OR _
+				$sendCmd = $CA_COMMANDALL Then
 				$sendW = _FloatToInt($sendW)
 				$sendL = _FloatToInt($sendL)
 			EndIf
-
-			;GUICtrlSetData($labelWparam, "")
-			;GUICtrlSetData($labelLparam, "")
 
 			CmdGW($sendCmd, $sendW, $sendL)
 
@@ -79,9 +78,7 @@ While 1
 				$sendCmd = Eval(StringMid($sendCmd, 2))
 			EndIf
 
-			$sendW = GUICtrlRead($inputWparam)
-
-			If StringLeft($sendW, 2) = "0x" Then $sendW = Binary($sendW)
+			$sendW = Number(GUICtrlRead($inputWparam))
 
 			GUICtrlSetData($labelWparam, "")
 			GUICtrlSetData($labelLparam, "")
