@@ -198,6 +198,13 @@ void CancelAction(){
 	SendPacket(newPak);
 }
 
+void IdentifyItem(long idKit, long itemId){
+	NEWPAK(64,0c);
+	newPak->Set<long>(4, idKit);
+	newPak->Set<long>(8, itemId);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

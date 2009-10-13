@@ -28,6 +28,7 @@ void EnterChallenge();
 void GoPlayer(long id);
 void UseAttackSkill(dword SkillID, dword TargetID, dword Event = 0);
 void CancelAction();
+void IdentifyItem(long idKit, long itemId);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

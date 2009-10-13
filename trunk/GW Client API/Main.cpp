@@ -39,6 +39,7 @@ wchar_t* pName;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
+ItemManager* MyItemManager = new ItemManager();
 
 unsigned int MsgUInt = NULL;
 WPARAM MsgWParam = NULL;
@@ -747,10 +748,46 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x47E: //Get the values of MsgInt and MsgInt2 : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
 			break;
-		case 0x47F: //Get nearest NPC to coords: No return (use 0x47E to return)
+		case 0x47F: //Get nearest NPC to coords : No return (use 0x47E to return)
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
 			MsgInt2 = GetNearestNPCToCoords(MsgFloat, MsgFloat2);
+			break;
+
+		//Item related commands
+		case 0x510: //Get gold : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MoneySelf(), MySectionA->MoneyStorage());
+			break;
+		case 0x511: //Get bag size : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetBagSize(MsgWParam), 0);
+			break;
+		case 0x512: //Get backpack item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(1, MsgWParam), 0);
+			break;
+		case 0x513: //Get belt pouch item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(2, MsgWParam), 0);
+			break;
+		case 0x514: //Get bag 1 item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(3, MsgWParam), 0);
+			break;
+		case 0x515: //Get bag 2 pack item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(4, MsgWParam), 0);
+			break;
+		case 0x516: //Get equipment pack item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(5, MsgWParam), 0);
+			break;
+		case 0x517: //Get first ID kit item id : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindIdKit(), 0);
+			break;
+		case 0x518: //Identify item by indexes : No return
+			MsgInt = MyItemManager->FindIdKit();
+			if(!MsgInt){break;}
+			IdentifyItem(MsgInt, MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			break;
+		case 0x519: //Identify item by item id : No return
+			MsgInt = MyItemManager->FindIdKit();
+			if(!MsgInt){break;}
+			IdentifyItem(MsgInt, MsgWParam);
 			break;
 	}
 	
@@ -1231,6 +1268,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("AgentNameFunction");
 				return false;
 			}
+			
 			/*
 			AllocConsole();
 			FILE *fh;

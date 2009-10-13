@@ -146,6 +146,15 @@ public:
 	long MaxLuxonFaction(){
 		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x748);
 	}
+	long MoneySelf(){
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8) + 0x7C);
+	}
+	long MoneyStorage(){
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8) + 0x80);
+	}
+	Bag** BagArrayPointer(){
+		return (Bag**)*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8);
+	}
 
 	dword mpBase;
 };

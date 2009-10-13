@@ -131,7 +131,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\GWCliAPI.dll"
+				OutputFile="$(OutDir)\Graphics.dll"
 				GenerateDebugInformation="false"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -192,6 +192,10 @@
 			</File>
 			<File
 				RelativePath=".\GuildWarsFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Item.h"
 				>
 			</File>
 			<File
