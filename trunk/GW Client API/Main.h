@@ -32,6 +32,7 @@ extern AgentArray Agents;
 
 void SendPacket(CPacket* pak);
 void ReloadSkillbar();
+void SellItem(long itemId);
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName);
 void TargetNearestFoe();
 void TargetNearestAlly();
@@ -54,6 +55,13 @@ struct LoggedSkillStruct {
 	word Allegiance;
 	float Distance;
 	long Ping;
+};
+
+struct SellItemStruct {
+	long header;
+	long sessionId;
+	long random;
+	long itemId;
 };
 
 #endif
