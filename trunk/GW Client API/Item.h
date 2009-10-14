@@ -62,7 +62,7 @@ public:
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
 				if(!pCurrentItem){ continue; }
-				if(pCurrentItem->modelId == 2989){ return pCurrentItem->id; }
+				if(pCurrentItem->modelId == 2989||pCurrentItem->modelId == 5899){ return pCurrentItem->id; }
 			}
 		}
 		return 0;
