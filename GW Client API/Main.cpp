@@ -27,6 +27,9 @@ byte* MaxZoomMobile = NULL;
 byte* SkillCancelStart = NULL;
 byte* SkillCancelReturn = NULL;
 byte* AgentNameFunction = NULL;
+byte* MerchantSessionStart = NULL;
+byte* MerchantSessionReturn = NULL;
+byte* SellItemFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -36,6 +39,8 @@ AgentArray Agents;
 bool LogSkills = false;
 HWND ScriptHwnd = NULL;
 wchar_t* pName;
+
+long MerchantSessionId = NULL;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -90,6 +95,21 @@ void _declspec(naked) SkillCancelHook(){
 	_asm {
 		POPAD
 		JMP SkillCancelReturn
+	}
+}
+
+void _declspec(naked) MerchantSessionHook(){
+	_asm {
+		PUSH ESI
+		MOV ESI,ECX
+		PUSH EDI
+
+		MOV EDX,DWORD PTR DS:[ESI+4]
+		MOV MerchantSessionId,EDX
+
+		MOV EDX,2
+
+		JMP MerchantSessionReturn
 	}
 }
 
@@ -789,6 +809,44 @@ void _declspec(naked) CustomMsgHandler(){
 			if(!MsgInt){break;}
 			IdentifyItem(MsgInt, MsgWParam);
 			break;
+		case 0x51A: //Deposit gold in storage : No return
+			MsgInt = MySectionA->MoneySelf();
+			MsgInt2 = MySectionA->MoneyStorage();
+			if(MsgWParam == -1){
+				if((MsgInt2 + MsgInt) > 1000000){ MsgInt = 1000000 - MsgInt2; }
+				MsgInt2 += MsgInt;
+				MsgInt = MySectionA->MoneySelf() - MsgInt;
+			}else{
+				MsgInt2 += MsgWParam;
+				MsgInt -= MsgWParam;
+			}
+			ChangeGold(MsgInt, MsgInt2);
+			break;
+		case 0x51B: //Withdraw gold from storage : No return
+			MsgInt = MySectionA->MoneySelf();
+			MsgInt2 = MySectionA->MoneyStorage();
+			if(MsgWParam == -1){
+				if((MsgInt2 - (100000 - MsgInt)) < 0){
+					MsgInt += MsgInt2;
+					MsgInt2 = 0;
+				}else{
+					MsgInt2 -= 100000 - MsgInt;
+					MsgInt += 100000;
+				}
+			}else{
+				MsgInt2 -= MsgWParam;
+				MsgInt += MsgWParam;
+			}
+			ChangeGold(MsgInt, MsgInt2);
+			break;
+		case 0x51C: //Sell item by indexes : No return
+			if(!MerchantSessionId){break;}
+			SellItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			break;
+		case 0x51D: //Sell item by item id : No return
+			if(!MerchantSessionId){break;}
+			SellItem(MsgWParam);
+			break;
 	}
 	
 	_asm {
@@ -804,6 +862,19 @@ void _declspec(naked) CustomMsgHandler(){
 
 void ReloadSkillbar(){
 	MySkillbar = (Skillbar*)(*(dword*)MySectionA->SkillbarPtr());
+}
+
+void SellItem(long itemId){
+	SellItemStruct* pSell = new SellItemStruct;
+	pSell->sessionId = MerchantSessionId;
+	pSell->itemId = itemId;
+
+	_asm {
+		MOV ECX,pSell
+		CALL SellItemFunction
+	}
+
+	delete[] pSell;
 }
 
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName){
@@ -1078,6 +1149,12 @@ void FindOffsets(){
 		0x8B, 0x78, 0x2C, 0xE8 };
 	size_t AgentNameCodeSize = 14;
 
+	byte MerchantSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
+	size_t MerchantSessionCodeSize = 7;
+
+	byte SellItemCode[] = { 0x8B, 0x46, 0x0C, 0x8D, 0x7E, 0x0C, 0x85 };
+	size_t SellItemCodeSize = 7;
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, AgentBaseCodeSize)){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1132,6 +1209,13 @@ void FindOffsets(){
 		if(!memcmp(start, AgentNameCode, AgentNameCodeSize)){
 			AgentNameFunction = start-0x16;
 		}
+		if(!memcmp(start, MerchantSessionCode, MerchantSessionCodeSize)){
+			MerchantSessionStart = start-0x48;
+			MerchantSessionReturn = MerchantSessionStart+9;
+		}
+		if(!memcmp(start, SellItemCode, SellItemCodeSize)){
+			SellItemFunction = start-8;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1146,7 +1230,8 @@ void FindOffsets(){
 			ChangeTargetFunction &&
 			MaxZoomStill &&
 			MaxZoomMobile &&
-			SkillCancelStart){
+			SkillCancelStart &&
+			SellItemFunction){
 			return;
 		}
 		start++;
@@ -1268,11 +1353,25 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("AgentNameFunction");
 				return false;
 			}
+			if(!MerchantSessionStart){
+				InjectErr("MerchantSessionStart");
+				return false;
+			}else{
+				DWORD dwOldProtection;
+				VirtualProtect(MerchantSessionStart, 9, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(MerchantSessionStart, 0x90, 9);
+				VirtualProtect(MerchantSessionStart, 9, dwOldProtection, NULL);
+				WriteJMP(MerchantSessionStart, (byte*)MerchantSessionHook);
+			}
+			if(!SellItemFunction){
+				InjectErr("SellItemFunction");
+				return false;
+			}
 			
 			/*
 			AllocConsole();
 			FILE *fh;
-			freopen_s(&fh, "CONOUT$", "w", stdout);
+			freopen_s(&fh, "CONOUT$", "wb", stdout);
 			printf("BaseOffset=0x%06X\n", BaseOffset);
 			printf("PacketSendFunction=0x%06X\n", PacketSendFunction);
 			printf("CurrentTarget=0x%06X\n", CurrentTarget);

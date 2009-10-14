@@ -205,6 +205,13 @@ void IdentifyItem(long idKit, long itemId){
 	SendPacket(newPak);
 }
 
+void ChangeGold(long goldSelf, long goldStorage){
+	NEWPAK(74,0c);
+	newPak->Set<long>(4, goldSelf);
+	newPak->Set<long>(8, goldStorage);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
