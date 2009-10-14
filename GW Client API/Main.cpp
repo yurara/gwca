@@ -782,19 +782,19 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetBagSize(MsgWParam), 0);
 			break;
 		case 0x512: //Get backpack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(1, MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(1, MsgWParam), MyItemManager->GetItemModelId(1, MsgWParam));
 			break;
 		case 0x513: //Get belt pouch item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(2, MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(2, MsgWParam), MyItemManager->GetItemModelId(2, MsgWParam));
 			break;
 		case 0x514: //Get bag 1 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(3, MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(3, MsgWParam), MyItemManager->GetItemModelId(3, MsgWParam));
 			break;
 		case 0x515: //Get bag 2 pack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(4, MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(4, MsgWParam), MyItemManager->GetItemModelId(4, MsgWParam));
 			break;
 		case 0x516: //Get equipment pack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(5, MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(5, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
 			break;
 		case 0x517: //Get first ID kit item id : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindIdKit(), 0);
