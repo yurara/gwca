@@ -274,3 +274,11 @@ Item related commands:
   * CA_IDENTIFYITEM (0x518): Parameter = bag index, parameter 2 = item slot.
 
   * CA_IDENTIFYITEMBYID (0x519): Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IDENTIFYITEM.
+
+  * CA_DEPOSITGOLD (0x51A): Parameter = amount of gold to deposit in storage. Specify -1 if you want to deposit the maximum amount. Can be used anywhere in the outpost.
+
+  * CA_WITHDRAWGOLD (0x51B): Parameter = amount of gold to withdraw from storage. Specify -1 if you want to withdraw the maximum amount. Can be used anywhere in the outpost.
+
+  * CA_SELLITEM (0x51C): Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost!
+
+  * CA_SELLITEMBYID (0x51D): Parameter = item id. Requires an open dialog with the Merchant of the outpost!
