@@ -39,14 +39,17 @@ public:
 	}
 
 	long GetItemId(int iBag, int iSlot){
-		Bag* pBag = GetBagPtr(iBag);
-		if(iSlot > pBag->slots){ return 0; }
-
-		Item** pItems = pBag->itemArray;
-		Item* pItem = pItems[(iSlot - 1)];
+		Item* pItem = GetItemPtr(iBag, iSlot);
 		if(!pItem){ return 0; }
 
 		return pItem->id;
+	}
+
+	long GetItemModelId(int iBag, int iSlot){
+		Item* pItem = GetItemPtr(iBag, iSlot);
+		if(!pItem){ return 0; }
+
+		return pItem->modelId;
 	}
 
 	long FindIdKit(){
@@ -70,6 +73,15 @@ private:
 		if(iBag < 1){ return 0; }
 		Bag* pBag = MySectionA->BagArrayPointer()[iBag];
 		return pBag;
+	}
+
+	Item* GetItemPtr(int iBag, int iSlot){
+		Bag* pBag = GetBagPtr(iBag);
+		if(iSlot > pBag->slots){ return 0; }
+
+		Item** pItems = pBag->itemArray;
+		Item* pItem = pItems[(iSlot - 1)];
+		return pItem;
 	}
 };
 
