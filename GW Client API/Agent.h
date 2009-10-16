@@ -155,6 +155,18 @@ public:
 	Bag** BagArrayPointer(){
 		return (Bag**)*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8);
 	}
+	long TitleTreasure(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x70C);
+	}
+	long TitleLucky(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x25C);
+	}
+	long TitleUnlucky(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x284);
+	}
+	long TitleWisdom(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x734);
+	}
 
 	dword mpBase;
 };
