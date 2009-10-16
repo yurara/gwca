@@ -420,6 +420,18 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x447: //Get current and max luxon faction : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->CurrentLuxonFaction(), MySectionA->MaxLuxonFaction());
 			break;
+		case 0x448: //Get current Treasure Title (credits to ddarek): Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleTreasure(), 0);
+			break;
+		case 0x449: //Get current Lucky Title (credits to ddarek): Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleLucky(), 0);
+			break;
+		case 0x44A: //Get current Unlucky Title (credits to ddarek): Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleUnlucky(), 0);
+			break;
+		case 0x44B: //Get current Wisdom Title (credits to ddarek): Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleWisdom(), 0);
+			break;
 
 		//Agent Related Commands
 		case 0x450: //Check for agent existency : Return int/bool
