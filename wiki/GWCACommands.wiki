@@ -282,3 +282,11 @@ Item related commands:
   * CA_SELLITEM (0x51C): Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost!
 
   * CA_SELLITEMBYID (0x51D): Parameter = item id. Requires an open dialog with the Merchant of the outpost!
+
+  * CA_BUYIDKIT (0x51E): No parameters. Doesn't require open dialog with the Merchant.
+
+  * CA_BUYSUPERIORIDKIT (0x51F): No parameters. Doesn't require open dialog with the Merchant.
+
+  * CA_PREPAREMOVEITEM (0x520): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
+
+  * CA_MOVEITEM (0x521): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
