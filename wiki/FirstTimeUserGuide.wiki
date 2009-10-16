@@ -38,6 +38,8 @@ There are a few mandatory things you will need to do in each and everyone of you
 
  * Register the necessary callbacks. Kind of necessary too.
 
+Also very important to note is the difference between the Cmd() and CmdCB() functions. When you just want to execute a command and not receive a return value, you use Cmd(). When the command you use gets a value back though, you have to use CmdCB().
+Keep in mind that maximum amount of parameters with Cmd() is 2 and with CmdCB() it's 1.
 
 So basically, if you were to make a standard script that just accessed the standard GWCA functionalities you would start out with:
 
