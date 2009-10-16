@@ -27,9 +27,10 @@ byte* MaxZoomMobile = NULL;
 byte* SkillCancelStart = NULL;
 byte* SkillCancelReturn = NULL;
 byte* AgentNameFunction = NULL;
-byte* MerchantSessionStart = NULL;
-byte* MerchantSessionReturn = NULL;
+byte* SellSessionStart = NULL;
+byte* SellSessionReturn = NULL;
 byte* SellItemFunction = NULL;
+byte* BuyItemFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -39,8 +40,9 @@ AgentArray Agents;
 bool LogSkills = false;
 HWND ScriptHwnd = NULL;
 wchar_t* pName;
+long MoveItemId = NULL;
 
-long MerchantSessionId = NULL;
+long SellSessionId = NULL;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -98,18 +100,18 @@ void _declspec(naked) SkillCancelHook(){
 	}
 }
 
-void _declspec(naked) MerchantSessionHook(){
+void _declspec(naked) SellSessionHook(){
 	_asm {
 		PUSH ESI
 		MOV ESI,ECX
 		PUSH EDI
 
 		MOV EDX,DWORD PTR DS:[ESI+4]
-		MOV MerchantSessionId,EDX
+		MOV SellSessionId,EDX
 
 		MOV EDX,2
 
-		JMP MerchantSessionReturn
+		JMP SellSessionReturn
 	}
 }
 
@@ -840,12 +842,28 @@ void _declspec(naked) CustomMsgHandler(){
 			ChangeGold(MsgInt, MsgInt2);
 			break;
 		case 0x51C: //Sell item by indexes : No return
-			if(!MerchantSessionId){break;}
+			if(!SellSessionId){break;}
 			SellItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
 			break;
 		case 0x51D: //Sell item by item id : No return
-			if(!MerchantSessionId){break;}
+			if(!SellSessionId){break;}
 			SellItem(MsgWParam);
+			break;
+		case 0x51E: //Buy ID kit : No return
+			BuyItem(464, 1, 100);
+			break;
+		case 0x51F: //Buy superior ID kit : No return
+			BuyItem(466, 1, 500);
+			break;
+		case 0x520: //Prepare MoveItem by setting item id (internal) : No return
+			if(MsgWParam && MsgLParam){
+				MoveItemId = MyItemManager->GetItemId(MsgWParam, MsgLParam);
+			}else{
+				MoveItemId = MsgWParam;
+			}
+			break;
+		case 0x521: //Move the item specified by 0x520 : No return
+			MoveItem(MoveItemId, MyItemManager->GetBagPtr(MsgWParam)->id, (MsgLParam - 1));
 			break;
 	}
 	
@@ -866,7 +884,7 @@ void ReloadSkillbar(){
 
 void SellItem(long itemId){
 	SellItemStruct* pSell = new SellItemStruct;
-	pSell->sessionId = MerchantSessionId;
+	pSell->sessionId = SellSessionId;
 	pSell->itemId = itemId;
 
 	_asm {
@@ -875,6 +893,24 @@ void SellItem(long itemId){
 	}
 
 	delete[] pSell;
+}
+
+void BuyItem(long id, long quantity, long value){
+	long* itemQuantity = &quantity;
+	long* itemId = &id;
+
+	_asm {
+		PUSH itemQuantity
+		PUSH itemId
+		PUSH 1
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		MOV EDX,value
+		MOV ECX,1
+		CALL BuyItemFunction
+	}
 }
 
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName){
@@ -1149,11 +1185,15 @@ void FindOffsets(){
 		0x8B, 0x78, 0x2C, 0xE8 };
 	size_t AgentNameCodeSize = 14;
 
-	byte MerchantSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
-	size_t MerchantSessionCodeSize = 7;
+	byte SellSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
+	size_t SellSessionCodeSize = 7;
 
 	byte SellItemCode[] = { 0x8B, 0x46, 0x0C, 0x8D, 0x7E, 0x0C, 0x85 };
 	size_t SellItemCodeSize = 7;
+
+	byte BuyItemCode[] = { 0x64, 0x8B, 0x0D, 0x2C, 0x00, 0x00, 0x00, 0x89, 0x55, 0xFC,
+		0x8B };
+	size_t BuyItemCodeSize = 11;
 
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, AgentBaseCodeSize)){
@@ -1209,12 +1249,15 @@ void FindOffsets(){
 		if(!memcmp(start, AgentNameCode, AgentNameCodeSize)){
 			AgentNameFunction = start-0x16;
 		}
-		if(!memcmp(start, MerchantSessionCode, MerchantSessionCodeSize)){
-			MerchantSessionStart = start-0x48;
-			MerchantSessionReturn = MerchantSessionStart+9;
+		if(!memcmp(start, SellSessionCode, SellSessionCodeSize)){
+			SellSessionStart = start-0x48;
+			SellSessionReturn = SellSessionStart+9;
 		}
 		if(!memcmp(start, SellItemCode, SellItemCodeSize)){
 			SellItemFunction = start-8;
+		}
+		if(!memcmp(start, BuyItemCode, BuyItemCodeSize)){
+			BuyItemFunction = start-0xE;
 		}
 		if(	CurrentTarget &&
 			BaseOffset &&
@@ -1231,7 +1274,9 @@ void FindOffsets(){
 			MaxZoomStill &&
 			MaxZoomMobile &&
 			SkillCancelStart &&
-			SellItemFunction){
+			SellSessionStart &&
+			SellItemFunction &&
+			BuyItemFunction){
 			return;
 		}
 		start++;
@@ -1353,18 +1398,22 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("AgentNameFunction");
 				return false;
 			}
-			if(!MerchantSessionStart){
-				InjectErr("MerchantSessionStart");
+			if(!SellSessionStart){
+				InjectErr("SellSessionStart");
 				return false;
 			}else{
 				DWORD dwOldProtection;
-				VirtualProtect(MerchantSessionStart, 9, PAGE_EXECUTE_READWRITE, &dwOldProtection);
-				memset(MerchantSessionStart, 0x90, 9);
-				VirtualProtect(MerchantSessionStart, 9, dwOldProtection, NULL);
-				WriteJMP(MerchantSessionStart, (byte*)MerchantSessionHook);
+				VirtualProtect(SellSessionStart, 9, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(SellSessionStart, 0x90, 9);
+				VirtualProtect(SellSessionStart, 9, dwOldProtection, NULL);
+				WriteJMP(SellSessionStart, (byte*)SellSessionHook);
 			}
 			if(!SellItemFunction){
 				InjectErr("SellItemFunction");
+				return false;
+			}
+			if(!BuyItemFunction){
+				InjectErr("BuyItemFunction");
 				return false;
 			}
 			

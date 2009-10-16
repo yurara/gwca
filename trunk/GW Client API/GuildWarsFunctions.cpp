@@ -205,6 +205,14 @@ void IdentifyItem(long idKit, long itemId){
 	SendPacket(newPak);
 }
 
+void MoveItem(long itemId, long bagId, long slot){
+	NEWPAK(6a, 10);
+	newPak->Set<long>(4, itemId);
+	newPak->Set<long>(8, bagId);
+	newPak->Set<long>(12, slot);
+	SendPacket(newPak);
+}
+
 void ChangeGold(long goldSelf, long goldStorage){
 	NEWPAK(74,0c);
 	newPak->Set<long>(4, goldSelf);

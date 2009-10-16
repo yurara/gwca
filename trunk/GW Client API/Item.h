@@ -4,7 +4,7 @@
 struct Bag {
 	byte unknown1[4];
 	long index;
-	byte unknown2[4]; //long id;
+	long id;
 	Item* containerItem;
 	long numOfItems;
 	Bag** bagArray;
@@ -68,7 +68,6 @@ public:
 		return 0;
 	}
 
-private:
 	Bag* GetBagPtr(int iBag){
 		if(iBag < 1){ return 0; }
 		Bag* pBag = MySectionA->BagArrayPointer()[iBag];
