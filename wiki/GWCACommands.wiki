@@ -153,6 +153,14 @@ Specific memory commands:
 
   * CA_GETLUXONFACTION (0x447): No parameters, returns integer of current luxon faction and integer of maximum luxon faction.
 
+  * CA_GETTITLETREASURE (0x448): No parameters, returns integer of current treasure title.
+
+  * CA_GETTITLELUCKY (0x449): No parameters, returns integer of current lucky title.
+
+  * CA_GETTITLEUNLUCKY (0x44A): No parameters, returns integer of current unlucky title.
+
+  * CA_GETTITLEWISDOM (0x44B): No parameters, returns integer of current wisdom title.
+
 
 Agent info commands:
 
