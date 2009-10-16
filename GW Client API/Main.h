@@ -33,6 +33,7 @@ extern AgentArray Agents;
 void SendPacket(CPacket* pak);
 void ReloadSkillbar();
 void SellItem(long itemId);
+void BuyItem(long id, long quantity, long value);
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName);
 void TargetNearestFoe();
 void TargetNearestAlly();
