@@ -14,6 +14,7 @@ extern byte* AgentArrayMaxPtr;
 
 struct Bag;
 struct Item;
+struct ItemExtra;
 
 #define maxAgent *(unsigned int*)AgentArrayMaxPtr
 #define mapLoading *(long*)(CurrentTarget+0x410)

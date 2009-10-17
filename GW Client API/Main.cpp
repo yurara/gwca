@@ -877,6 +877,26 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x521: //Move the item specified by 0x520 : No return
 			MoveItem(MoveItemId, MyItemManager->GetBagPtr(MsgWParam)->id, (MsgLParam - 1));
 			break;
+		case 0x522: //Get backpack item rarity and quantity : Return byte & byte
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(1, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(1, MsgWParam)->quantity);
+			break;
+		case 0x523: //Get belt pouch item rarity and quantity : Return byte & byte
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(2, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(2, MsgWParam)->quantity);
+			break;
+		case 0x524: //Get bag 1 item rarity and quantity : Return byte & byte
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(3, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(3, MsgWParam)->quantity);
+			break;
+		case 0x525: //Get bag 2 item rarity and quantity : Return byte & byte
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(4, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(4, MsgWParam)->quantity);
+			break;
+		case 0x526: //Get equipment pack item rarity and quantity : Return byte & byte
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(5, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
+			break;
 	}
 	
 	_asm {
