@@ -13,6 +13,12 @@ struct Bag {
 	long slots;
 };
 
+struct ItemExtra {
+	byte rarity;
+	byte unknown1[3];
+	byte modifier;
+};
+
 struct Item {
 	long id;
 	byte unknown1[8];
@@ -21,9 +27,11 @@ struct Item {
 	wchar_t* customized;
 	byte unknown3[16];
 	long modelId;
-	byte unknown4[23];
+	byte unknown4[8];
+	ItemExtra* extraItemInfo;
+	byte unknown5[15];
 	byte quantity;
-	byte unknown5[2];
+	byte unknown6[2];
 	byte slot;
 };
 
