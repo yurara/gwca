@@ -167,6 +167,45 @@ public:
 	long TitleWisdom(){ //credits to ddarek
 		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x734);
 	}
+	long TitleDrunkard(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x11c);
+	}
+    long TitleSunspear(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x2ac);
+	}
+    long TitleVanguard(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x644);
+	}
+    long TitleNorn(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x66c);
+	}
+    long TitleAsura(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x5f4);
+	}
+    long TitleDeldrimor(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x61c);
+	}
+    long TitleNorthMastery(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x694);
+    }
+    long TitleLightbringer(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x324);
+	}
+	long TitleSweet(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x554);
+	}
+    long TitleParty(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x6bc);
+	}
+    long TitleCommander(){ //credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x374);
+	}
+    long TitleTrackLuxon(){ //total points transfered to Luxon's - credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xf4);
+	}
+    long TitleTrackKurzick(){ //total points transfered to Kurzick's - credits to ddarek
+		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xcc);
+	}
 
 	dword mpBase;
 };
