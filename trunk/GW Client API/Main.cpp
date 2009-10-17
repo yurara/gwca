@@ -897,6 +897,47 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(5, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
 			break;
+
+		//Title related commands
+        case 0x550: //Get current Sunspear Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleSunspear(), 0);
+			break;
+        case 0x551: //Get current Lightbringer Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleLightbringer(), 0);
+			break;
+        case 0x552: //Get current Vanguard Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleVanguard(), 0);
+			break;
+        case 0x553: //Get current Norn Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleNorn(), 0);
+			break;
+        case 0x554: //Get current Asura Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleAsura(), 0);
+			break;
+        case 0x555: //Get current Deldrimor Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleDeldrimor(), 0);
+			break;
+        case 0x556: //Get current North Mastery Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleNorthMastery(), 0);
+			break;
+        case 0x557: //Get current Drunkard Title : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleDrunkard(), 0);
+			break;
+        case 0x558: //Get current Sweet Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleSweet(), 0);
+			break;
+        case 0x559: //Get current Party Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleParty(), 0);
+			break;
+        case 0x55A: //Get current Commander Title: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleCommander(), 0);
+			break;
+        case 0x55B: //Get current Luxon Title Track: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleTrackLuxon(), 0);
+			break;
+        case 0x55C: //Get current Kurzick Title Track: Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleTrackKurzick(), 0);
+			break;
 	}
 	
 	_asm {
