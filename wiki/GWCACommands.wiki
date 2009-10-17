@@ -298,3 +298,13 @@ Item related commands:
   * CA_PREPAREMOVEITEM (0x520): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
 
   * CA_MOVEITEM (0x521): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
+
+  * CA_GETBACKPACKITEMINFO (0x522): Parameter = item slot. Returns integer with item rarity and integer with quantity.
+
+  * CA_GETBELTPOUCHITEMINFO (0x523): Same procedure as CA_GETBACKPACKITEMINFO.
+
+  * CA_GETBAG1ITEMINFO (0x524): Same procedure as CA_GETBACKPACKITEMINFO.
+
+  * CA_GETBAG2ITEMINFO (0x525): Same procedure as CA_GETBACKPACKITEMINFO.
+
+  * CA_GETEQUIPMENTPACKITEMINFO (0x526): Same procedure as CA_GETBACKPACKITEMINFO.
