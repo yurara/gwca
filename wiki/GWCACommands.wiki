@@ -308,3 +308,32 @@ Item related commands:
   * CA_GETBAG2ITEMINFO (0x525): Same procedure as CA_GETBACKPACKITEMINFO.
 
   * CA_GETEQUIPMENTPACKITEMINFO (0x526): Same procedure as CA_GETBACKPACKITEMINFO.
+
+
+Title related commands:
+
+  * CA_GETTITLESUNSPEAR (0x550): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLELIGHTBRINGER (0x551): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEVANGUARD (0x552): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLENORN (0x553): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEASURA (0x554): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEDELDRIMOR (0x555): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLENORTHMASTERY (0x556): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEDRUNKARD (0x557): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLESWEET (0x558): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEPARTY (0x559): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLECOMMANDER (0x55A): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLELUXON (0x55B): No parameters. Returns integer with title progress.
+
+  * CA_GETTITLEKURZICK (0x55C): No parameters. Returns integer with title progress.
