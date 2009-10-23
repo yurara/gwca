@@ -95,35 +95,26 @@ private:
 
 class CSectionA {
 public:
-	CSectionA(){
-		mpBase = NULL;
-	}
-	void SetBasePtr(dword pBase){
-		mpBase = pBase;
-	}
 	long MapId(){
-		return *(long*)(mpBase);
+		return *(long*)(MapIdLocation);
 	}
 	long Ping(){
-		return *(long*)(mpBase - 0x6144);
-	}
-	long Level(){
-		return *(long*)(mpBase - 0x3518);
+		return *(long*)(PingLocation);
 	}
 	long LoggedIn(){
-		return *(long*)(mpBase - 0xDB8);
+		return *(long*)(LoggedInLocation);
 	}
 	wchar_t* Name(){
-		return (wchar_t*)(mpBase - 0x60F8);
+		return (wchar_t*)(NameLocation);
 	}
 	wchar_t* Email(){
-		return (wchar_t*)(mpBase - 0x60BC);
+		return (wchar_t*)(EmailLocation);
 	}
 	long Dead(){
-		return *(long*)(mpBase - 0xDD4);
+		return *(long*)(DeadLocation);
 	}
 	dword BasePointer(){
-		return *(dword*)(mpBase - 0x5F4C);
+		return *(dword*)(BasePointerLocation);
 	}
 	dword SkillbarPtr(){
 		return (dword)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x68C);
@@ -206,8 +197,6 @@ public:
     long TitleTrackKurzick(){ //total points transfered to Kurzick's - credits to ddarek
 		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xcc);
 	}
-
-	dword mpBase;
 };
 
 #endif

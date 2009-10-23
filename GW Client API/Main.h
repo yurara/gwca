@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <vector>
 #include <math.h>
+#include <map>
 
 typedef unsigned char byte;
 typedef unsigned short word;
@@ -11,6 +12,14 @@ typedef unsigned int dword;
 
 extern byte* AgentArrayPtr;
 extern byte* AgentArrayMaxPtr;
+
+extern byte* PingLocation;
+extern byte* LoggedInLocation;
+extern byte* NameLocation;
+extern byte* EmailLocation;
+extern byte* DeadLocation;
+extern byte* BasePointerLocation;
+extern byte* MapIdLocation;
 
 struct Bag;
 struct Item;
