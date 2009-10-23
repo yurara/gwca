@@ -31,6 +31,13 @@ byte* SellSessionStart = NULL;
 byte* SellSessionReturn = NULL;
 byte* SellItemFunction = NULL;
 byte* BuyItemFunction = NULL;
+byte* PingLocation = NULL;
+byte* LoggedInLocation = NULL;
+byte* NameLocation = NULL;
+byte* EmailLocation = NULL;
+byte* DeadLocation = NULL;
+byte* BasePointerLocation = NULL;
+byte* MapIdLocation = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -1228,8 +1235,8 @@ void FindOffsets(){
 	byte SkillLogCode[] = { 0x8B, 0x46, 0x10, 0x5F, 0x40 };
 	size_t SkillLogCodeSize = 5;
 
-	byte SectionACode[] = { 0xB0, 0x7F, 0x8D, 0x55 };
-	size_t SectionACodeSize = 4;
+	byte MapIdLocationCode[] = { 0xB0, 0x7F, 0x8D, 0x55 };
+	size_t MapIdLocationCodeSize = 4;
 
 	byte WriteWhisperCode[] = { 0x55, 0x8B, 0xEC, 0x51, 0x53, 0x89, 0x4D, 0xFC, 0x8B, 0x4D,
 		0x08, 0x56, 0x57, 0x8B };
@@ -1275,6 +1282,21 @@ void FindOffsets(){
 		0x8B };
 	size_t BuyItemCodeSize = 11;
 
+	byte PingLocationCode[] = { 0x90, 0x8D, 0x41, 0x24, 0x8B, 0x49, 0x18, 0x6A, 0x30 };
+	size_t PingLocationCodeSize = 9;
+
+	byte LoggedInLocationCode[] = { 0x85, 0xC0, 0x74, 0x11, 0xB8, 0x07 };
+	size_t LoggedInLocationCodeSize = 6;
+
+	byte NameLocationCode[] = { 0x6A, 0x14, 0x8D, 0x96, 0xBC };
+	size_t NameLocationCodeSize = 5;
+
+	byte DeadLocationCode[] = { 0x85, 0xC0, 0x74, 0x11, 0xB8, 0x02 };
+	size_t DeadLocationCodeSize = 6;
+
+	byte BasePointerLocationCode[] = { 0x85, 0xC9, 0x74, 0x3D, 0x8B, 0x46 };
+	size_t BasePointerLocationCodeSize = 6;
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, AgentBaseCodeSize)){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1295,8 +1317,8 @@ void FindOffsets(){
 			SkillLogStart = start;
 			SkillLogReturn = SkillLogStart+8;
 		}
-		if(!memcmp(start, SectionACode, SectionACodeSize)){
-			MySectionA->SetBasePtr(*(dword*)(start+0x46));
+		if(!memcmp(start, MapIdLocationCode, MapIdLocationCodeSize)){
+			MapIdLocation = (byte*)(*(dword*)(start+0x46));
 		}
 		if(!memcmp(start, WriteWhisperCode, WriteWhisperCodeSize)){
 			WriteWhisperStart = start;
@@ -1339,12 +1361,28 @@ void FindOffsets(){
 		if(!memcmp(start, BuyItemCode, BuyItemCodeSize)){
 			BuyItemFunction = start-0xE;
 		}
+		if(!memcmp(start, PingLocationCode, PingLocationCodeSize)){
+			PingLocation = (byte*)(*(dword*)(start-9));
+		}
+		if(!memcmp(start, LoggedInLocationCode, LoggedInLocationCodeSize)){
+			LoggedInLocation = (byte*)(*(dword*)(start-4) + 4);
+		}
+		if(!memcmp(start, NameLocationCode, NameLocationCodeSize)){
+			NameLocation = (byte*)(*(dword*)(start+9));
+			EmailLocation = (byte*)(*(dword*)(start-9));
+		}
+		if(!memcmp(start, DeadLocationCode, DeadLocationCodeSize)){
+			DeadLocation = (byte*)(*(dword*)(start-4));
+		}
+		if(!memcmp(start, BasePointerLocationCode, BasePointerLocationCodeSize)){
+			BasePointerLocation = (byte*)(*(dword*)(start-4));
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
 			MessageHandlerStart &&
 			SkillLogStart &&
-			MySectionA->mpBase &&
+			MapIdLocation &&
 			WriteWhisperStart &&
 			TargetFunctions &&
 			HeroSkillFunction &&
@@ -1356,7 +1394,12 @@ void FindOffsets(){
 			SkillCancelStart &&
 			SellSessionStart &&
 			SellItemFunction &&
-			BuyItemFunction){
+			BuyItemFunction &&
+			PingLocation &&
+			LoggedInLocation &&
+			NameLocation &&
+			DeadLocation &&
+			BasePointerLocation){
 			return;
 		}
 		start++;
@@ -1422,8 +1465,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				WriteJMP(SkillLogStart, (byte*)SkillLogHook);
 				CreateThread(0, 0, (LPTHREAD_START_ROUTINE)&SkillLogQueueThread, 0, 0, 0);
 			}
-			if(!MySectionA->mpBase){
-				InjectErr("SectionA");
+			if(!MapIdLocation){
+				InjectErr("MapIdLocation");
 				return false;
 			}
 			if(!WriteWhisperStart){
@@ -1494,6 +1537,26 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			}
 			if(!BuyItemFunction){
 				InjectErr("BuyItemFunction");
+				return false;
+			}
+			if(!PingLocation){
+				InjectErr("PingLocation");
+				return false;
+			}
+			if(!LoggedInLocation){
+				InjectErr("LoggedInLocation");
+				return false;
+			}
+			if(!NameLocation){
+				InjectErr("NameLocation");
+				return false;
+			}
+			if(!DeadLocation){
+				InjectErr("DeadLocation");
+				return false;
+			}
+			if(!BasePointerLocation){
+				InjectErr("BasePointerLocation");
 				return false;
 			}
 			
