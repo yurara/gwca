@@ -105,25 +105,25 @@ public:
 		return *(long*)(mpBase);
 	}
 	long Ping(){
-		return *(long*)(mpBase - 0x6114);
+		return *(long*)(mpBase - 0x6144);
 	}
 	long Level(){
 		return *(long*)(mpBase - 0x3518);
 	}
 	long LoggedIn(){
-		return *(long*)(mpBase - 0xDA8);
+		return *(long*)(mpBase - 0xDB8);
 	}
 	wchar_t* Name(){
-		return (wchar_t*)(mpBase - 0x60C8);
+		return (wchar_t*)(mpBase - 0x60F8);
 	}
 	wchar_t* Email(){
-		return (wchar_t*)(mpBase - 0x608C);
+		return (wchar_t*)(mpBase - 0x60BC);
 	}
 	long Dead(){
 		return *(long*)(mpBase - 0xDD4);
 	}
 	dword BasePointer(){
-		return *(dword*)(mpBase - 0x5F1C);
+		return *(dword*)(mpBase - 0x5F4C);
 	}
 	dword SkillbarPtr(){
 		return (dword)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x68C);

@@ -41,6 +41,7 @@ bool LogSkills = false;
 HWND ScriptHwnd = NULL;
 wchar_t* pName;
 long MoveItemId = NULL;
+long TmpVariable = NULL;
 
 long SellSessionId = NULL;
 
@@ -393,6 +394,12 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x433: //Change region and language : No return
 			ChangeDistrict(MsgWParam, MsgLParam);
+			break;
+		case 0x434: //Send /resign to chat, effectively resigning : No return
+			SendChat('/',"resign");
+			break;
+		case 0x435: //Send "Return to Outpost" packet : No return
+			ReturnToOutpost();
 			break;
 
 		//SectionA related commands
@@ -777,15 +784,15 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x47D: //Get nearest agent to coords : No return (use 0x47E to return)
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
-			MsgInt2 = GetNearestAgentToCoords(MsgFloat, MsgFloat2);
+			TmpVariable = GetNearestAgentToCoords(MsgFloat, MsgFloat2);
 			break;
-		case 0x47E: //Get the values of MsgInt and MsgInt2 : Return int/long & int/long
-			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+		case 0x47E: //Get the values of MsgInt2 and TmpVariable : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt2, TmpVariable);
 			break;
 		case 0x47F: //Get nearest NPC to coords : No return (use 0x47E to return)
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
-			MsgInt2 = GetNearestNPCToCoords(MsgFloat, MsgFloat2);
+			TmpVariable = GetNearestNPCToCoords(MsgFloat, MsgFloat2);
 			break;
 
 		//Item related commands
@@ -862,10 +869,10 @@ void _declspec(naked) CustomMsgHandler(){
 			SellItem(MsgWParam);
 			break;
 		case 0x51E: //Buy ID kit : No return
-			BuyItem(464, 1, 100);
+			BuyItem(0x305, 1, 100);
 			break;
 		case 0x51F: //Buy superior ID kit : No return
-			BuyItem(466, 1, 500);
+			BuyItem(0x306, 1, 500);
 			break;
 		case 0x520: //Prepare MoveItem by setting item id (internal) : No return
 			if(MsgWParam && MsgLParam){
@@ -1514,6 +1521,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("SkillCancelStart=0x%06X\n", SkillCancelStart);
 			printf("SkillCancelReturn=0x%06X\n", SkillCancelReturn);
 			printf("AgentNameFunction=0x%06X\n", AgentNameFunction);
+			printf("SellSessionStart=0x%06X\n", SellSessionStart);
+			printf("SellItemFunction=0x%06X\n", SellItemFunction);
+			printf("BuyItemFunction=0x%06X\n", BuyItemFunction);
 			*/
 			break;
 

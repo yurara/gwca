@@ -220,6 +220,11 @@ void ChangeGold(long goldSelf, long goldStorage){
 	SendPacket(newPak);
 }
 
+void ReturnToOutpost(){
+	NEWPAK(9f,04);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
