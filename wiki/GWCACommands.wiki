@@ -134,6 +134,10 @@ Action-related commands:
 
   * CA_CHANGEDISTRICT (0x433): Parameter = region (0 = america, 1 = asia, 2 = europe), parameter 2 = language (experiment around with this!).
 
+  * CA_RESIGN (0x434): No parameters.
+
+  * CA_RETURNTOOUTPOST (0x435): No parameters. "Presses" the Return To Outpost button after resigning.
+
 
 Specific memory commands:
 
