@@ -197,6 +197,9 @@ public:
     long TitleTrackKurzick(){ //total points transfered to Kurzick's - credits to ddarek
 		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xcc);
 	}
+	dword MerchantItems(){
+		return *(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x24);
+	}
 };
 
 #endif

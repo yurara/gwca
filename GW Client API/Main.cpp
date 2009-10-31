@@ -876,10 +876,10 @@ void _declspec(naked) CustomMsgHandler(){
 			SellItem(MsgWParam);
 			break;
 		case 0x51E: //Buy ID kit : No return
-			BuyItem(0x305, 1, 100);
+			BuyItem(*(long*)(MySectionA->MerchantItems() + 0x10), 1, 100);
 			break;
 		case 0x51F: //Buy superior ID kit : No return
-			BuyItem(0x306, 1, 500);
+			BuyItem(*(long*)(MySectionA->MerchantItems() + 0x14), 1, 500);
 			break;
 		case 0x520: //Prepare MoveItem by setting item id (internal) : No return
 			if(MsgWParam && MsgLParam){
@@ -910,6 +910,12 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x526: //Get equipment pack item rarity and quantity : Return byte & byte
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(5, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
+			break;
+		case 0x527: //Use item by indexes : No return
+			UseItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			break;
+		case 0x528: //Use item by item id : No return
+			UseItem(MsgWParam);
 			break;
 
 		//Title related commands
