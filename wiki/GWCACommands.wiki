@@ -295,9 +295,9 @@ Item related commands:
 
   * CA_SELLITEMBYID (0x51D): Parameter = item id. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_BUYIDKIT (0x51E): No parameters. Doesn't require open dialog with the Merchant.
+  * CA_BUYIDKIT (0x51E): No parameters. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_BUYSUPERIORIDKIT (0x51F): No parameters. Doesn't require open dialog with the Merchant.
+  * CA_BUYSUPERIORIDKIT (0x51F): No parameters. Requires an open dialog with the Merchant of the outpost!
 
   * CA_PREPAREMOVEITEM (0x520): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
 
@@ -312,6 +312,10 @@ Item related commands:
   * CA_GETBAG2ITEMINFO (0x525): Same procedure as CA_GETBACKPACKITEMINFO.
 
   * CA_GETEQUIPMENTPACKITEMINFO (0x526): Same procedure as CA_GETBACKPACKITEMINFO.
+
+  * CA_USEITEM (0x527): Parameter = bag index, parameter 2 = item slot. Uses the item specified.
+
+  * CA_USEITEMBYID (0x528): Parameter = item id. Uses the item specified.
 
 
 Title related commands:
