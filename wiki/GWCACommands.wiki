@@ -39,25 +39,27 @@ General commands:
 
   * CA_CASTING (0x403): No parameters, returns a boolean which tells whether or not you're using a skill.
 
-  * CA_SKILLRECHARGE (0x403): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
+  * CA_SKILLRECHARGE (0x404): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
 
-  * CA_SKILLADRENALINE (0x404): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
+  * CA_SKILLADRENALINE (0x405): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
 
-  * CA_STOREVAR (0x405): Obsolete, so don't use it.
+  * CA_STOREVAR (0x406): Obsolete, so don't use it.
 
-  * CA_SETLOGANDHWND (0x406): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
+  * CA_SETLOGANDHWND (0x407): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
 
-  * CA_GETAGENTANDTARGETPTR (0x407): No parameters, used for debugging purposes.
+  * CA_GETAGENTANDTARGETPTR (0x408): No parameters, used for debugging purposes.
 
-  * CA_GETSKILLBARSKILLID (0x408): Parameter = skillslot, obsolete.
+  * CA_GETSKILLBARSKILLID (0x409): Parameter = skillslot, obsolete.
 
-  * CA_GETMYMAXHP (0x409): No parameters, returns an integer with your max hp and an integer with your current hp.
+  * CA_GETMYMAXHP (0x40A): No parameters, returns an integer with your max hp and an integer with your current hp.
 
-  * CA_GETMYMAXENERGY (0x40A): No parameters, returns an integer with your max energy and an integer with your current energy.
+  * CA_GETMYMAXENERGY (0x40B): No parameters, returns an integer with your max energy and an integer with your current energy.
 
-  * CA_GETBUILDNUMBER (0x40B): No parameters, returns an integer with the current build number of the GW client you're running.
+  * CA_GETBUILDNUMBER (0x40C): No parameters, returns an integer with the current build number of the GW client you're running.
 
-  * CA_CHANGEMAXZOOM (0x40C): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
+  * CA_CHANGEMAXZOOM (0x40D): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
+
+  * CA_GETLASTDIALOGID (0x40E): No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_DIALOG.
 
 
 Action-related commands:
