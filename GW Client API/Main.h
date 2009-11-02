@@ -4,7 +4,6 @@
 #include <windows.h>
 #include <vector>
 #include <math.h>
-#include <map>
 
 typedef unsigned char byte;
 typedef unsigned short word;

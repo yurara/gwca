@@ -1122,7 +1122,8 @@ void SendPacketQueueThread(){
 		Sleep(10);
 
 		if(WaitForSingleObject(PacketMutex, 100) == WAIT_TIMEOUT) continue;
-		if(PacketQueue.size() < 1) goto nextLoop;
+		if(PacketQueue.size() < 1 || mapLoading == 2) goto nextLoop;
+		if(MySectionA->LoggedIn() != 1 && mapLoading != 1) goto nextLoop;
 
 		{
 			std::vector<CPacket*>::iterator itrPak = PacketQueue.begin();
@@ -1226,8 +1227,8 @@ void FindOffsets(){
 	byte* end = (byte*)0x00DF0000;
 
 	byte PacketSendCode[] = { 0x55, 0x8B, 0xEC, 0x83, 0xEC, 0x2C, 0x53, 0x56, 0x57, 0x8B,
-		0xF9, 0x85, 0xFF, 0x8B, 0xDA, 0x75, 0x14, 0x68, 0x81, 0x04, 0x00, 0x00 };
-	size_t PacketSendCodeSize = 22;
+		0xF9, 0x85 };
+	size_t PacketSendCodeSize = 12;
 
 	byte BaseOffsetCode[] = { 0x56, 0x33, 0xF6, 0x3B, 0xCE, 0x74, 0x0E, 0x56, 0x33, 0xD2 };
 	size_t BaseOffsetCodeSize = 10;
@@ -1593,6 +1594,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("SellSessionStart=0x%06X\n", SellSessionStart);
 			printf("SellItemFunction=0x%06X\n", SellItemFunction);
 			printf("BuyItemFunction=0x%06X\n", BuyItemFunction);
+			printf("PingLocation=0x%06X\n", PingLocation);
+			printf("LoggedInLocation=0x%06X\n", LoggedInLocation);
+			printf("NameLocation=0x%06X\n", NameLocation);
+			printf("DeadLocation=0x%06X\n", DeadLocation);
+			printf("BasePointerLocation=0x%06X\n", BasePointerLocation);
 			*/
 			break;
 
