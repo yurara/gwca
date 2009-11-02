@@ -38,6 +38,8 @@ byte* EmailLocation = NULL;
 byte* DeadLocation = NULL;
 byte* BasePointerLocation = NULL;
 byte* MapIdLocation = NULL;
+byte* DialogStart = NULL;
+byte* DialogReturn = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -51,6 +53,7 @@ long MoveItemId = NULL;
 long TmpVariable = NULL;
 
 long SellSessionId = NULL;
+long LastDialogId = 0;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -120,6 +123,20 @@ void _declspec(naked) SellSessionHook(){
 		MOV EDX,2
 
 		JMP SellSessionReturn
+	}
+}
+
+void _declspec(naked) DialogHook(){
+	_asm {
+		PUSH EBP
+		MOV EBP,ESP
+		
+		MOV EAX,DWORD PTR SS:[EBP+8]
+		MOV LastDialogId,EAX
+
+		MOV EAX,DWORD PTR DS:[ECX+8]
+		TEST AL,1
+		JMP DialogReturn
 	}
 }
 
@@ -212,6 +229,9 @@ void _declspec(naked) CustomMsgHandler(){
 			MsgFloat = (float)MsgWParam;
 			if(MsgFloat < 0 || MsgFloat > 10000){RESPONSE_INVALID;}
 			ChangeMaxZoom(MsgFloat);
+			break;
+		case 0x40E: //Get last dialog id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, LastDialogId, 0);
 			break;
 			
 		//Packet Related Commands
@@ -1304,6 +1324,9 @@ void FindOffsets(){
 	byte BasePointerLocationCode[] = { 0x85, 0xC9, 0x74, 0x3D, 0x8B, 0x46 };
 	size_t BasePointerLocationCodeSize = 6;
 
+	byte DialogCode[] = { 0x55, 0x8B, 0xEC, 0x8B, 0x41, 0x08, 0xA8, 0x01, 0x75, 0x24 };
+	size_t DialogCodeSize = 10;
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, AgentBaseCodeSize)){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1384,6 +1407,10 @@ void FindOffsets(){
 		if(!memcmp(start, BasePointerLocationCode, BasePointerLocationCodeSize)){
 			BasePointerLocation = (byte*)(*(dword*)(start-4));
 		}
+		if(!memcmp(start, DialogCode, DialogCodeSize)){
+			DialogStart = start;
+			DialogReturn = DialogStart+8;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1406,7 +1433,8 @@ void FindOffsets(){
 			LoggedInLocation &&
 			NameLocation &&
 			DeadLocation &&
-			BasePointerLocation){
+			BasePointerLocation &&
+			DialogStart){
 			return;
 		}
 		start++;
@@ -1566,6 +1594,16 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("BasePointerLocation");
 				return false;
 			}
+			if(!DialogStart){
+				InjectErr("DialogStart");
+				return false;
+			}else{
+				DWORD dwOldProtection;
+				VirtualProtect(DialogStart, 8, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(DialogStart, 0x90, 8);
+				VirtualProtect(DialogStart, 8, dwOldProtection, NULL);
+				WriteJMP(DialogStart, (byte*)DialogHook);
+			}
 			
 			/*
 			AllocConsole();
@@ -1599,6 +1637,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("NameLocation=0x%06X\n", NameLocation);
 			printf("DeadLocation=0x%06X\n", DeadLocation);
 			printf("BasePointerLocation=0x%06X\n", BasePointerLocation);
+			printf("DialogStart=0x%06X\n", DialogStart);
+			printf("DialogReturn=0x%06X\n", DialogReturn);
 			*/
 			break;
 
