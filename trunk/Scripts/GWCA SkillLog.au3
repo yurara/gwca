@@ -66,7 +66,7 @@ EndFunc
 
 Func SkillCancelCallback($hwnd, $msg, $wparam, $lparam)
 	If $bLog Then
-		_LogAdd("Id "&$wparam&" cancelled "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
+		_LogAdd("Id "&Number($wparam)&" cancelled "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
 	EndIf
 EndFunc
 

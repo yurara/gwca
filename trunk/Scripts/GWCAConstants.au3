@@ -161,4 +161,28 @@ Func MoveItemById($itemId, $newBag, $newSlot)
 	Cmd($CA_MOVEITEM, $newBag, $newSlot)
 EndFunc
 
+Func PickupItems($iItems = -1)
+	Local $iItemsPicked = 0
+
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+	Do
+		If $aItem[0] = 0 Then ExitLoop
+
+		Cmd($CA_PICKUPITEM, $aItem[0])
+		Do
+			Sleep(500)
+			CmdCB($CA_GETAGENTEXIST, $aItem[0])
+		Until $cbVar[0] = 0
+
+		$iItemsPicked += 1
+		$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+	Until $aItem[0] = 0 OR $iItemsPicked = $iItems
+
+	$cbType = $oldCbType
+EndFunc
+
 ; END OF FILE
