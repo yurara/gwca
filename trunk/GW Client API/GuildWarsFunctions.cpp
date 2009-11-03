@@ -225,6 +225,12 @@ void ReturnToOutpost(){
 	SendPacket(newPak);
 }
 
+void AcceptAllItems(long bagId){
+	NEWPAK(6b,08);
+	newPak->Set<long>(4, bagId);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

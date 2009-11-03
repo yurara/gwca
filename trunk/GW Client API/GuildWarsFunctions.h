@@ -32,6 +32,7 @@ void IdentifyItem(long idKit, long itemId);
 void ChangeGold(long goldSelf, long goldStorage);
 void MoveItem(long itemId, long bagId, long slot);
 void ReturnToOutpost();
+void AcceptAllItems(long bagId);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

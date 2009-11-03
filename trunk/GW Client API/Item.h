@@ -90,6 +90,22 @@ public:
 		Item* pItem = pItems[(iSlot - 1)];
 		return pItem;
 	}
+
+	Item* GetItemPtr(long itemId){
+		for(int i = 1;i < 5;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->id == itemId){ return pCurrentItem; }
+			}
+		}
+		return NULL;
+	}
 };
 
 #endif
