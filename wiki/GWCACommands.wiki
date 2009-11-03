@@ -319,6 +319,12 @@ Item related commands:
 
   * CA_USEITEMBYID (0x528): Parameter = item id. Uses the item specified.
 
+  * CA_DROPITEM (0x529): Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all.
+
+  * CA_DROPITEMBYID (0x52A): Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all.
+
+  * CA_ACCEPTALLITEMS (0x52B): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
+
 
 Title related commands:
 
