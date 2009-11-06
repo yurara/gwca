@@ -61,6 +61,8 @@ General commands:
 
   * CA_GETLASTDIALOGID (0x40E): No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_DIALOG.
 
+  * CA_SETENGINEHOOK (0x40F): Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this!
+
 
 Action-related commands:
 
