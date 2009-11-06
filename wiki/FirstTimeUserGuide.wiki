@@ -20,7 +20,7 @@ Download the latest source. This can be found by going to the Downloads tab and 
 
 Un-pack the archive and open the solution by double-clicking `GW Client API.sln`. Now switch the compile mode from `Debug` to `Release` and `Build Solution`.
 
-A few warnings should appear - but no errors! When compiled, locate the file `GWCliAPI.dll` and do the same procedure as above, moving it to your Guild Wars folder.
+A few warnings should appear - but no errors! When compiled, locate the file `Graphics.dll` and do the same procedure as above, moving it to your Guild Wars folder.
 
 ==How do I use GWCA now?==
 A good idea would be to download all of the example scripts from [http://code.google.com/p/gwca/source/browse/#svn/trunk/Scripts]. Remember also to get `new list.txt` and `gwca-skillset.ini` - otherwise the Skill Log and Interrupt Bot will not function optimally.
