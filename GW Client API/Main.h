@@ -53,6 +53,8 @@ void UseHero2Skill(long SkillNumber, long Target);
 void UseHero3Skill(long SkillNumber, long Target);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
+void SetEngineHook(int Enable);
+void WriteJMP(byte* location, byte* newFunction);
 
 #define RESPONSE_INVALID	break //PostMessage((HWND)MsgLParam, 0x500, -1, -1);
 
