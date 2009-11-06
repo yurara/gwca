@@ -40,6 +40,7 @@ byte* BasePointerLocation = NULL;
 byte* MapIdLocation = NULL;
 byte* DialogStart = NULL;
 byte* DialogReturn = NULL;
+byte* EngineStart = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -54,6 +55,7 @@ long TmpVariable = NULL;
 
 long SellSessionId = NULL;
 long LastDialogId = 0;
+byte EngineHookSave[32];
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -138,6 +140,11 @@ void _declspec(naked) DialogHook(){
 		TEST AL,1
 		JMP DialogReturn
 	}
+}
+
+void _declspec(naked) EngineHook(){
+	Sleep(100);
+	_asm RET
 }
 
 void _declspec(naked) CustomMsgHandler(){
@@ -232,6 +239,9 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x40E: //Get last dialog id : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, LastDialogId, 0);
+			break;
+		case 0x40F: //Enable or disable graphics rendering : No return
+			SetEngineHook(MsgWParam);
 			break;
 			
 		//Packet Related Commands
@@ -1152,6 +1162,21 @@ void ChangeMaxZoom(float fZoom){
 	VirtualProtect(MaxZoomStill, sizeof(float), dwOldProtection, NULL);
 }
 
+void SetEngineHook(int Enable){
+	if(Enable){
+		DWORD dwOldProtection;
+		VirtualProtect(EngineStart, 2, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+		memset(EngineStart, 0x90, 2);
+		VirtualProtect(EngineStart, 2, dwOldProtection, NULL);
+		WriteJMP(EngineStart+0x13, (byte*)EngineHook);
+	}else{
+		DWORD dwOldProtection;
+		VirtualProtect(EngineStart, 32, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+		memcpy(EngineStart, EngineHookSave, 32);
+		VirtualProtect(EngineStart, 32, dwOldProtection, NULL);
+	}
+}
+
 void SendPacket(CPacket* pak){
 	if(WaitForSingleObject(PacketMutex, 1000) == WAIT_TIMEOUT) return;
 	PacketQueue.push_back(pak);
@@ -1348,6 +1373,9 @@ void FindOffsets(){
 	byte DialogCode[] = { 0x55, 0x8B, 0xEC, 0x8B, 0x41, 0x08, 0xA8, 0x01, 0x75, 0x24 };
 	size_t DialogCodeSize = 10;
 
+	byte EngineCode[] = { 0x53, 0x56, 0xDF, 0xE0, 0xF6, 0xC4, 0x41 };
+	size_t EngineCodeSize = 7;
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, AgentBaseCodeSize)){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1432,6 +1460,10 @@ void FindOffsets(){
 			DialogStart = start;
 			DialogReturn = DialogStart+8;
 		}
+		if(!memcmp(start, EngineCode, EngineCodeSize)){
+			EngineStart = start+0x65;
+			memcpy(EngineHookSave, EngineStart, 0x20);
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1455,7 +1487,8 @@ void FindOffsets(){
 			NameLocation &&
 			DeadLocation &&
 			BasePointerLocation &&
-			DialogStart){
+			DialogStart &&
+			EngineStart){
 			return;
 		}
 		start++;
@@ -1625,6 +1658,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				VirtualProtect(DialogStart, 8, dwOldProtection, NULL);
 				WriteJMP(DialogStart, (byte*)DialogHook);
 			}
+			if(!EngineStart){
+				InjectErr("EngineStart");
+				return false;
+			}
 			
 			/*
 			AllocConsole();
@@ -1660,6 +1697,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("BasePointerLocation=0x%06X\n", BasePointerLocation);
 			printf("DialogStart=0x%06X\n", DialogStart);
 			printf("DialogReturn=0x%06X\n", DialogReturn);
+			printf("EngineStart=0x%06X\n", EngineStart);
 			*/
 			break;
 
