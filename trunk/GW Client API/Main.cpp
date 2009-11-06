@@ -364,20 +364,20 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x428: //Use hero 1 skill : No return
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
 			if(MsgLParam == -2){MsgLParam = myId;}
-			if(Agents[MsgLParam]==NULL){RESPONSE_INVALID;}
-			UseHero1Skill(MsgWParam-1, MsgLParam);
+			if(Agents[MsgLParam]==NULL && MsgLParam!=0){RESPONSE_INVALID;}
+			UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4), MsgWParam-1, MsgLParam);
 			break;
 		case 0x429: //Use hero 2 skill : No return
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
 			if(MsgLParam == -2){MsgLParam = myId;}
-			if(Agents[MsgLParam]==NULL){RESPONSE_INVALID;}
-			UseHero2Skill(MsgWParam-1, MsgLParam);
+			if(Agents[MsgLParam]==NULL && MsgLParam!=0){RESPONSE_INVALID;}
+			UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x28), MsgWParam-1, MsgLParam);
 			break;
 		case 0x42A: //Use hero 3 skill : No return
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
 			if(MsgLParam == -2){MsgLParam = myId;}
-			if(Agents[MsgLParam]==NULL){RESPONSE_INVALID;}
-			UseHero3Skill(MsgWParam-1, MsgLParam);
+			if(Agents[MsgLParam]==NULL && MsgLParam!=0){RESPONSE_INVALID;}
+			UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4C), MsgWParam-1, MsgLParam);
 			break;
 		case 0x42B: //Write status about Bot Miss : No return
 			switch(MsgWParam){
@@ -412,17 +412,17 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x42F: //Command hero 1 to location : No return
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
-			CommandHero(0x1A, MsgFloat, MsgFloat2);
+			CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x4), MsgFloat, MsgFloat2);
 			break;
 		case 0x430: //Command hero 2 to location : No return
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
-			CommandHero(0x1B, MsgFloat, MsgFloat2);
+			CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x28), MsgFloat, MsgFloat2);
 			break;
 		case 0x431: //Command hero 3 to location : No return
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
-			CommandHero(0x1C, MsgFloat, MsgFloat2);
+			CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x4C), MsgFloat, MsgFloat2);
 			break;
 		case 0x432: //Command all to location : No return
 			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
@@ -1111,28 +1111,10 @@ void TargetCalledTarget(){
 	}
 }
 
-void UseHero1Skill(long SkillNumber, long Target){
+void UseHeroSkill(long HeroId, long SkillNumber, long Target){
 	_asm {
 		MOV EDX,SkillNumber
-		MOV ECX,0x1A
-		PUSH Target
-		CALL HeroSkillFunction
-	}
-}
-
-void UseHero2Skill(long SkillNumber, long Target){
-	_asm {
-		MOV EDX,SkillNumber
-		MOV ECX,0x1B
-		PUSH Target
-		CALL HeroSkillFunction
-	}
-}
-
-void UseHero3Skill(long SkillNumber, long Target){
-	_asm {
-		MOV EDX,SkillNumber
-		MOV ECX,0x1C
+		MOV ECX,HeroId
 		PUSH Target
 		CALL HeroSkillFunction
 	}

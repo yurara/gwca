@@ -200,6 +200,9 @@ public:
 	dword MerchantItems(){
 		return *(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x24);
 	}
+	dword HeroesStruct(){
+		return *(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x520);
+	}
 };
 
 #endif
