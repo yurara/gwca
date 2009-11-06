@@ -849,8 +849,9 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x518: //Identify item by indexes : No return
 			MsgInt = MyItemManager->FindIdKit();
-			if(!MsgInt){break;}
-			IdentifyItem(MsgInt, MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			MsgInt2 = MyItemManager->GetItemId(MsgWParam, MsgLParam);
+			if(!MsgInt || !MsgInt2){break;}
+			IdentifyItem(MsgInt, MsgInt2);
 			break;
 		case 0x519: //Identify item by item id : No return
 			MsgInt = MyItemManager->FindIdKit();
@@ -888,8 +889,9 @@ void _declspec(naked) CustomMsgHandler(){
 			ChangeGold(MsgInt, MsgInt2);
 			break;
 		case 0x51C: //Sell item by indexes : No return
-			if(!SellSessionId){break;}
-			SellItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			MsgInt = MyItemManager->GetItemId(MsgWParam, MsgLParam);
+			if(!SellSessionId || !MsgInt){break;}
+			SellItem(MsgInt);
 			break;
 		case 0x51D: //Sell item by item id : No return
 			if(!SellSessionId){break;}
@@ -909,6 +911,7 @@ void _declspec(naked) CustomMsgHandler(){
 			}
 			break;
 		case 0x521: //Move the item specified by 0x520 : No return
+			if(!MoveItemId){break;}
 			MoveItem(MoveItemId, MyItemManager->GetBagPtr(MsgWParam)->id, (MsgLParam - 1));
 			break;
 		case 0x522: //Get backpack item rarity and quantity : Return byte & byte
@@ -932,7 +935,9 @@ void _declspec(naked) CustomMsgHandler(){
 				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
 			break;
 		case 0x527: //Use item by indexes : No return
-			UseItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			MsgInt = MyItemManager->GetItemId(MsgWParam, MsgLParam);
+			if(!MsgInt){break;}
+			UseItem(MsgInt);
 			break;
 		case 0x528: //Use item by item id : No return
 			UseItem(MsgWParam);
@@ -950,7 +955,7 @@ void _declspec(naked) CustomMsgHandler(){
 			DropItem(MsgWParam, MsgLParam);
 			break;
 		case 0x52B: //Accept all unclaimed items : No return
-			if(!MyItemManager->GetBagPtr(7)){RESPONSE_INVALID;}
+			if(!MyItemManager->GetBagPtr(7)){break;}
 			AcceptAllItems(MyItemManager->GetBagPtr(7)->id);
 			break;
 
