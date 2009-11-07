@@ -921,26 +921,31 @@ void _declspec(naked) CustomMsgHandler(){
 			}
 			break;
 		case 0x521: //Move the item specified by 0x520 : No return
-			if(!MoveItemId){break;}
+			if(!MoveItemId){RESPONSE_INVALID;}
 			MoveItem(MoveItemId, MyItemManager->GetBagPtr(MsgWParam)->id, (MsgLParam - 1));
 			break;
 		case 0x522: //Get backpack item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(1, MsgWParam)){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(1, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(1, MsgWParam)->quantity);
 			break;
 		case 0x523: //Get belt pouch item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(2, MsgWParam)){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(2, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(2, MsgWParam)->quantity);
 			break;
 		case 0x524: //Get bag 1 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(3, MsgWParam)){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(3, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(3, MsgWParam)->quantity);
 			break;
 		case 0x525: //Get bag 2 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(4, MsgWParam)){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(4, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(4, MsgWParam)->quantity);
 			break;
 		case 0x526: //Get equipment pack item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(5, MsgWParam)){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(5, MsgWParam)->extraItemInfo->rarity,
 				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
 			break;
@@ -967,6 +972,38 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x52B: //Accept all unclaimed items : No return
 			if(!MyItemManager->GetBagPtr(7)){break;}
 			AcceptAllItems(MyItemManager->GetBagPtr(7)->id);
+			break;
+		case 0x52C: //Get storage pane 1 item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(8, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
+			break;
+		case 0x52D: //Get storage pane 2 item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(9, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
+			break;
+		case 0x52E: //Get storage pane 3 item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(10, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
+			break;
+		case 0x52F: //Get storage pane 4 item id : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(11, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
+			break;
+		case 0x530: //Get storage pane 1 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(8, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(8, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(8, MsgWParam)->quantity);
+			break;
+		case 0x531: //Get storage pane 2 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(9, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(9, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(9, MsgWParam)->quantity);
+			break;
+		case 0x532: //Get storage pane 3 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(10, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(10, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(10, MsgWParam)->quantity);
+			break;
+		case 0x533: //Get storage pane 4 item rarity and quantity : Return byte & byte
+			if(!MyItemManager->GetItemPtr(11, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(11, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(11, MsgWParam)->quantity);
 			break;
 
 		//Title related commands
