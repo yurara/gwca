@@ -327,6 +327,22 @@ Item related commands:
 
   * CA_ACCEPTALLITEMS (0x52B): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
 
+  * CA_GETSTORAGE1ITEMID (0x52C): Parameter = item slot. Returns item id and model id of the specified slot.
+
+  * CA_GETSTORAGE2ITEMID (0x52D): Same procedure as CA_GETSTORAGE1ITEMID.
+
+  * CA_GETSTORAGE3ITEMID (0x52E): Same procedure as CA_GETSTORAGE1ITEMID.
+
+  * CA_GETSTORAGE4ITEMID (0x52F): Same procedure as CA_GETSTORAGE1ITEMID.
+
+  * CA_GETSTORAGE1ITEMINFO (0x530): Parameter = item slot. Returns integer with item rarity and integer with quantity.
+
+  * CA_GETSTORAGE2ITEMINFO (0x531): Same procedure as CA_GETSTORAGE1ITEMINFO.
+
+  * CA_GETSTORAGE3ITEMINFO (0x532): Same procedure as CA_GETSTORAGE1ITEMINFO.
+
+  * CA_GETSTORAGE4ITEMINFO (0x533): Same procedure as CA_GETSTORAGE1ITEMINFO.
+
 
 Title related commands:
 
