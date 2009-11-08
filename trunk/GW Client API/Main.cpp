@@ -1046,6 +1046,29 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x55C: //Get current Kurzick Title Track: Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleTrackKurzick(), 0);
 			break;
+
+		//More general commands
+		case 0x580: //Add hero to party: No Return
+			AddHero(MsgWParam);
+			break;
+		case 0x581: //Kick hero from party : No Return
+			KickHero(MsgWParam);
+			break;
+		case 0x582: //Switch between NM and HM: No Return
+			SwitchMode(MsgWParam);
+			break;
+		case 0x583: //Add henchman to party : No Return
+			AddNpc(MsgWParam);
+			break;
+		case 0x584: //Kick henchman from party : No Return
+			KickNpc(MsgWParam);
+			break;
+		case 0x585: //Travel to Guild Hall : No return
+			TravelGH();
+			break;
+		case 0x586: //Leave Guild Hall : No return
+			LeaveGH();
+			break;
 	}
 	
 	_asm {

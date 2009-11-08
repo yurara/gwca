@@ -33,6 +33,13 @@ void ChangeGold(long goldSelf, long goldStorage);
 void MoveItem(long itemId, long bagId, long slot);
 void ReturnToOutpost();
 void AcceptAllItems(long bagId);
+void AddHero(long HeroId);
+void KickHero(long HeroId);
+void SwitchMode(bool NMHM = 1);
+void AddNpc(long NpcId);
+void KickNpc(long NpcId);
+void TravelGH();
+void LeaveGH();
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);
