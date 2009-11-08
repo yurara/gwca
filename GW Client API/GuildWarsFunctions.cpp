@@ -231,6 +231,52 @@ void AcceptAllItems(long bagId){
 	SendPacket(newPak);
 }
 
+void AddHero(long HeroId){
+	NEWPAK(16,08);
+	newPak->Set<long>(4, HeroId);
+	SendPacket(newPak);
+}
+
+void KickHero(long HeroId){
+	NEWPAK(17,08);
+	newPak->Set<long>(4, HeroId);
+	SendPacket(newPak);
+}
+
+void SwitchMode(bool NMHM){
+	NEWPAK(93,08);
+	newPak->Set<long>(4, NMHM);
+	SendPacket(newPak);
+}
+
+void AddNpc(long NpcId){
+	NEWPAK(97,08);
+	newPak->Set<long>(4, NpcId);
+	SendPacket(newPak);
+}
+
+void KickNpc(long NpcId){
+	NEWPAK(a0,08);
+	newPak->Set<long>(4, NpcId);
+	SendPacket(newPak);
+}
+
+void TravelGH(){
+	NEWPAK(a8,18);
+	newPak->Set<dword>(4, *(dword*)(MySectionA->GHStruct() + 0x64));
+	newPak->Set<dword>(8, *(dword*)(MySectionA->GHStruct() + 0x68));
+	newPak->Set<dword>(12, *(dword*)(MySectionA->GHStruct() + 0x6c));
+	newPak->Set<dword>(16, *(dword*)(MySectionA->GHStruct() + 0x70));
+	newPak->Set<dword>(20, 1);
+	SendPacket(newPak);
+}
+
+void LeaveGH(){
+	NEWPAK(aa,08);
+	newPak->Set<long>(4, 1);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
