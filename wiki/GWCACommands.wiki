@@ -371,3 +371,20 @@ Title related commands:
   * CA_GETTITLELUXON (0x55B): No parameters. Returns integer with title progress.
 
   * CA_GETTITLEKURZICK (0x55C): No parameters. Returns integer with title progress.
+
+
+More general commands:
+
+  * CA_ADDHERO (0x580): Parameter = hero id. Adds hero to the party.
+
+  * CA_KICKHERO (0x581): Parameter = hero id. Kicks hero from the party.
+
+  * CA_SWITCHMODE (0x582): Parameter = boolean to set HM or NM. HM = 1, NM = 0.
+
+  * CA_ADDNPC (0x583): Parameter = henchman id according to Party Search list. Adds henchman to the party.
+
+  * CA_KICKNPC (0x584): Parameter = henchman id. Kicks henchman from the party.
+
+  * CA_TRAVELGH (0x585): No parameters. Travels to your Guild Hall.
+
+  * CA_LEAVEGH (0x586): No parameters. Leaves your Guild Hall.
