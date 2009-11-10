@@ -84,6 +84,7 @@ public:
 
 	Item* GetItemPtr(int iBag, int iSlot){
 		Bag* pBag = GetBagPtr(iBag);
+		if(!pBag){ return 0; }
 		if(iSlot > pBag->slots){ return 0; }
 
 		Item** pItems = pBag->itemArray;

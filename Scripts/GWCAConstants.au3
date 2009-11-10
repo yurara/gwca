@@ -178,19 +178,21 @@ Func PickupItems($iItems = -1, $fMaxDistance = 1012)
 
 	$cbType = "int"
 
-	$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+	$tDeadlock = TimerInit()
 	Do
-		If $aItem[0] = 0 OR _IntToFloat($aItem[1]) > $fMaxDistance Then ExitLoop
+		$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+		If $aItem[0] = 0 OR _IntToFloat($aItem[1]) > $fMaxDistance OR TimerDiff($tDeadlock) > 30000 Then ExitLoop
 
 		Cmd($CA_PICKUPITEM, $aItem[0])
+		$tDeadlock = TimerInit()
 		Do
 			Sleep(500)
 			CmdCB($CA_GETAGENTEXIST, $aItem[0])
+			If TimerDiff($tDeadlock) > 5000 Then ContinueLoop 2
 		Until $cbVar[0] = 0
 
 		$iItemsPicked += 1
-		$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
-	Until $aItem[0] = 0 OR $iItemsPicked = $iItems
+	Until $iItemsPicked = $iItems
 
 	$cbType = $oldCbType
 EndFunc
