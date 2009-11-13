@@ -24,6 +24,8 @@ struct Bag;
 struct Item;
 struct ItemExtra;
 
+template <typename T> T ReadPtrChain(dword pBase, long pOffset1 = 0, long pOffset2 = 0, long pOffset3 = 0, long pOffset4 = 0);
+
 #define maxAgent *(unsigned int*)AgentArrayMaxPtr
 #define mapLoading *(long*)(CurrentTarget+0x410)
 #define myId *(long*)(AgentArrayPtr-0x54)

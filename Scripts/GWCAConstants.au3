@@ -60,6 +60,7 @@ Global $cbType = "int" ;What to read the callback values as
 Global $cbVar[2] ;Array for callback wParam and lParam
 Global $sGW = "Guild Wars -" ;Name of window
 Global $cGUI = 0 ;Init GUI hwnd var
+Global $bGWCA_INTERNAL = False ;Is set to True when inside a Cmd() or CmdCB() call
 
 ; FUNCTIONS
 
@@ -97,16 +98,20 @@ Func WndCallback($hwnd, $msg, $wparam, $lparam)
 EndFunc
 
 Func Cmd($uMsg, $wparam = 0, $lparam = 0)
+	$bGWCA_INTERNAL = True
 	$cbVar[0] = ""
 	$cbVar[1] = ""
 	DllCall("user32.dll", "lparam", "PostMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
+	$bGWCA_INTERNAL = False
 EndFunc
 
 Func CmdCB($uMsg, $wparam = 0)
+	$bGWCA_INTERNAL = True
 	$cbVar[0] = ""
 	$cbVar[1] = ""
 	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $cGUI)
 	If $cbVar[0] = "" AND $cbVar[1] = "" Then SetError(-1)
+	$bGWCA_INTERNAL = False
 	Return $cbVar
 EndFunc
 

@@ -117,94 +117,94 @@ public:
 		return *(dword*)(BasePointerLocation);
 	}
 	dword SkillbarPtr(){
-		return (dword)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x68C);
+		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x68C);
 	}
 	long CurrentBalthFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x724);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x724);
 	}
 	long MaxBalthFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x74C);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x74C);
 	}
 	long CurrentKurzickFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6E4);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x6E4);
 	}
 	long MaxKurzickFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x744);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x744);
 	}
 	long CurrentLuxonFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x6f4);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x6F4);
 	}
 	long MaxLuxonFaction(){
-		return *(long*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x748);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x748);
 	}
 	long MoneySelf(){
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8) + 0x7C);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x40, 0xF8, 0x7C);
 	}
 	long MoneyStorage(){
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8) + 0x80);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x40, 0xF8, 0x80);
 	}
 	Bag** BagArrayPointer(){
-		return (Bag**)*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x40) + 0xF8);
+		return ReadPtrChain<Bag**>(BasePointer(), 0x18, 0x40, 0xF8);
 	}
 	long TitleTreasure(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x70C);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x70C);
 	}
 	long TitleLucky(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x25C);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x25C);
 	}
 	long TitleUnlucky(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x284);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x284);
 	}
 	long TitleWisdom(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x734);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x734);
 	}
 	long TitleDrunkard(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x11c);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x11C);
 	}
     long TitleSunspear(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x2ac);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x2AC);
 	}
     long TitleVanguard(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x644);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x644);
 	}
     long TitleNorn(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x66c);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x66C);
 	}
     long TitleAsura(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x5f4);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x5F4);
 	}
     long TitleDeldrimor(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x61c);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x61C);
 	}
     long TitleNorthMastery(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x694);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x694);
     }
     long TitleLightbringer(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x324);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x324);
 	}
 	long TitleSweet(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x554);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x554);
 	}
     long TitleParty(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x6bc);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x6BC);
 	}
     long TitleCommander(){ //credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0x374);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x374);
 	}
     long TitleTrackLuxon(){ //total points transfered to Luxon's - credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xf4);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0xF4);
 	}
     long TitleTrackKurzick(){ //total points transfered to Kurzick's - credits to ddarek
-		return *(long*)(*(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x7A4) + 0xcc);
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0xCC);
 	}
 	dword MerchantItems(){
-		return *(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x24);
+		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x24);
 	}
 	dword HeroesStruct(){
-		return *(dword*)(*(dword*)(*(dword*)(BasePointer() + 0x18) + 0x2C) + 0x520);
+		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x520);
 	}
 	dword GHStruct(){
-		return *(dword*)(*(dword*)(BasePointer() + 0x18) + 0x3C);
+		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x3C);
 	}
 };
 
