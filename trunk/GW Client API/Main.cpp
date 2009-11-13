@@ -1700,7 +1700,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				return false;
 			}
 			
-			
+			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
 			FILE *fh;
@@ -1736,7 +1736,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("DialogStart=0x%06X\n", DialogStart);
 			printf("DialogReturn=0x%06X\n", DialogReturn);
 			printf("EngineStart=0x%06X\n", EngineStart);
-			
+			*/
 			break;
 
 		case DLL_PROCESS_DETACH:
