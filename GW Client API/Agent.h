@@ -56,10 +56,12 @@ struct Agent {
 	byte CombatMode; //Kinda dodgy, don't rely on it too much.
 	byte unknown17[20];
 	long InSpiritRange; //Tells if agent is within spirit range of you. Doesn't work anymore?
-	byte unknown18[20];
+	byte unknown18[12];
+	long LoginNumber; //Unique number in instance that only works for players
+	byte unknown19[4];
 	float ModelMode; //Float for the current mode the agent is in. Varies a lot
 	long ModelAnimation; //Id of the current animation
-	byte unknown19[32];
+	byte unknown20[32];
 	word Allegiance; //0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet
 	word WeaponType; //1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand
 	//Offset +0x1B4
