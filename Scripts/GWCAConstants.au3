@@ -44,7 +44,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
 
-Global Enum $BAG_BACKPACK, $BAG_BELTPOUCH, $BAG_BAG1, $BAG_BAG2, $BAG_EQUIPMENTPACK, $BAG_UNCLAIMEDITEMS = 7, $BAG_STORAGE1, $BAG_STORAGE2, _
+Global Enum $BAG_BACKPACK = 1, $BAG_BELTPOUCH, $BAG_BAG1, $BAG_BAG2, $BAG_EQUIPMENTPACK, $BAG_UNCLAIMEDITEMS = 7, $BAG_STORAGE1, $BAG_STORAGE2, _
 			$BAG_STORAGE3, $BAG_STORAGE4, $BAG_STORAGE5, $BAG_STORAGE6, $BAG_STORAGE7, $BAG_STORAGE8, $BAG_STORAGEANNIVERSARY
 
 Global Enum $HERO_NORGU = 1, $HERO_GOREN, $HERO_TAHLKORA, $HERO_MASTEROFWHISPERS, $HERO_ACOLYTEJIN, $HERO_KOSS, $HERO_DUNKORO, $HERO_ACOLYTESOUSUKE, $HERO_MELONNI, _
@@ -206,7 +206,7 @@ Func GetItemId($iBag, $iSlot)
 
 	$cbType = "int"
 
-	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_SetBag, $iBag)
 	CmdCB($CA_GetItemId, $iSlot)
 
 	$cbType = $oldCbType
@@ -219,7 +219,7 @@ Func GetItemInfo($iBag, $iSlot)
 
 	$cbType = "int"
 
-	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_SetBag, $iBag)
 	CmdCB($CA_GetItemInfo, $iSlot)
 
 	$cbType = $oldCbType
@@ -232,7 +232,7 @@ Func GetItemLastModifier($iBag, $iSlot)
 
 	$cbType = "int"
 
-	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_SetBag, $iBag)
 	CmdCB($CA_GetItemLastModifier, $iSlot)
 
 	$cbType = $oldCbType
