@@ -17,6 +17,8 @@ struct ItemExtra {
 	byte rarity;
 	byte unknown1[3];
 	byte modifier;
+	byte unknown2[13];
+	byte lastModifier;
 };
 
 struct Item {
