@@ -313,7 +313,7 @@ Item related commands:
 
   * CA_AcceptAllItems (0x524): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
 
-  * CA_GetItemLastModifier (0x525): Parameter = item slot. Returns integer with the last modifier of the item and wchar_t* with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized.
+  * CA_GetItemLastModifier (0x525): Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized.
 
 Title related commands:
 
