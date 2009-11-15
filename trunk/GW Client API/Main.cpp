@@ -52,6 +52,7 @@ HWND ScriptHwnd = NULL;
 wchar_t* pName;
 long MoveItemId = NULL;
 long TmpVariable = NULL;
+long CurrentBag = 1;
 
 long SellSessionId = NULL;
 long LastDialogId = 0;
@@ -839,36 +840,28 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x511: //Get bag size : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetBagSize(MsgWParam), 0);
 			break;
-		case 0x512: //Get backpack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(1, MsgWParam), MyItemManager->GetItemModelId(1, MsgWParam));
+		case 0x512: //Select bag to work with : No return
+			CurrentBag = MsgWParam;
 			break;
-		case 0x513: //Get belt pouch item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(2, MsgWParam), MyItemManager->GetItemModelId(2, MsgWParam));
+		case 0x513: //Get current bag item id : Return int/long
+			if(!CurrentBag){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(CurrentBag, MsgWParam), MyItemManager->GetItemModelId(CurrentBag, MsgWParam));
 			break;
-		case 0x514: //Get bag 1 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(3, MsgWParam), MyItemManager->GetItemModelId(3, MsgWParam));
-			break;
-		case 0x515: //Get bag 2 pack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(4, MsgWParam), MyItemManager->GetItemModelId(4, MsgWParam));
-			break;
-		case 0x516: //Get equipment pack item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(5, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
-			break;
-		case 0x517: //Get first ID kit item id : Return int/long & int/long
+		case 0x514: //Get first ID kit item id : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindIdKit(), 0);
 			break;
-		case 0x518: //Identify item by indexes : No return
+		case 0x515: //Identify item by indexes : No return
 			MsgInt = MyItemManager->FindIdKit();
 			MsgInt2 = MyItemManager->GetItemId(MsgWParam, MsgLParam);
 			if(!MsgInt || !MsgInt2){break;}
 			IdentifyItem(MsgInt, MsgInt2);
 			break;
-		case 0x519: //Identify item by item id : No return
+		case 0x516: //Identify item by item id : No return
 			MsgInt = MyItemManager->FindIdKit();
 			if(!MsgInt){break;}
 			IdentifyItem(MsgInt, MsgWParam);
 			break;
-		case 0x51A: //Deposit gold in storage : No return
+		case 0x517: //Deposit gold in storage : No return
 			MsgInt = MySectionA->MoneySelf();
 			MsgInt2 = MySectionA->MoneyStorage();
 			if(MsgWParam == -1){
@@ -881,7 +874,7 @@ void _declspec(naked) CustomMsgHandler(){
 			}
 			ChangeGold(MsgInt, MsgInt2);
 			break;
-		case 0x51B: //Withdraw gold from storage : No return
+		case 0x518: //Withdraw gold from storage : No return
 			MsgInt = MySectionA->MoneySelf();
 			MsgInt2 = MySectionA->MoneyStorage();
 			if(MsgWParam == -1){
@@ -898,114 +891,69 @@ void _declspec(naked) CustomMsgHandler(){
 			}
 			ChangeGold(MsgInt, MsgInt2);
 			break;
-		case 0x51C: //Sell item by indexes : No return
+		case 0x519: //Sell item by indexes : No return
 			MsgInt = MyItemManager->GetItemId(MsgWParam, MsgLParam);
 			if(!SellSessionId || !MsgInt){break;}
 			SellItem(MsgInt);
 			break;
-		case 0x51D: //Sell item by item id : No return
+		case 0x51A: //Sell item by item id : No return
 			if(!SellSessionId){break;}
 			SellItem(MsgWParam);
 			break;
-		case 0x51E: //Buy ID kit : No return
+		case 0x51B: //Buy ID kit : No return
 			if(!MySectionA->MerchantItems()){break;}
 			BuyItem(*(long*)(MySectionA->MerchantItems() + 0x10), 1, 100);
 			break;
-		case 0x51F: //Buy superior ID kit : No return
+		case 0x51C: //Buy superior ID kit : No return
 			if(!MySectionA->MerchantItems()){break;}
 			BuyItem(*(long*)(MySectionA->MerchantItems() + 0x14), 1, 500);
 			break;
-		case 0x520: //Prepare MoveItem by setting item id (internal) : No return
+		case 0x51D: //Prepare MoveItem by setting item id (internal) : No return
 			if(MsgWParam && MsgLParam){
 				MoveItemId = MyItemManager->GetItemId(MsgWParam, MsgLParam);
 			}else{
 				MoveItemId = MsgWParam;
 			}
 			break;
-		case 0x521: //Move the item specified by 0x520 : No return
+		case 0x51E: //Move the item specified by 0x520 : No return
 			if(!MoveItemId){RESPONSE_INVALID;}
 			MoveItem(MoveItemId, MyItemManager->GetBagPtr(MsgWParam)->id, (MsgLParam - 1));
 			break;
-		case 0x522: //Get backpack item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(1, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(1, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(1, MsgWParam)->quantity);
+		case 0x51F: //Get current bag item rarity and quantity : Return byte & byte
+			if(!CurrentBag){break;}
+			if(!MyItemManager->GetItemPtr(CurrentBag, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->quantity);
 			break;
-		case 0x523: //Get belt pouch item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(2, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(2, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(2, MsgWParam)->quantity);
-			break;
-		case 0x524: //Get bag 1 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(3, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(3, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(3, MsgWParam)->quantity);
-			break;
-		case 0x525: //Get bag 2 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(4, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(4, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(4, MsgWParam)->quantity);
-			break;
-		case 0x526: //Get equipment pack item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(5, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(5, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(5, MsgWParam)->quantity);
-			break;
-		case 0x527: //Use item by indexes : No return
+		case 0x520: //Use item by indexes : No return
 			MsgInt = MyItemManager->GetItemId(MsgWParam, MsgLParam);
 			if(!MsgInt){break;}
 			UseItem(MsgInt);
 			break;
-		case 0x528: //Use item by item id : No return
+		case 0x521: //Use item by item id : No return
 			UseItem(MsgWParam);
 			break;
-		case 0x529: //Drop item by indexes : No return
+		case 0x522: //Drop item by indexes : No return
 			if(MyItemManager->GetItemPtr(MsgWParam, MsgLParam)){
 				DropItem(MyItemManager->GetItemId(MsgWParam, MsgLParam),
 					MyItemManager->GetItemPtr(MsgWParam, MsgLParam)->quantity);
 			}
 			break;
-		case 0x52A: //Drop item by id and specifying amount : No return
+		case 0x523: //Drop item by id and specifying amount : No return
 			if(MsgLParam == -1 && MyItemManager->GetItemPtr(MsgWParam)){
 				MsgLParam = MyItemManager->GetItemPtr(MsgWParam)->quantity;
 			}
 			DropItem(MsgWParam, MsgLParam);
 			break;
-		case 0x52B: //Accept all unclaimed items : No return
+		case 0x524: //Accept all unclaimed items : No return
 			if(!MyItemManager->GetBagPtr(7)){break;}
 			AcceptAllItems(MyItemManager->GetBagPtr(7)->id);
 			break;
-		case 0x52C: //Get storage pane 1 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(8, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
-			break;
-		case 0x52D: //Get storage pane 2 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(9, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
-			break;
-		case 0x52E: //Get storage pane 3 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(10, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
-			break;
-		case 0x52F: //Get storage pane 4 item id : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(11, MsgWParam), MyItemManager->GetItemModelId(5, MsgWParam));
-			break;
-		case 0x530: //Get storage pane 1 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(8, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(8, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(8, MsgWParam)->quantity);
-			break;
-		case 0x531: //Get storage pane 2 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(9, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(9, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(9, MsgWParam)->quantity);
-			break;
-		case 0x532: //Get storage pane 3 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(10, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(10, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(10, MsgWParam)->quantity);
-			break;
-		case 0x533: //Get storage pane 4 item rarity and quantity : Return byte & byte
-			if(!MyItemManager->GetItemPtr(11, MsgWParam)){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(11, MsgWParam)->extraItemInfo->rarity,
-				MyItemManager->GetItemPtr(11, MsgWParam)->quantity);
+		case 0x525: //Get current bag item last modifier and customized : Return byte & wchar_t*
+			if(!CurrentBag){break;}
+			if(!MyItemManager->GetItemPtr(CurrentBag, MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->extraItemInfo->lastModifier,
+				(LPARAM)MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->customized);
 			break;
 
 		//Title related commands
