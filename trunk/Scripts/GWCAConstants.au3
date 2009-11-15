@@ -201,4 +201,43 @@ Func PickupItems($iItems = -1, $fMaxDistance = 1012)
 	$cbType = $oldCbType
 EndFunc
 
+Func GetItemId($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemId, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
+Func GetItemInfo($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemInfo, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
+Func GetItemLastModifier($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	Cmd($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemLastModifier, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
 ; END OF FILE
