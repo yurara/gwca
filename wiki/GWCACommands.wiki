@@ -33,358 +33,329 @@ The commands follow a distinct identifier pattern because they are a custom enum
 
 General commands:
 
-  * CA_GETCURRENTTARGET (0x401): No parameters, returns an integer with the id of the current target.
+  * CA_GetCurrentTarget (0x401): No parameters, returns an integer with the id of the current target.
 
-  * CA_GETMYID (0x402): No parameters, returns an integer with the id of your own agent.
+  * CA_GetMyId (0x402): No parameters, returns an integer with the id of your own agent.
 
-  * CA_CASTING (0x403): No parameters, returns a boolean which tells whether or not you're using a skill.
+  * CA_Casting (0x403): No parameters, returns a boolean which tells whether or not you're using a skill.
 
-  * CA_SKILLRECHARGE (0x404): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
+  * CA_SkillRecharge (0x404): Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged.
 
-  * CA_SKILLADRENALINE (0x405): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
+  * CA_SkillAdrenaline (0x405): Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has.
 
-  * CA_STOREVAR (0x406): Obsolete, so don't use it.
+  * CA_StoreVar (0x406): Obsolete, so don't use it.
 
-  * CA_SETLOGANDHWND (0x407): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
+  * CA_SetLogAndHwnd (0x407): Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window.
 
-  * CA_GETAGENTANDTARGETPTR (0x408): No parameters, used for debugging purposes.
+  * CA_GetAgentAndTargetPtr (0x408): No parameters, used for debugging purposes.
 
-  * CA_GETSKILLBARSKILLID (0x409): Parameter = skillslot, obsolete.
+  * CA_GetSkillbarSkillId(0x409): Parameter = skillslot, obsolete.
 
-  * CA_GETMYMAXHP (0x40A): No parameters, returns an integer with your max hp and an integer with your current hp.
+  * CA_GetMyMaxHP (0x40A): No parameters, returns an integer with your max hp and an integer with your current hp.
 
-  * CA_GETMYMAXENERGY (0x40B): No parameters, returns an integer with your max energy and an integer with your current energy.
+  * CA_GetMyMaxEnergy (0x40B): No parameters, returns an integer with your max energy and an integer with your current energy.
 
-  * CA_GETBUILDNUMBER (0x40C): No parameters, returns an integer with the current build number of the GW client you're running.
+  * CA_GetBuildNumber (0x40C): No parameters, returns an integer with the current build number of the GW client you're running.
 
-  * CA_CHANGEMAXZOOM (0x40D): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
+  * CA_ChangeMaxZoom (0x40D): Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400.
 
-  * CA_GETLASTDIALOGID (0x40E): No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_DIALOG.
+  * CA_GetLastDialogId (0x40E): No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_Dialog.
 
-  * CA_SETENGINEHOOK (0x40F): Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this!
+  * CA_SetEngineHook (0x40F): Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this!
 
 
 Action-related commands:
 
-  * CA_ATTACK (0x410): Parameter = id of target, attacks the specified target with weapon.
+  * CA_Attack (0x410): Parameter = id of target, attacks the specified target with weapon.
 
-  * CA_MOVE (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
+  * CA_Move (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
 
-  * CA_USESKILL (0x412): Obsolete, use CA_USESKILLBARSKILL instead.
+  * CA_UseSkill (0x412): Obsolete, use CA_UseSkillbarSkill instead.
 
-  * CA_CHANGEWEAPONSET (0x413): Parameter = weapon slot, changes weapon set.
+  * CA_ChangeWeaponSet (0x413): Parameter = weapon slot, changes weapon set.
 
-  * CA_ZONEMAP (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
+  * CA_ZoneMap (0x414): Parameter = zone id, optional parameter 2 = district number, zones to the outpost/city specified and if district number is provided also attempts to enter that district.
 
-  * CA_DROPGOLD (0x415): Parameter = amount of gold, drops the gold on the ground.
+  * CA_DropGold (0x415): Parameter = amount of gold, drops the gold on the ground.
 
-  * CA_GONPC (0x416): Parameter = id of NPC, goes to specified NPC.
+  * CA_GoNpc (0x416): Parameter = id of NPC, goes to specified NPC.
 
-  * CA_GOPLAYER (0x417): Parameter = id of player, goes to specified player (for use in outposts/cities).
+  * CA_GoPlayer (0x417): Parameter = id of player, goes to specified player (for use in outposts/cities).
 
-  * CA_GOSIGNPOST (0x418): Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name).
+  * CA_GoSignpost (0x418): Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name).
 
-  * CA_USEATTACKSKILL (0x419): Obsolete, use CA_USESKILLBARATTACKSKILL instead.
+  * CA_UseAttackSkill (0x419): Obsolete, use CA_UseSkillbarAttackSkill instead.
 
-  * CA_ENTERCHALLENGE (0x41A): No parameters, enters the challenge if you're in a Challenge Mission outpost.
+  * CA_EnterChallenge (0x41A): No parameters, enters the challenge if you're in a Challenge Mission outpost.
 
-  * CA_OPENCHEST (0x41B): No parameters, opens the nearest chest if you're within 'close range'.
+  * CA_OpenChest (0x41B): No parameters, opens the nearest chest if you're within 'close range'.
 
-  * CA_SETEVENTSKILLMODE (0x41C): Obsolete, don't use it.
+  * CA_SetEventSkillMode (0x41C): Obsolete, don't use it.
 
-  * CA_USESKILLBARSKILL (0x41D): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseSkillbarSkill (0x41D): Parameter = skillslot, parameter 2 = id of target.
 
-  * CA_PICKUPITEM (0x41E): Parameter = id of item, picks up the specified item.
+  * CA_PickupItem (0x41E): Parameter = id of item, picks up the specified item.
 
-  * CA_USESKILLBARATTACKSKILL (0x41F): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseSkillbarAttackSkill (0x41F): Parameter = skillslot, parameter 2 = id of target.
 
-  * CA_DIALOG (0x420): Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by debugging the PacketSendFunction, only for very advanced users.
+  * CA_Dialog (0x420): Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId
 
-  * CA_CHANGETARGET (0x421): Parameter = id of target, changes target.
+  * CA_ChangeTarget (0x421): Parameter = id of target, changes target.
 
-  * CA_STATUSBOT (0x422): Kinda obsolete.
+  * CA_StatusBot (0x422): Kinda obsolete.
 
-  * CA_TARGETNEARESTFOE (0x423): No parameters, targets the nearest foe.
+  * CA_TargetNearestFoe (0x423): No parameters, targets the nearest foe.
 
-  * CA_TARGETNEARESTALLY (0x424): No parameters, targets the nearest ally.
+  * CA_TargetNearestAlly (0x424): No parameters, targets the nearest ally.
 
-  * CA_TARGETNEARESTITEM (0x425): No parameters, targets the nearest item/signpost/chest.
+  * CA_TargetNearestItem (0x425): No parameters, targets the nearest item/signpost/chest.
 
-  * CA_STATUSDELAY (0x426): Kinda obsolete aswell.
+  * CA_StatusDelay (0x426): Kinda obsolete aswell.
 
-  * CA_TARGETCALLEDTARGET (0x427): No parameters, targets the currently called target of the party.
+  * CA_TargetCalledTarget (0x427): No parameters, targets the currently called target of the party.
 
-  * CA_USEHERO1SKILL (0x428): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseHero1Skill (0x428): Parameter = skillslot, parameter 2 = id of target.
 
-  * CA_USEHERO2SKILL (0x429): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseHero2Skill (0x429): Parameter = skillslot, parameter 2 = id of target.
 
-  * CA_USEHERO3SKILL (0x42A): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseHero3Skill (0x42A): Parameter = skillslot, parameter 2 = id of target.
 
-  * CA_STATUSMISS (0x42B): Kinda obsolete, yay.
+  * CA_StatusMiss (0x42B): Kinda obsolete, yay.
 
-  * CA_CANCELACTION (0x42C): No parameters, cancels your current action. Just like pressing ESC.
+  * CA_CancelAction (0x42C): No parameters, cancels your current action. Just like pressing ESC.
 
-  * CA_STATUSTAB (0x42D): Yay for obsolete.
+  * CA_StatusTab (0x42D): Yay for obsolete.
 
-  * CA_GETNAMEPTR (0x42E): Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed.
+  * CA_GetNamePtr (0x42E): Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed.
 
-  * CA_COMMANDHERO1 (0x42F): Parameters = X and Y floats packed of course.
+  * CA_CommandHero1 (0x42F): Parameters = X and Y floats packed of course.
 
-  * CA_COMMANDHERO2 (0x430): Same as CA_COMMANDHERO1.
+  * CA_CommandHero2 (0x430): Same as CA_COMMANDHERO1.
 
-  * CA_COMMANDHERO3 (0x431): Same as CA_COMMANDHERO1.
+  * CA_CommandHero3 (0x431): Same as CA_COMMANDHERO1.
 
-  * CA_COMMANDALL (0x432): Same as CA_COMMANDHERO1.
+  * CA_CommandAll (0x432): Same as CA_COMMANDHERO1.
 
-  * CA_CHANGEDISTRICT (0x433): Parameter = region (0 = america, 1 = asia, 2 = europe), parameter 2 = language (experiment around with this!).
+  * CA_ChangeDistrict (0x433): Parameter = region (0 = america, 1 = asia, 2 = europe), parameter 2 = language (experiment around with this!).
 
-  * CA_RESIGN (0x434): No parameters.
+  * CA_Resign (0x434): No parameters.
 
-  * CA_RETURNTOOUTPOST (0x435): No parameters. "Presses" the Return To Outpost button after resigning.
+  * CA_ReturnToOutpost (0x435): No parameters. "Presses" the Return To Outpost button after resigning.
 
 
 Specific memory commands:
 
-  * CA_GETMAPLOADING (0x440): No parameters, returns an integer which is 0, 1 or 2.
+  * CA_GetMapLoading (0x440): No parameters, returns an integer which is 0, 1 or 2.
 
-  * CA_GETMAPID (0x441): No parameters, returns the id of the current map/zone.
+  * CA_GetMapId (0x441): No parameters, returns the id of the current map/zone.
 
-  * CA_GETPING (0x442): No parameters, returns the current ping displayed on the Performance Monitor in GW.
+  * CA_GetPing (0x442): No parameters, returns the current ping displayed on the Performance Monitor in GW.
 
-  * CA_GETLOGGEDIN (0x443): No parameters, returns boolean.
+  * CA_GetLoggedIn (0x443): No parameters, returns boolean.
 
-  * CA_GETDEAD (0x444): No parameters, returns boolean, but kinda obsolete though.
+  * CA_GetDead (0x444): No parameters, returns boolean, but kinda obsolete though.
 
-  * CA_GETBALTHFACTION (0x445): No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction.
+  * CA_GetBalthFaction (0x445): No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction.
 
-  * CA_GETKURZFACTION (0x446): No parameters, returns integer of current kurzick faction and integer of maximum kurzick faction.
+  * CA_GetKurzFaction (0x446): No parameters, returns integer of current kurzick faction and integer of maximum kurzick faction.
 
-  * CA_GETLUXONFACTION (0x447): No parameters, returns integer of current luxon faction and integer of maximum luxon faction.
+  * CA_GetLuxonFaction (0x447): No parameters, returns integer of current luxon faction and integer of maximum luxon faction.
 
-  * CA_GETTITLETREASURE (0x448): No parameters, returns integer of current treasure title.
+  * CA_GetTitleTreasure (0x448): No parameters, returns integer of current treasure title.
 
-  * CA_GETTITLELUCKY (0x449): No parameters, returns integer of current lucky title.
+  * CA_GetTitleLucky(0x449): No parameters, returns integer of current lucky title.
 
-  * CA_GETTITLEUNLUCKY (0x44A): No parameters, returns integer of current unlucky title.
+  * CA_GetTitlyUnlucky (0x44A): No parameters, returns integer of current unlucky title.
 
-  * CA_GETTITLEWISDOM (0x44B): No parameters, returns integer of current wisdom title.
+  * CA_GetTitleWisdom (0x44B): No parameters, returns integer of current wisdom title.
 
 
 Agent info commands:
 
-  * CA_GETAGENTEXIST (0x450): Parameter = id of agent/target, returns boolean.
+  * CA_GetAgentExist (0x450): Parameter = id of agent/target, returns boolean.
 
-  * CA_GETPROFESSIONS (0x451): Parameter = id of agent, returns integer of primary and integer of secondary profession.
+  * CA_GetProfessions (0x451): Parameter = id of agent, returns integer of primary and integer of secondary profession.
 
-  * CA_GETPLAYERNUMBER (0x452): Parameter = id of agent, returns integer of player number or, if the agent is an NPC/monster, the 'Model number'.
+  * CA_GetPlayerNumber (0x452): Parameter = id of agent, returns integer of player number or, if the agent is an NPC/monster, the 'Model number'.
 
-  * CA_GETHP (0x453): Parameter = id of agent, returns float between 0 and 1 with the health in percent.
+  * CA_GetHP (0x453): Parameter = id of agent, returns float between 0 and 1 with the health in percent.
 
-  * CA_GETROTATION (0x454): Parameter = id of agent, returns float of rotation in degrees.
+  * CA_GetRotation (0x454): Parameter = id of agent, returns float of rotation in degrees.
 
-  * CA_GETSKILL (0x455): Parameter = id of agent, returns integer of current skill being used by agent.
+  * CA_GetSkill (0x455): Parameter = id of agent, returns integer of current skill being used by agent.
 
-  * CA_GETCOORDS (0x456): Parameter = id of agent, returns float of X and float of Y coordinate, packed of course.
+  * CA_GetCoords (0x456): Parameter = id of agent, returns float of X and float of Y coordinate, packed of course.
 
-  * CA_GETWEAPONSPEEDS (0x457): Parameter = id of agent, returns floats of the weapon speeds (figure them out yourself if you really need them).
+  * CA_GetWeaponSpeeds (0x457): Parameter = id of agent, returns floats of the weapon speeds (figure them out yourself if you really need them).
 
-  * CA_GETSPIRITRANGE (0x458): Obsolete and unfunctional.
+  * CA_GetSpiritRange (0x458): Obsolete and unfunctional.
 
-  * CA_GETTEAMID (0x459): Parameter = id of agent, returns integer of team id. 1 = blue, 2 = red, 3 = yellow and so on.
+  * CA_GetTeamId (0x459): Parameter = id of agent, returns integer of team id. 1 = blue, 2 = red, 3 = yellow and so on.
 
-  * CA_GETCOMBATMODE (0x45A): Obsolete, don't use it.
+  * CA_GetCombatMode (0x45A): Obsolete, don't use it.
 
-  * CA_GETMODELMODE (0x45B): Also obsolete.
+  * CA_GetModelMode (0x45B): Also obsolete.
 
-  * CA_GETHPPIPS (0x45C): Parameter = id of agent, returns integer of how many pips the target has.
+  * CA_GetHpPips (0x45C): Parameter = id of agent, returns integer of how many pips the target has.
 
-  * CA_GETEFFECTS (0x45D): Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc.
+  * CA_GetEffects (0x45D): Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc.
 
-  * CA_GETHEX (0x45E): Parameter = id of agent, returns bitmap. If non-zero the target is hexed.
+  * CA_GetHex (0x45E): Parameter = id of agent, returns bitmap. If non-zero the target is hexed.
 
-  * CA_GETMODELANIMATON (0x45F): Obsolete.
+  * CA_GetModelAnimation (0x45F): Obsolete.
 
-  * CA_GETENERGY (0x460): Obsolete, as it only works for yourself. Just use CA_GETMYMAXENERGY.
+  * CA_GetEnergy (0x460): Obsolete, as it only works for yourself. Just use CA_GetMyMaxEnergy.
 
-  * CA_GETAGENTPTR (0x461): Parameter = id of agent, returns pointer to the agent structure of target in GW memory.
+  * CA_GetAgentPtr (0x461): Parameter = id of agent, returns pointer to the agent structure of target in GW memory.
 
-  * CA_GETTYPE (0x462): Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up.
+  * CA_GetType (0x462): Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up.
 
-  * CA_GETLEVEL (0x463): Parameter = id of agent, returns integer with the level.
+  * CA_GetLevel (0x463): Parameter = id of agent, returns integer with the level.
 
-  * CA_GETNAMEPROPERTIES (0x464): Obsolete.
+  * CA_GetNameProperties (0x464): Obsolete.
 
-  * CA_GETMAXID (0x465): No parameters, returns integer with the size of the agent array divided by 4 (because the agent array consists of Agent pointers (pointer = 4 bytes)).
+  * CA_GetMaxId (0x465): No parameters, returns integer with the size of the agent array divided by 4 (because the agent array consists of Agent pointers (pointer = 4 bytes)).
 
-  * CA_GETMYNEARESTAGENT (0x466): No parameters, returns id of your nearest agent.
+  * CA_GetMyNearestAgent (0x466): No parameters, returns id of your nearest agent.
 
-  * CA_GETMYDISTANCETOAGENT (0x467): Parameter = id of agent, returns float with distance.
+  * CA_GetMyDistanceToAgent (0x467): Parameter = id of agent, returns float with distance.
 
-  * CA_GETNEARESTAGENTTOAGENT (0x468): Parameter = id of agent, returns id of the nearest agent to the specified agent.
+  * CA_GetNearestAgentToAgent (0x468): Parameter = id of agent, returns id of the nearest agent to the specified agent.
 
-  * CA_GETDISTANCEFROMAGENTTOAGENT (0x469): Obsolete, so don't bother using it.
+  * CA_GetDistanceFromAgentToAgent (0x469): Obsolete, so don't bother using it.
 
-  * CA_GETNEARESTAGENTTOAGENTEX (0x46A): Parameter = id of agent, same as CA_GETNEARESTAGENTTOAGENT, but also returns float with distance between them.
+  * CA_GetNearestAgentToAgentEx (0x46A): Parameter = id of agent, same as CA_GetNearestAgentToAgent, but also returns float with distance between them.
 
-  * CA_GETMODELSTATE (0x46B): Kinda obsolete.
+  * CA_GetModelState (0x46B): Kinda obsolete.
 
-  * CA_GETISATTACKING (0x46C): Parameter = id of agent, returns boolean.
+  * CA_GetIsAttacking (0x46C): Parameter = id of agent, returns boolean.
 
-  * CA_GETISKNOCKEDDOWN (0x46D): Parameter = id of agent, returns boolean.
+  * CA_GetIsKnockedDown (0x46D): Parameter = id of agent, returns boolean.
 
-  * CA_GETISMOVING (0x46E): Same as the other 'IS' commands.
+  * CA_GetIsMoving (0x46E): Same as the other 'IS' commands.
 
-  * CA_GETISDEAD (0x46F): Same as the other 'IS' commands.
+  * CA_GetIsDead (0x46F): Same as the other 'IS' commands.
 
-  * CA_GETISCASTING (0x470): Obsolete when there's CA_GETSKILL, but whatever.
+  * CA_GetIsCasting (0x470): Obsolete when there's CA_GetSkill, but whatever.
 
-  * CA_GETFIRSTAGENTBYPLAYERNUMBER (0x471): Parameter = player/model number, returns the first (id-wise) agent with that number.
+  * CA_GetFirstAgentByPlayerNumber (0x471): Parameter = player/model number, returns the first (id-wise) agent with that number.
 
-  * CA_GETALLEGIANCE (0x472): Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet.
+  * CA_GetAllegiance (0x472): Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet.
 
-  * CA_GETNEARESTENEMYTOAGENTEX (0x473): Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance.
+  * CA_GetNearestEnemyToAgentEx (0x473): Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance.
 
-  * CA_GETISATTACKEDMELEE (0x474): Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function.
+  * CA_GetIsAttackedMelee (0x474): Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function.
 
-  * CA_GETNEARESTITEMTOAGENTEX (0x475): Parameter = id of agent, returns id of item and distance as float.
+  * CA_GetNearestItemToAgentEx (0x475): Parameter = id of agent, returns id of item and distance as float.
 
-  * CA_GETNEARESTAGENTBYPLAYERNUMBER (0x476): Same as CA_GETFIRSTAGENTBYPLAYERNUMBER except it returns the nearest agent to you.
+  * CA_GetNearestAgentByPlayerNumber (0x476): Same as CA_GetFirstAgentByPlayerNumberexcept it returns the nearest agent to you.
 
-  * CA_GETSPEED (0x477): Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units).
+  * CA_GetSpeed (0x477): Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units).
 
-  * CA_GETNEARESTENEMYTOAGENTBYALLEGIANCE (0x478): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
+  * CA_GetNearestEnemyToAgentByAllegiance (0x478): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
 
-  * CA_GETNEARESTALIVEENEMYTOAGENT (0x479): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
+  * CA_GetNearestAliveEnemyToAgent (0x479): Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies.
 
-  * CA_WEAPONTYPE (0x47A): Parameter = id of agent, returns integer with weapon type. 1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand.
+  * CA_GetWeaponType (0x47A): Parameter = id of agent, returns integer with weapon type. 1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand.
 
-  * CA_GETNEARESTSIGNPOSTTOAGENT (0x47B): Parameter = id of agent, returns id of the nearest signpost/chest.
+  * CA_GetNearestSignpostToAgent (0x47B): Parameter = id of agent, returns id of the nearest signpost/chest.
 
-  * CA_GETNEARESTNPCTOAGENTBYALLEGIANCE (0x47C): Parameter = id of agent, returns id of the nearest NPC.
+  * CA_GetNearestNpcToAgentByAllegiance (0x47C): Parameter = id of agent, returns id of the nearest NPC.
 
-  * CA_GETNEARESTAGENTTOCOORDS (0x47D): Don't use this command, instead, use the wrapper function GetNearestAgentToCoords() declared in 'GWCAConstants.au3'.
+  * CA_GetNearestAgentToCoords (0x47D): Don't use this command, instead, use the wrapper function GetNearestAgentToCoords() declared in 'GWCAConstants.au3'.
 
-  * CA_GETVARS (0x47E): Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though.
+  * CA_GetVars (0x47E): Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though.
 
-  * CA_GETNEARESTNPCTOCOORDS (0x47F): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
+  * CA_GetNearestNpcToCoords (0x47F): Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead.
 
 
 Item related commands:
 
-  * CA_GETGOLD (0x510): No parameters. Returns integer with gold on your character and integer with gold in your storage.
+  * CA_GetGold (0x510): No parameters. Returns integer with gold on your character and integer with gold in your storage.
 
-  * CA_GETBAGSIZE (0x511): Parameter = bag index (1 = backpack to 5 = equip pack). Returns integer with number of slots in the bag.
+  * CA_GetBagSize (0x511): Parameter = bag index (1 = backpack to 5 = equip pack). Returns integer with number of slots in the bag.
 
-  * CA_GETBACKPACKITEMID (0x512): Parameter = item slot (1-20). Returns item id of the specified slot and model id.
+  * CA_SetBag (0x512): Parameter = bag index. Sets the current bag to work with
 
-  * CA_GETBELTPOUCHITEMID (0x513): Parameter = item slot (1-5). Returns item id of the specified slot and model id.
+  * CA_GetItemId (0x513): Parameter = item slot. Returns item id and item model id.
 
-  * CA_GETBAG1ITEMID (0x514): Parameter = item slot (1-10). Returns item id of the specified slot and model id.
+  * CA_GetIdKit (0x514): No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory.
 
-  * CA_GETBAG2ITEMID (0x515): Parameter = item slot (1-10). Returns item id of the specified slot and model id.
+  * CA_IdentifyItem (0x515): Parameter = bag index, parameter 2 = item slot.
 
-  * CA_GETEQUIPMENTPACKITEMID (0x516): Parameter = item slot (1-20). Returns item id of the specified slot and model id.
+  * CA_IdentifyItemById (0x516): Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IdentifyItem.
 
-  * CA_GETIDKIT (0x517): No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory.
+  * CA_DepositGold (0x517): Parameter = amount of gold to deposit in storage. Specify -1 if you want to deposit the maximum amount. Can be used anywhere in the outpost.
 
-  * CA_IDENTIFYITEM (0x518): Parameter = bag index, parameter 2 = item slot.
+  * CA_WithdrawGold (0x518): Parameter = amount of gold to withdraw from storage. Specify -1 if you want to withdraw the maximum amount. Can be used anywhere in the outpost.
 
-  * CA_IDENTIFYITEMBYID (0x519): Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IDENTIFYITEM.
+  * CA_SellItem (0x519): Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_DEPOSITGOLD (0x51A): Parameter = amount of gold to deposit in storage. Specify -1 if you want to deposit the maximum amount. Can be used anywhere in the outpost.
+  * CA_SellItemById (0x51A): Parameter = item id. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_WITHDRAWGOLD (0x51B): Parameter = amount of gold to withdraw from storage. Specify -1 if you want to withdraw the maximum amount. Can be used anywhere in the outpost.
+  * CA_BuyIdKit (0x51B): No parameters. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_SELLITEM (0x51C): Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost!
+  * CA_BuySuperiorIdKit (0x51C): No parameters. Requires an open dialog with the Merchant of the outpost!
 
-  * CA_SELLITEMBYID (0x51D): Parameter = item id. Requires an open dialog with the Merchant of the outpost!
+  * CA_PrepareMoveItem (0x51D): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
 
-  * CA_BUYIDKIT (0x51E): No parameters. Requires an open dialog with the Merchant of the outpost!
+  * CA_MoveItem (0x51E): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
 
-  * CA_BUYSUPERIORIDKIT (0x51F): No parameters. Requires an open dialog with the Merchant of the outpost!
+  * CA_GetItemInfo (0x51F): Parameter = item slot. Returns integer with item rarity and integer with quantity.
 
-  * CA_PREPAREMOVEITEM (0x520): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
+  * CA_UseItem (0x520): Parameter = bag index, parameter 2 = item slot. Uses the item specified.
 
-  * CA_MOVEITEM (0x521): For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead.
+  * CA_UseItemById (0x521): Parameter = item id. Uses the item specified.
 
-  * CA_GETBACKPACKITEMINFO (0x522): Parameter = item slot. Returns integer with item rarity and integer with quantity.
+  * CA_DropItem (0x522): Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all.
 
-  * CA_GETBELTPOUCHITEMINFO (0x523): Same procedure as CA_GETBACKPACKITEMINFO.
+  * CA_DropItemById (0x523): Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all.
 
-  * CA_GETBAG1ITEMINFO (0x524): Same procedure as CA_GETBACKPACKITEMINFO.
+  * CA_AcceptAllItems (0x524): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
 
-  * CA_GETBAG2ITEMINFO (0x525): Same procedure as CA_GETBACKPACKITEMINFO.
-
-  * CA_GETEQUIPMENTPACKITEMINFO (0x526): Same procedure as CA_GETBACKPACKITEMINFO.
-
-  * CA_USEITEM (0x527): Parameter = bag index, parameter 2 = item slot. Uses the item specified.
-
-  * CA_USEITEMBYID (0x528): Parameter = item id. Uses the item specified.
-
-  * CA_DROPITEM (0x529): Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all.
-
-  * CA_DROPITEMBYID (0x52A): Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all.
-
-  * CA_ACCEPTALLITEMS (0x52B): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
-
-  * CA_GETSTORAGE1ITEMID (0x52C): Parameter = item slot. Returns item id and model id of the specified slot.
-
-  * CA_GETSTORAGE2ITEMID (0x52D): Same procedure as CA_GETSTORAGE1ITEMID.
-
-  * CA_GETSTORAGE3ITEMID (0x52E): Same procedure as CA_GETSTORAGE1ITEMID.
-
-  * CA_GETSTORAGE4ITEMID (0x52F): Same procedure as CA_GETSTORAGE1ITEMID.
-
-  * CA_GETSTORAGE1ITEMINFO (0x530): Parameter = item slot. Returns integer with item rarity and integer with quantity.
-
-  * CA_GETSTORAGE2ITEMINFO (0x531): Same procedure as CA_GETSTORAGE1ITEMINFO.
-
-  * CA_GETSTORAGE3ITEMINFO (0x532): Same procedure as CA_GETSTORAGE1ITEMINFO.
-
-  * CA_GETSTORAGE4ITEMINFO (0x533): Same procedure as CA_GETSTORAGE1ITEMINFO.
-
+  * CA_GetItemLastModifier (0x525): Parameter = item slot. Returns integer with the last modifier of the item and wchar_t* with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized.
 
 Title related commands:
 
-  * CA_GETTITLESUNSPEAR (0x550): No parameters. Returns integer with title progress.
+  * CA_GetTitleSunspear (0x550): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLELIGHTBRINGER (0x551): No parameters. Returns integer with title progress.
+  * CA_GetTitleLightbringer (0x551): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEVANGUARD (0x552): No parameters. Returns integer with title progress.
+  * CA_GetTitleVanguard (0x552): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLENORN (0x553): No parameters. Returns integer with title progress.
+  * CA_GetTitleNorn (0x553): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEASURA (0x554): No parameters. Returns integer with title progress.
+  * CA_GetTitleAsura (0x554): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEDELDRIMOR (0x555): No parameters. Returns integer with title progress.
+  * CA_GetTitleDeldrimor (0x555): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLENORTHMASTERY (0x556): No parameters. Returns integer with title progress.
+  * CA_GetTitleNorthMastery (0x556): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEDRUNKARD (0x557): No parameters. Returns integer with title progress.
+  * CA_GetTitleDrunkard (0x557): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLESWEET (0x558): No parameters. Returns integer with title progress.
+  * CA_GetTitleSweet (0x558): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEPARTY (0x559): No parameters. Returns integer with title progress.
+  * CA_GetTitleParty (0x559): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLECOMMANDER (0x55A): No parameters. Returns integer with title progress.
+  * CA_GetTitleCommander (0x55A): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLELUXON (0x55B): No parameters. Returns integer with title progress.
+  * CA_GetTitleLuxon (0x55B): No parameters. Returns integer with title progress.
 
-  * CA_GETTITLEKURZICK (0x55C): No parameters. Returns integer with title progress.
+  * CA_GetTitleKurzick (0x55C): No parameters. Returns integer with title progress.
 
 
 More general commands:
 
-  * CA_ADDHERO (0x580): Parameter = hero id. Adds hero to the party.
+  * CA_AddHero (0x580): Parameter = hero id. Adds hero to the party.
 
-  * CA_KICKHERO (0x581): Parameter = hero id. Kicks hero from the party.
+  * CA_KickHero (0x581): Parameter = hero id. Kicks hero from the party.
 
-  * CA_SWITCHMODE (0x582): Parameter = boolean to set HM or NM. HM = 1, NM = 0.
+  * CA_SwitchMode (0x582): Parameter = boolean to set HM or NM. HM = 1, NM = 0.
 
-  * CA_ADDNPC (0x583): Parameter = henchman id according to Party Search list. Adds henchman to the party.
+  * CA_AddNpc (0x583): Parameter = henchman id according to Party Search list. Adds henchman to the party.
 
-  * CA_KICKNPC (0x584): Parameter = henchman id. Kicks henchman from the party.
+  * CA_KickNpc (0x584): Parameter = henchman id. Kicks henchman from the party.
 
-  * CA_TRAVELGH (0x585): No parameters. Travels to your Guild Hall.
+  * CA_TravelGH (0x585): No parameters. Travels to your Guild Hall.
 
-  * CA_LEAVEGH (0x586): No parameters. Leaves your Guild Hall.
+  * CA_LeaveGH (0x586): No parameters. Leaves your Guild Hall.
