@@ -211,7 +211,7 @@ Func GetItemId($iBag, $iSlot)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[0]
+	Return $cbVar
 EndFunc
 
 Func GetItemInfo($iBag, $iSlot)
@@ -224,7 +224,7 @@ Func GetItemInfo($iBag, $iSlot)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[0]
+	Return $cbVar
 EndFunc
 
 Func GetItemLastModifier($iBag, $iSlot)
@@ -237,7 +237,7 @@ Func GetItemLastModifier($iBag, $iSlot)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[0]
+	Return $cbVar
 EndFunc
 
 ; END OF FILE
