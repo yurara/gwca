@@ -832,6 +832,12 @@ void _declspec(naked) CustomMsgHandler(){
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
 			TmpVariable = GetNearestNPCToCoords(MsgFloat, MsgFloat2);
 			break;
+		case 0x480: //Get login number of agent : Return int/long
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, Agents[MsgWParam]->LoginNumber, 0);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
