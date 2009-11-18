@@ -86,7 +86,7 @@ This are the Commands (unsorted :P):
   * void SellItem(long itemId);
   * void BuyItem(long id, long quantity, long value);
   * void WriteWhisper(const wchar_t** chatMsg, const wchar_t** chatName);
-  * wchar_t* GetAgentName(int agentId);
+  * wchar_t** GetAgentName(int agentId);
   * void TargetNearestFoe();
   * void TargetNearestAlly();
   * void TargetNearestItem();
