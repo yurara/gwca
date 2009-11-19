@@ -67,7 +67,7 @@ This are the Commands (unsorted :P):
   * void KickNpc(long NpcId);
   * void TravelGH();
   * void LeaveGH();
-  * 
+  * -------------------------
   * long GetNearestAgentToAgent(long agentId);
   * long GetNearestEnemyToAgent(long agentId);
   * long GetNearestEnemyToAgentByAllegiance(long agentId);
@@ -82,7 +82,7 @@ This are the Commands (unsorted :P):
   * long GetNearestAgentToCoords(float x, float y);
   * long GetNearestNPCToCoords(float x, float y);
   * int IsAttackedMelee(long agentId);
-  * 
+  * --------------------------
   * void SellItem(long itemId);
   * void BuyItem(long id, long quantity, long value);
   * void WriteWhisper(const wchar_t** chatMsg, const wchar_t** chatName);
@@ -94,3 +94,60 @@ This are the Commands (unsorted :P):
   * void UseHeroSkill(long HeroId, long SkillNumber, long Target);
   * bool CompareCharName(wchar_t** cmpName);
   * void ChangeMaxZoom(float fZoom);  
+  * ---------------------------
+  * bool IsCasting()
+  * long SkillRecharge(int ID)
+  * long SkillAdrenaline(int ID)
+  * int GetSkillbarSkillId(int slot)
+  * float GetAgentHP(int id)
+  * float GetAgentEnergy(int id)
+  * void ChangeTarget(int ID)
+  * int,int GetProfessions(int ID)
+  * int GetPlayerNumberOfAgent(int ID)
+  * float GetRotationOfAgent(int id)
+  * float,float GetAgentPosition(int id)
+  * int GetAgentTeamId(int agentid)
+  * int GetAgentHPPips(int id)
+  * byte GetAgentEffectBitmap(int id)
+  * byte GetAgentHexBitmap(int id)
+  * long GetAgentType(int id)
+  * int GetAgentLevel(int id)
+  * long GetAgentProperties(int id)
+  * bool IsAgentAttacking(int id)
+  * bool IsAgentKnockedDown(int id)
+  * bool IsAgentMoving(int id)
+  * bool IsAgentCasting(int id)
+  * int GetAgentAllegiance(int id)
+  * int GetBagSize(int bag)
+  * int GetFirstIdKitId()
+  * void IdentifieItemByIndex(int bag,int slot)
+  * void IdentifieItemByID(int id)
+  * void DepositGold(int amount)
+  * void WithdrawGold(int amount)
+  * void SellItemByIndex(int bag,int slot)
+  * void BuyIDKit()
+  * void BuySuperiorIDKit()
+  * int,int GetItemId(int bag,int slot)
+  * int,int GetItemInfo(int bag,int slot)
+  * void UseItemByIndex(int bag,int slot)
+  * int,wchar_t** GetItemLastModifier(int bag,int slot)
+  * int GetCurrentTargetID()
+  * int GetOwnID()
+  * int GetMyMaxHP()
+  * int GetMyMaxEnergy()
+  * int GetMapLoading()
+  * int GetPing()
+  * int GetLoggedInt()
+  * int GetDead()
+  * int GetCurrentBalthFaction()
+  * int GetCurrentMaxBalthFaction()
+  * int GetCurrentKurzickFaction()
+  * int GetCurrentKurzickMaxFaction()
+  * int GetCurrentLuxonFaction()
+  * int GetCurrentLuxonMaxFaction()
+  * int GetTitleTreasure()
+  * int GetTirleLucky()
+  * int GetTitleUnlucky()
+  * int GetTitleWisdom()
+  * int GetMoneySelf()
+  * int GetMoneyStorage()
