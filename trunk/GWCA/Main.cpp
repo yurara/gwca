@@ -32,6 +32,7 @@ void DrawCompass(){
 	Pen      blue(Color(255, 0, 0, 255));
 	Pen      green(Color(255, 0, 255, 0));
 	Pen      red(Color(255, 255, 0, 0));
+	Pen		 grey(Color(255,125,125,125));
 	SolidBrush blackBrush(Color(255, 0, 0, 0));
 	Graphics graphics(MainWnd);
 	graphics.FillEllipse(&blackBrush,195, 330, 210, 210);
@@ -46,13 +47,17 @@ void DrawCompass(){
 			angle=-1 * GetAngleFromAgentToAgent(myId,i);
 			x = 300 + distance * cos(angle);
 			y = 435 + distance * sin(angle);
+			if(/*Agents[i]->ModelState != 0x400 &&*/ Agents[i]->HP != 0){
 			if(i==*GWMemory.CurrentTarget){
 				graphics.DrawRectangle(&blue,x,y,(REAL)2,(REAL)2);
 			}else if(Agents[i]->Allegiance == 0x300){
 				graphics.DrawRectangle(&red,x,y,(REAL)2,(REAL)2);
 			}else{
 				graphics.DrawRectangle(&green,x,y,(REAL)2,(REAL)2);
-			}	
+			}
+			}else{
+				graphics.DrawRectangle(&grey,x,y,(REAL)2,(REAL)2);
+			}
 		}
 	}
 }
@@ -155,40 +160,59 @@ void update_wnd(){
 		if(disabled){
 		#endif
 		//Self Info
+		if(GWMemory.LoggedIn() && *T!=2){
 		memcpy(&f,&Agents[myId]->X,sizeof(float));
 		sprintf(text,"X: %.2f",f);
 		SendMessage(XSelf,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->Y,sizeof(float));
 		sprintf(text,"Y: %.2f",f);
 		SendMessage(YSelf,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->HP,sizeof(float));
 		sprintf(text,"HP: %.0f %%",f * 100);
 		SendMessage(HPSelf,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->Energy,sizeof(float));
 		sprintf(text,"E: %.0f %%",f * 100);
 		SendMessage(ESelf,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		sprintf(text,"AreaID: %i",GWMemory.MapId());
 		SendMessage(AreaID,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 		//Target Info
 		if(*(long*)GWMemory.CurrentTarget != 0){
+
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->X,sizeof(float));
 		sprintf(text,"X: %.2f",f);
 		SendMessage(XTarget,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->Y,sizeof(float));
 		sprintf(text,"Y: %.2f",f);
 		SendMessage(YTarget,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->HP,sizeof(float));
 		sprintf(text,"HP: %.0f %%",f * 100);
 		SendMessage(HPTarget,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 
+		if(GWMemory.LoggedIn() && *T!=2 && load==false){
 		sprintf(text,"ID: %i",*(long*)GWMemory.CurrentTarget );
 		SendMessage(TargetID,WM_SETTEXT,0,(LPARAM)&text);
+		}else{load = true;}
 		}
 		else{
 		sprintf(text,"X:");

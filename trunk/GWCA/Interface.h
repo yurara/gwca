@@ -138,4 +138,5 @@ int LUA_GetTitleUnlucky(lua_State* L);
 int LUA_GetTitleWisdom(lua_State* L);
 int LUA_GetMoneySelf(lua_State* L);
 int LUA_GetMoneyStorage(lua_State* L);
+int LUA_SetSkillbarSkill( lua_State* L);
 #endif
