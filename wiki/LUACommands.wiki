@@ -26,7 +26,6 @@ LUA doesnt care about types but i will mention them in the function listing ;) i
 = Commands =
 
 This are the Commands (unsorted :P):
-  (not all commands included yet)
 
   * void MovePlayer(float nX, float nY, float nZ = 0);
   * void SendChat(char channel, char** message);
