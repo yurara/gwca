@@ -42,4 +42,5 @@ struct LoggedSkillStruct {
 
 void ReloadSkillbar();
 
+
 #endif

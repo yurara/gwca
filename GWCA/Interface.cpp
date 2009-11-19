@@ -23,8 +23,8 @@ int LUA_MovePlayer( lua_State* L ){
 }
 int LUA_SendChat( lua_State* L ){
 	CHECK(2,"SendChat")
-	char channel = *lua_tostring(L,1);
-	wchar_t* message = (wchar_t*)lua_tostring(L,2);
+	char channel = (char)lua_tointeger(L,1);
+	char* message = (char*)lua_tostring(L,2);
 	SendChat(channel,message);
 	lua_pop( L, lua_gettop( L ) );
 	return 0;
@@ -993,7 +993,14 @@ int LUA_GetMoneyStorage( lua_State* L){
 	lua_pushnumber(L,GWMemory.MoneyStorage());
 	return 1;
 }
-
+int LUA_SetSkillbarSkill( lua_State* L){
+	CHECK(2,"SetSkillbarSkill");
+	dword slot = lua_tonumber(L,1);
+	dword id = lua_tonumber(L,2);
+	SetSkillbarSkill(slot,id);
+	lua_pop( L, lua_gettop( L ) );
+	return 0;
+}
 
 
 

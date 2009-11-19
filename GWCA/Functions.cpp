@@ -1,6 +1,17 @@
 #include "Functions.h"
 long SellSessionId = NULL;
 #define NEWPAK(cmd, size)	CPacket* newPak = new CPacket((byte*)(new byte[0x##size##]), 0x##size##); newPak->NewPacket(0x##cmd##,0x##size##); memset(newPak->Buffer + 4, 0, 0x##size## - 4);
+
+void SetSkillbarSkill(dword slot,dword id){
+	NEWPAK(53,14);
+	newPak->Set<dword>(4,myId);
+	newPak->Set<dword>(8,slot-1);
+	newPak->Set<dword>(12,id);
+	newPak->Set<dword>(16,(dword)0);
+	newPak->SendPacket(newPak);
+}
+
+
 void MovePlayer(float nX, float nY, float nZ){
 	NEWPAK(37, 10);
 	newPak->Set<float>(4, nX);
