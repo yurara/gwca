@@ -150,3 +150,4 @@ This are the Commands (unsorted :P):
   * int GetTitleWisdom()
   * int GetMoneySelf()
   * int GetMoneyStorage()
+  * void SetSkillbarSkill(int slot,int id)
