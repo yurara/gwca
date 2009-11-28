@@ -21,6 +21,7 @@ public:
 	byte* MessageHandlerReturn;
 	byte* SkillLogStart;
 	byte* SkillLogReturn;
+	byte* SkillTypeBase;
 	byte* WriteWhisperStart;
 	byte* TargetFunctions;
 	byte* HeroSkillFunction;
@@ -46,13 +47,15 @@ public:
 	byte* DialogStart;
 	byte* DialogReturn;
 	byte* EngineStart;
-	
+
 	byte EngineHookSave[32];
 
 	Memory(void);
 	~Memory(void);
 	template <typename T> T ReadPtrChain(dword pBase, long pOffset1 = 0, long pOffset2 = 0, long pOffset3 = 0, long pOffset4 = 0);
 	void WriteJMP(byte* location, byte* newFunction);
+	unsigned long FindPattern(unsigned char* bMask, char* szMask, unsigned long dw_Address, unsigned long dw_Len);
+	bool bDataCompare(const unsigned char* pData, const unsigned char* bMask, const char* szMask);
 
 	long MapId();
 	long Ping();

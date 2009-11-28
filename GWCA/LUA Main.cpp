@@ -131,6 +131,7 @@ void init_lua()
   REGISTER(LUA_GetMoneySelf,"GetMoneySelf");
   REGISTER(LUA_GetMoneyStorage,"GetMoneyStorage");
   REGISTER(LUA_SetSkillbarSkill,"SetSkillbarSkill");
+  REGISTER(LUA_ChangeSecondClass,"ChangeSecondClass");
 }
 
 void close_lua()

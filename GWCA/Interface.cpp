@@ -47,13 +47,22 @@ int LUA_ChangeDistrict( lua_State* L ){
 	lua_pop( L, lua_gettop( L ) );
 	return 0;
 }
-
+/*
 int LUA_UseSkill( lua_State* L ){
 	CHECK(2,"UseSkill")
 	dword SkillID = lua_tonumber(L,1);
 	dword TargetID = lua_tonumber(L,2);
 	dword Event = lua_tonumber(L,3);
 	UseSkill(SkillID,TargetID,Event);
+	lua_pop( L, lua_gettop( L ) );
+	return 0;
+}*/
+int LUA_UseSkill( lua_State* L ){
+	CHECK(2,"UseSkill")
+	dword SkillID = lua_tonumber(L,1);
+	dword TargetID = lua_tonumber(L,2);
+	dword Event = lua_tonumber(L,3);
+	_UseSkill(SkillID,TargetID,Event);
 	lua_pop( L, lua_gettop( L ) );
 	return 0;
 }
@@ -1001,8 +1010,13 @@ int LUA_SetSkillbarSkill( lua_State* L){
 	lua_pop( L, lua_gettop( L ) );
 	return 0;
 }
-
-
+int LUA_ChangeSecondClass( lua_State* L){
+	CHECK(1,"ChangeSecondClass");
+	dword id = lua_tonumber(L,1);
+	ChangeSecondClass(id);
+	lua_pop( L, lua_gettop( L ) );
+	return 0;
+}
 
 
 

@@ -7,6 +7,7 @@
 #include "Packet.h"
 #include "Agent.h"
 #include "Item.h"
+#include "Skillbar.h"
 
 extern long SellSessionId;
 
@@ -16,6 +17,7 @@ void SendChat(char channel, wchar_t* message);
 void MoveMap(dword MapID, dword Region = 2, dword District = 0, dword Language = 0);
 void ChangeDistrict(dword Region = 2, dword Language = 0);
 void UseSkill(dword SkillID, dword TargetID, dword Event = 0);
+void _UseSkill(dword SkillID, dword TargetID, dword Event);
 void ChangeWeaponSet(dword WeaponSet);
 void PickUpItem(long TargetID);
 void UseItem(dword ItemID);
@@ -49,6 +51,8 @@ void AddNpc(long NpcId);
 void KickNpc(long NpcId);
 void TravelGH();
 void LeaveGH();
+void SetSkillbarSkill(dword slot,dword id);
+void ChangeSecondClass(dword newclass);
 void SetSkillbarSkill(dword slot,dword id);
 
 long GetNearestAgentToAgent(long agentId);

@@ -473,7 +473,14 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x435: //Send "Return to Outpost" packet : No return
 			ReturnToOutpost();
 			break;
-
+		case 0x436: //ChangeSecondClass
+			if(MsgWParam==0){RESPONSE_INVALID;}
+			ChangeSecondClass((dword)MsgWParam);
+		case 0x437://SetSkillbarSkill
+			if(MsgWParam<1 || MsgWParam >8)RESPONSE_INVALID;
+			if(MsgLParam<0 || MsgLParam >2969)RESPONSE_INVALID;
+			SetSkillbarSkill((dword)MsgWParam,(dword)MsgLParam);
+			break;
 		//SectionA related commands
 		case 0x440: //Check if map is loading : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, mapLoading, 0);
@@ -1059,6 +1066,10 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x586: //Leave Guild Hall : No return
 			LeaveGH();
 			break;
+		case 0x597://Donate Faction: No return
+			DonateFaction();
+			break;
+
 	}
 	
 	_asm {
@@ -1071,4 +1082,10 @@ void _declspec(naked) CustomMsgHandler(){
 		RETN 0x10
 	}
 }
+
+
+
+
+
+
 #endif

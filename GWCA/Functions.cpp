@@ -2,6 +2,7 @@
 long SellSessionId = NULL;
 #define NEWPAK(cmd, size)	CPacket* newPak = new CPacket((byte*)(new byte[0x##size##]), 0x##size##); newPak->NewPacket(0x##cmd##,0x##size##); memset(newPak->Buffer + 4, 0, 0x##size## - 4);
 
+
 void SetSkillbarSkill(dword slot,dword id){
 	NEWPAK(53,14);
 	newPak->Set<dword>(4,myId);
@@ -10,7 +11,28 @@ void SetSkillbarSkill(dword slot,dword id){
 	newPak->Set<dword>(16,(dword)0);
 	newPak->SendPacket(newPak);
 }
-
+void ChangeSecondClass(dword newclass){
+	NEWPAK(3A,0C);
+	newPak->Set<dword>(4,myId);
+	newPak->Set<dword>(8,newclass);
+	newPak->SendPacket(newPak);
+}
+//use on own risk
+void IncreaseAttribute(dword Attribute){
+	NEWPAK(7,10);
+	newPak->Set<dword>(4,myId);
+	newPak->Set<dword>(8,(dword)0);
+	newPak->Set<dword>(12,Attribute);
+	newPak->SendPacket(newPak);
+}
+void DecreaseAttribute(dword Attribute){
+	NEWPAK(6,10);
+	newPak->Set<dword>(4,myId);
+	newPak->Set<dword>(8,(dword)0);
+	newPak->Set<dword>(12,Attribute);
+	newPak->SendPacket(newPak);
+}
+//-------------
 
 void MovePlayer(float nX, float nY, float nZ){
 	NEWPAK(37, 10);
@@ -71,6 +93,15 @@ void UseAttackSkill(dword SkillID, dword TargetID, dword Event){
 	newPak->Set<dword>(16, 0);
 	newPak->SendPacket(newPak);
 }
+
+void _UseSkill(dword SkillID, dword TargetID, dword Event){
+	SkillType mySkill = *(SkillType*)(GWMemory.SkillTypeBase + (SkillID * 160));
+	if(mySkill.Type == GW_SKILL_TYPE_ATTACKS)
+		UseAttackSkill(SkillID, TargetID, Event);
+	else
+		UseSkill(SkillID, TargetID, Event);
+}
+
 
 void ChangeWeaponSet(dword WeaponSet){
 	NEWPAK(2b, 08);
@@ -294,11 +325,15 @@ long GetNearestAgentToAgent(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		aDistance[i] = GetDistanceFromAgentToAgent(agentId, i);
 		if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -308,7 +343,7 @@ long GetNearestEnemyToAgent(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[agentId]->TeamId != Agents[i]->TeamId){
@@ -316,6 +351,10 @@ long GetNearestEnemyToAgent(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -323,9 +362,9 @@ long GetNearestEnemyToAgentByAllegiance(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
 	float* aDistance = new float[maxAgent+1];
-	aDistance[0] = 50000;
+	aDistance[0] = 500000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance == 0x300){
@@ -333,6 +372,10 @@ long GetNearestEnemyToAgentByAllegiance(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -342,7 +385,7 @@ long GetNearestAliveEnemyToAgent(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance == 0x300 && Agents[i]->HP != 0){
@@ -350,6 +393,10 @@ long GetNearestAliveEnemyToAgent(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -359,7 +406,7 @@ long GetNearestItemToAgent(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x400){
@@ -367,6 +414,10 @@ long GetNearestItemToAgent(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -376,7 +427,7 @@ long GetNearestSignpostToAgent(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x200){
@@ -384,6 +435,10 @@ long GetNearestSignpostToAgent(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -393,7 +448,7 @@ long GetNearestNpcToAgentByAllegiance(long agentId){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance == 0x600){
@@ -401,6 +456,10 @@ long GetNearestNpcToAgentByAllegiance(long agentId){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return lLowest;
 }
 
@@ -419,11 +478,16 @@ float GetAngleFromAgentToAgent(long agent1, long agent2){
 	return atan2(Agents[agent2]->Y - Agents[agent1]->Y,Agents[agent2]->X - Agents[agent1]->X);
 }
 long GetFirstAgentByPlayerNumber(word playerNum){
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x200 || Agents[i]->Type == 0x400){continue;}
 		if(Agents[i]->PlayerNumber == playerNum){return i;}
 	}
+	}
+   __except(1) {
+      return false;
+   }
 	return NULL;
 }
 
@@ -431,7 +495,7 @@ long GetNearestAgentByPlayerNumber(word playerNum){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x200 || Agents[i]->Type == 0x400){continue;}
@@ -440,6 +504,10 @@ long GetNearestAgentByPlayerNumber(word playerNum){
 			if(aDistance[i] < aDistance[lLowest] && aDistance[i] != 0){lLowest = i;}
 		}
 	}
+	}
+   __except(1) {
+      return false;
+	}
 	return lLowest;
 }
 
@@ -447,27 +515,36 @@ long GetNearestAgentToCoords(float x, float y){
 	float* aDistance = new float[maxAgent+1];
 	aDistance[0] = 50000;
 	long lLowest = 0;
-
+	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		aDistance[i] = sqrt(pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
 		if(aDistance[i] < aDistance[lLowest]){lLowest = i;}
 	}
+	}
+   __except(1) {
+      return false;
+	 }
 	return lLowest;
 }
 
 long GetNearestNPCToCoords(float x, float y){
-	float* aDistance = new float[maxAgent+1];
-	aDistance[0] = 50000;
-	long lLowest = 0;
+   float* aDistance = new float[maxAgent+1];
+   aDistance[0] = 50000;
+   long lLowest = 0;
 
-	for(unsigned int i = 1;i < maxAgent;i++){
-		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->Allegiance != 0x600){continue;}
-		aDistance[i] = sqrt(pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
-		if(aDistance[i] < aDistance[lLowest]){lLowest = i;}
-	}
-	return lLowest;
+   __try {
+   for(unsigned int i = 1;i < maxAgent;i++){
+      if(Agents[i] == NULL){continue;}
+      if(Agents[i]->Allegiance != 0x600){continue;}
+      aDistance[i] = sqrt(pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+      if(aDistance[i] < aDistance[lLowest]){lLowest = i;}
+   }
+   }
+   __except(1) {
+      return false;
+   }
+   return lLowest;
 }
 
 int IsAttackedMelee(long agentId){

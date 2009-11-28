@@ -255,6 +255,10 @@
 			Name="Hooks"
 			>
 			<File
+				RelativePath=".\CommandHook.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Hooks.h"
 				>
 			</File>
