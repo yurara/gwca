@@ -17,6 +17,7 @@
 #include "Packet.h"
 #include "Hooks.h"
 #include "LUA Main.h"
+#include "CommandHook.h"
 
 #include <Commdlg.h>
 
@@ -25,21 +26,21 @@
 // identifiers.
 #define COMPASS  2000
 #define TARGET   2001
-#define CD       2002
+//#define CD       2002
 #define SELF     2003
 #define TARGETID 2004
 #define YTARGET  2005
 #define XTARGET  2006
 #define ETARGET  2007
 #define HPTARGET 2008
-#define SKILL8   2009
+/*#define SKILL8   2009
 #define SKILL7   2010
 #define SKILL6   2011
 #define SKILL5   2012
 #define SKILL4   2013
 #define SKILL3   2014
 #define SKILL2   2015
-#define SKILL1   2016
+#define SKILL1   2016*/
 #define AREASELF 2017
 #define YSELF    2018
 #define XSELF    2019

@@ -14,14 +14,14 @@ HWND MainWnd;
 HWND RunStop,LoadDll,Script,Engine,Browse;
 HWND HPSelf,ESelf,XSelf,YSelf,AreaID;
 HWND HPTarget,XTarget,YTarget,TargetID;
-HWND Spell1,Spell2,Spell3,Spell4,Spell5,Spell6,Spell7,Spell8;
+//HWND Spell1,Spell2,Spell3,Spell4,Spell5,Spell6,Spell7,Spell8;
 
-HWND* Spells[] = {&Spell1,&Spell2,&Spell3,&Spell4,&Spell5,&Spell6,&Spell7,&Spell8};
+//HWND* Spells[] = {&Spell1,&Spell2,&Spell3,&Spell4,&Spell5,&Spell6,&Spell7,&Spell8};
 //GDI+
 ULONG_PTR m_gdiplusToken;
 HANDLE updateThread;
 
-
+bool wopen = true;
 
 void DrawCompass(){
 	float distance;
@@ -98,7 +98,7 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			SendMessage(Script,WM_SETTEXT,0,(LPARAM)&szFile);
 			break;
 
-		case BROWSE:	// button "Browse ..."
+		case BROWSE:	// button "Browse ..." 
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hwnd;
@@ -119,6 +119,7 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 
 	case WM_CLOSE:
+		wopen=false;
 		DestroyWindow(hwnd);
 		CloseHandle(updateThread);
 		GdiplusShutdown(m_gdiplusToken);
@@ -146,7 +147,7 @@ void update_wnd(){
 	char text[32];
 	float f;
 	bool load;
-	while(true){
+	while(wopen){
 		long* T = (long*)(GWMemory.CurrentTarget+0x410);
 		while((!GWMemory.LoggedIn() || *T==2) && *T!=1){
 			Sleep(100);
@@ -160,56 +161,56 @@ void update_wnd(){
 		if(disabled){
 		#endif
 		//Self Info
-		if(GWMemory.LoggedIn() && *T!=2){
+		if(*T!=2){
 		memcpy(&f,&Agents[myId]->X,sizeof(float));
 		sprintf(text,"X: %.2f",f);
 		SendMessage(XSelf,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->Y,sizeof(float));
 		sprintf(text,"Y: %.2f",f);
 		SendMessage(YSelf,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->HP,sizeof(float));
 		sprintf(text,"HP: %.0f %%",f * 100);
 		SendMessage(HPSelf,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[myId]->Energy,sizeof(float));
 		sprintf(text,"E: %.0f %%",f * 100);
 		SendMessage(ESelf,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		sprintf(text,"AreaID: %i",GWMemory.MapId());
 		SendMessage(AreaID,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 		//Target Info
 		if(*(long*)GWMemory.CurrentTarget != 0){
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->X,sizeof(float));
 		sprintf(text,"X: %.2f",f);
 		SendMessage(XTarget,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->Y,sizeof(float));
 		sprintf(text,"Y: %.2f",f);
 		SendMessage(YTarget,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		memcpy(&f,&Agents[*(long*)GWMemory.CurrentTarget ]->HP,sizeof(float));
 		sprintf(text,"HP: %.0f %%",f * 100);
 		SendMessage(HPTarget,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
 
-		if(GWMemory.LoggedIn() && *T!=2 && load==false){
+		if(*T!=2 && load==false){
 		sprintf(text,"ID: %i",*(long*)GWMemory.CurrentTarget );
 		SendMessage(TargetID,WM_SETTEXT,0,(LPARAM)&text);
 		}else{load = true;}
@@ -225,19 +226,25 @@ void update_wnd(){
 		SendMessage(TargetID,WM_SETTEXT,0,(LPARAM)&text);
 		}
 		//Recharging
-		if(*T==1){
+		/*
+		if(load==false && *T==1){
 			ReloadSkillbar();
 			if(!MySkillbar==NULL){
 				for(int i=0;i<8;i++){
+					if(GWMemory.LoggedIn() && *T!=2 && load==false){
 					if(MySkillbar->Skill[i].Recharge != 0){
 						sprintf(text,"Spell %i: charging",i + 1);
 					}else{
 						sprintf(text,"Spell %i: charged",i + 1);
 					}
 					SendMessage(*Spells[i],WM_SETTEXT,0,(LPARAM)&text);
+					}else{
+						break;
+						load = true;
+					}
 				}
 			}
-		}
+		}else{load = true;}*/
 		//Compass
 		DrawCompass();
 		Sleep(100);
@@ -256,9 +263,9 @@ void create_wnd_content(HWND parent)
 	SendMessage(wnd, WM_SETFONT, (WPARAM) h_font, TRUE);
 	wnd = CreateWindowEx(0x00000000, "Button", "Target Info:", 0x50020007, 304, 136, 144, 152, parent, (HMENU) TARGET, instance, NULL);
 	SendMessage(wnd, WM_SETFONT, (WPARAM) h_font, TRUE);
-	wnd = CreateWindowEx(0x00000000, "Button", "Cooldown:", 0x50020007, 24, 328, 112, 224, parent, (HMENU) CD, instance, NULL);
+	/*wnd = CreateWindowEx(0x00000000, "Button", "Cooldown:", 0x50020007, 24, 328, 112, 224, parent, (HMENU) CD, instance, NULL);
+	SendMessage(wnd, WM_SETFONT, (WPARAM) h_font, TRUE);*/
 	//Target Info:
-	SendMessage(wnd, WM_SETFONT, (WPARAM) h_font, TRUE);
 	HPTarget = CreateWindowEx(0x00000000, "Static", "HP:", 0x50000300, 320, 160, 120, 24, parent, (HMENU) HPTARGET, instance, NULL);
 	SendMessage(HPTarget, WM_SETFONT, (WPARAM) h_font, TRUE);
 	TargetID = CreateWindowEx(0x00000000, "Static", "ID:", 0x50000300, 320, 256, 120, 24, parent, (HMENU) TARGETID, instance, NULL);
@@ -270,7 +277,7 @@ void create_wnd_content(HWND parent)
 	/*ETarget = CreateWindowEx(0x00000000, "Static", "E:", 0x50000300, 320, 184, 120, 24, parent, (HMENU) ETARGET, instance, NULL);
 	SendMessage(ETarget, WM_SETFONT, (WPARAM) h_font, TRUE);*/
 	//Cooldowns
-	Spell8 = CreateWindowEx(0x00000000, "Static", "Spell 8:", 0x50000300, 40, 520, 88, 24, parent, (HMENU) SKILL8, instance, NULL);
+	/*Spell8 = CreateWindowEx(0x00000000, "Static", "Spell 8:", 0x50000300, 40, 520, 88, 24, parent, (HMENU) SKILL8, instance, NULL);
 	SendMessage(Spell8, WM_SETFONT, (WPARAM) h_font, TRUE);
 	Spell7 = CreateWindowEx(0x00000000, "Static", "Spell 7:", 0x50000300, 40, 496, 88, 24, parent, (HMENU) SKILL7, instance, NULL);
 	SendMessage(Spell7, WM_SETFONT, (WPARAM) h_font, TRUE);
@@ -285,7 +292,7 @@ void create_wnd_content(HWND parent)
 	Spell2 = CreateWindowEx(0x00000000, "Static", "Spell 2:", 0x50000300, 40, 376, 88, 24, parent, (HMENU) SKILL2, instance, NULL);
 	SendMessage(Spell2, WM_SETFONT, (WPARAM) h_font, TRUE);
 	Spell1 = CreateWindowEx(0x00000000, "Static", "Spell 1:", 0x50000300, 40, 352, 88, 24, parent, (HMENU) SKILL1, instance, NULL);
-	SendMessage(Spell1, WM_SETFONT, (WPARAM) h_font, TRUE);
+	SendMessage(Spell1, WM_SETFONT, (WPARAM) h_font, TRUE);*/
 	//Self Info
 	AreaID = CreateWindowEx(0x00000000, "Static", "Area ID:", 0x50000300, 40, 256, 120, 24, parent, (HMENU) AREASELF, instance, NULL);
 	SendMessage(AreaID, WM_SETFONT, (WPARAM) h_font, TRUE);
@@ -398,6 +405,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 		VirtualProtect(GWMemory.SkillLogStart, 8, dwOldProtection, NULL);
 		GWMemory.WriteJMP(GWMemory.SkillLogStart, (byte*)SkillLogHook);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)&SkillLogQueueThread, 0, 0, 0);
+	}
+	if(!GWMemory.SkillTypeBase){
+		InjectErr("SkillTypeBase");
+		return false;
 	}
 	if(!GWMemory.MapIdLocation){
 		InjectErr("MapIdLocation");

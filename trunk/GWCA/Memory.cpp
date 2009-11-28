@@ -40,6 +40,8 @@ Memory::Memory(void)
 	byte MaxZoomMobileCode[] = { 0x50, 0xEB, 0x11, 0x68, 0x00, 0x80, 0x3B, 0x44, 0x8B, 0xCE };
 
 	byte SkillCancelCode[] = { 0x85, 0xC0, 0x74, 0x1D, 0x6A, 0x00, 0x6A, 0x42 };
+	
+	byte SkillTypeBaseCode[] = { 0x8D, 0x04, 0xB6, 0x5E, 0xC1, 0xE0, 0x05,0x05 };
 
 	byte AgentNameCode[] = { 0x57, 0x8B, 0x14, 0x81, 0x8B, 0x82, 0x04, 0x00, 0x00, 0x00,
 		0x8B, 0x78, 0x2C, 0xE8 };
@@ -84,6 +86,9 @@ Memory::Memory(void)
 		if(!memcmp(start, SkillLogCode, sizeof(SkillLogCode))){
 			SkillLogStart = start;
 			SkillLogReturn = SkillLogStart+8;
+		}
+		if(!memcmp(start,SkillTypeBaseCode,sizeof(SkillTypeBaseCode))){
+			SkillTypeBase = (byte*)(*(dword*)(start+8));
 		}
 		if(!memcmp(start, MapIdLocationCode, sizeof(MapIdLocationCode))){
 			MapIdLocation = (byte*)(*(dword*)(start+0x46));
@@ -168,6 +173,7 @@ Memory::Memory(void)
 			MaxZoomStill &&
 			MaxZoomMobile &&
 			SkillCancelStart &&
+			SkillTypeBase &&
 			SellSessionStart &&
 			SellItemFunction &&
 			BuyItemFunction &&
@@ -213,6 +219,20 @@ void Memory::WriteJMP(byte* location, byte* newFunction){
 		location[6] = 0xE0;
 	VirtualProtect(location, 7, dwOldProtection, &dwOldProtection);
 }
+bool Memory::bDataCompare(const unsigned char* pData, const unsigned char* bMask, const char* szMask){
+    for( ; *szMask; ++szMask, ++pData, ++bMask)
+        if(*szMask == 'x' && *pData != *bMask )
+            return false;
+
+    return (*szMask) == 0;
+}
+unsigned long Memory::FindPattern(unsigned char* bMask, char* szMask, unsigned long dw_Address, unsigned long dw_Len){
+    for(unsigned long i=0; i < dw_Len; i++)
+        if( bDataCompare( (unsigned char*)( dw_Address+i ),bMask,szMask) )
+            return (unsigned long)(dw_Address+i);
+
+    return 0;
+} 
 long Memory::MapId(){
 	return *(long*)(MapIdLocation);
 }
