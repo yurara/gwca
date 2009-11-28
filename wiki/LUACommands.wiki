@@ -151,3 +151,4 @@ This are the Commands (unsorted :P):
   * int GetMoneySelf()
   * int GetMoneyStorage()
   * void SetSkillbarSkill(int slot,int id)
+  * void ChangeSecondClass(dword newclass)
