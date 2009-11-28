@@ -142,6 +142,9 @@ Action-related commands:
 
   * CA_ReturnToOutpost (0x435): No parameters. "Presses" the Return To Outpost button after resigning.
 
+  * CA_ChangeSecondClass (0x436) : Parameter = ClassID
+
+  * CA_SetSkillbarSkill (0x437) : Parameter = Slot and Skillid
 
 Specific memory commands:
 
