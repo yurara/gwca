@@ -142,9 +142,11 @@ Action-related commands:
 
   * CA_ReturnToOutpost (0x435): No parameters. "Presses" the Return To Outpost button after resigning.
 
-  * CA_ChangeSecondClass (0x436) : Parameter = ClassID
+  * CA_GoAgent (0x436): Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy.
 
-  * CA_SetSkillbarSkill (0x437) : Parameter = Slot and Skillid
+  * CA_DonateFaction (0x437): No parameters. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc.
+
+  * CA_SetSkillbarSkill (0x438): Parameter = skill slot, parameter 2 = skill id.
 
 Specific memory commands:
 
@@ -319,6 +321,8 @@ Item related commands:
   * CA_AcceptAllItems (0x524): No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them!
 
   * CA_GetItemLastModifier (0x525): Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized.
+
+  * CA_FindItemByModelId (0x526): Parameter = item model id. Searches for the first occurence of the specified model id and returns integer with the item id or 0 if item wasn't found.
 
 Title related commands:
 
