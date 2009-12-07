@@ -62,8 +62,8 @@ public:
 		return pItem->modelId;
 	}
 
-	long FindIdKit(){
-		for(int i = 1;i < 5;i++){
+	long FindIdKit(){	
+		for(int i = 1;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -78,6 +78,22 @@ public:
 		return 0;
 	}
 
+	long GetItemByModelId(long model){
+		for(int i = 1;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->modelId == model){ return pCurrentItem->id; }
+			}
+		}
+		return 0;
+	}
+
 	Bag* GetBagPtr(int iBag){
 		if(iBag < 1){ return 0; }
 		Bag* pBag = MySectionA->BagArrayPointer()[iBag];
@@ -87,7 +103,7 @@ public:
 	Item* GetItemPtr(int iBag, int iSlot){
 		Bag* pBag = GetBagPtr(iBag);
 		if(!pBag){ return 0; }
-		if(iSlot > pBag->slots){ return 0; }
+		if(iSlot > pBag->slots || iSlot < 1){ return 0; }
 
 		Item** pItems = pBag->itemArray;
 		Item* pItem = pItems[(iSlot - 1)];

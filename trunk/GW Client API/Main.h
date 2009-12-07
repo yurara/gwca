@@ -24,7 +24,12 @@ struct Bag;
 struct Item;
 struct ItemExtra;
 
-template <typename T> T ReadPtrChain(dword pBase, long pOffset1 = 0, long pOffset2 = 0, long pOffset3 = 0, long pOffset4 = 0);
+template <typename T> T ReadPtrChain(
+									 dword pBase = 0,
+									 long pOffset1 = 0,
+									 long pOffset2 = 0,
+									 long pOffset3 = 0,
+									 long pOffset4 = 0);
 
 #define maxAgent *(unsigned int*)AgentArrayMaxPtr
 #define mapLoading *(long*)(CurrentTarget+0x410)
@@ -50,6 +55,7 @@ void TargetNearestFoe();
 void TargetNearestAlly();
 void TargetNearestItem();
 void TargetCalledTarget();
+void GoAgent(long agentId);
 void UseHeroSkill(long HeroId, long SkillNumber, long Target);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
