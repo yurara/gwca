@@ -40,6 +40,7 @@ void AddNpc(long NpcId);
 void KickNpc(long NpcId);
 void TravelGH();
 void LeaveGH();
+void SetSkillbarSkill(long slot, long skillId);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

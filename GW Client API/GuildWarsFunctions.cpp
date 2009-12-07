@@ -277,6 +277,15 @@ void LeaveGH(){
 	SendPacket(newPak);
 }
 
+void SetSkillbarSkill(long slot, long skillId){
+	NEWPAK(53,14);
+	newPak->Set<dword>(4, myId);
+	newPak->Set<dword>(8, slot-1);
+	newPak->Set<dword>(12, skillId);
+	newPak->Set<dword>(16, 0);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

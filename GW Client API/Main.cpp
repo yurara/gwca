@@ -187,7 +187,7 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x404: //Check if skill is recharging : Return int/long
 			ReloadSkillbar();
 			if(MySkillbar==NULL){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, MySkillbar->Skill[MsgWParam-1].Recharge, 0);
+			PostMessage((HWND)MsgLParam, 0x500, (MySkillbar->Skill[MsgWParam-1].Recharge), 0);
 			break;
 		case 0x405: //Check adrenaline points of a skill : Return int/long
 			ReloadSkillbar();
@@ -438,6 +438,18 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x435: //Send "Return to Outpost" packet : No return
 			ReturnToOutpost();
+			break;
+		case 0x436: //Go to target : No return
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
+			GoAgent(MsgWParam);
+			break;
+		case 0x437: //Donate faction : No return
+			DonateFaction();
+			break;
+		case 0x438: //Set skillbar skill : No return
+			SetSkillbarSkill(MsgWParam, MsgLParam);
 			break;
 
 		//SectionA related commands
@@ -961,6 +973,10 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->extraItemInfo->lastModifier,
 				(LPARAM)MyItemManager->GetItemPtr(CurrentBag, MsgWParam)->customized);
 			break;
+		case 0x526: //Find item by item model id : Return int/long
+			if(MsgWParam==NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemByModelId(MsgWParam), 0);
+			break;
 
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
@@ -1124,6 +1140,16 @@ void TargetCalledTarget(){
 		MOV EAX,TargetFunctions
 		ADD EAX,0x115
 		CALL EAX
+	}
+}
+
+void GoAgent(long agentId){
+	byte* pGoAgent = (byte*)((TargetFunctions - 0x616) + *(dword*)(TargetFunctions - 0x616) + 4);
+
+	_asm {
+		MOV ECX,agentId
+		MOV EDX,1
+		CALL pGoAgent
 	}
 }
 

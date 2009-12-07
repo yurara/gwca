@@ -63,7 +63,7 @@ struct Agent {
 	long ModelAnimation; //Id of the current animation
 	byte unknown20[32];
 	word Allegiance; //0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet
-	word WeaponType; //1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand
+	word WeaponType; //1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand, 12=staff, 14=staff
 	//Offset +0x1B4
 	word Skill; //0 = not using a skill. Anything else is the Id of that skill
 };

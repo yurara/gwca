@@ -9,48 +9,47 @@
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping"
 
 ; The constants
-Global Enum $CA_GETCURRENTTARGET = 0x401, $CA_GETMYID, $CA_CASTING, $CA_SKILLRECHARGE, $CA_SKILLADRENALINE, _
-			$CA_STOREVAR, $CA_SETLOGANDHWND, $CA_GETAGENTANDTARGETPTR, $CA_GETSKILLBARSKILLID, $CA_GETMYMAXHP, $CA_GETMYMAXENERGY, $CA_GETBUILDNUMBER, _
-			$CA_CHANGEMAXZOOM, $CA_GETLASTDIALOGID, $CA_SETENGINEHOOK, _
-			$CA_ATTACK = 0x410, $CA_MOVE, $CA_USESKILL, _
-			$CA_CHANGEWEAPONSET, $CA_ZONEMAP, $CA_DROPGOLD, $CA_GONPC, $CA_GOPLAYER, $CA_GOSIGNPOST, $CA_USEATTACKSKILL, _
-			$CA_ENTERCHALLENGE, $CA_OPENCHEST, $CA_SETEVENTSKILLMODE, $CA_USESKILLBARSKILL, $CA_PICKUPITEM, _
-			$CA_USESKILLBARATTACKSKILL, $CA_DIALOG, $CA_CHANGETARGET, $CA_STATUSBOT, $CA_TARGETNEARESTFOE, $CA_TARGETNEARESTALLY, _
-			$CA_TARGETNEARESTITEM, $CA_STATUSDELAY, $CA_TARGETCALLEDTARGET, $CA_USEHERO1SKILL, $CA_USEHERO2SKILL, $CA_USEHERO3SKILL, $CA_STATUSMISS, _
-			$CA_CANCELACTION, $CA_STATUSTAB, $CA_GETNAMEPTR, $CA_COMMANDHERO1, $CA_COMMANDHERO2, $CA_COMMANDHERO3, $CA_COMMANDALL, $CA_CHANGEDISTRICT, _
-			$CA_RESIGN, $CA_RETURNTOOUTPOST,$CA_CHANGESECONDCLASS,$CA_SETSKILLBARSKILL _
-			$CA_GETMAPLOADING = 0x440, $CA_GETMAPID, $CA_GETPING, $CA_GETLOGGEDIN, $CA_GETDEAD, $CA_GETBALTHFACTION, $CA_GETKURZFACTION, $CA_GETLUXONFACTION, _
-			$CA_GETTITLETREASURE, $CA_GETTITLELUCKY, $CA_GETTITLEUNLUCKY, $CA_GETTITLEWISDOM, _
-			$CA_GETAGENTEXIST = 0x450, $CA_GETPROFESSIONS, $CA_GETPLAYERNUMBER, _
-			$CA_GETHP, $CA_GETROTATION, _
-			$CA_GETSKILL, $CA_GETCOORDS, $CA_GETWEAPONSPEEDS, $CA_GETSPIRITRANGE, $CA_GETTEAMID, $CA_GETCOMBATMODE, _
-			$CA_GETMODELMODE, $CA_GETHPPIPS, $CA_GETEFFECTS, $CA_GETHEX, $CA_GETMODELANIMATION, $CA_GETENERGY, $CA_GETAGENTPTR, _
-			$CA_GETTYPE, $CA_GETLEVEL, $CA_GETNAMEPROPERTIES, $CA_GETMAXID, $CA_GETMYNEARESTAGENT, _
-			$CA_GETMYDISTANCETOAGENT, $CA_GETNEARESTAGENTTOAGENT, $CA_GETDISTANCEFROMAGENTTOAGENT, $CA_GETNEARESTAGENTTOAGENTEX, _
-			$CA_GETMODELSTATE, $CA_GETISATTACKING, $CA_GETISKNOCKEDDOWN, $CA_GETISMOVING, $CA_GETISDEAD, $CA_GETISCASTING, _
-			$CA_GETFIRSTAGENTBYPLAYERNUMBER, $CA_GETALLEGIANCE, $CA_GETNEARESTENEMYTOAGENTEX, $CA_GETISATTACKEDMELEE, $CA_GETNEARESTITEMTOAGENTEX, _
-			$CA_GETNEARESTAGENTBYPLAYERNUMBER, $CA_GETSPEED, $CA_GETNEARESTENEMYTOAGENTBYALLEGIANCE, $CA_GETNEARESTALIVEENEMYTOAGENT, _
-			$CA_GETWEAPONTYPE, $CA_GETNEARESTSIGNPOSTTOAGENT, $CA_GETNEARESTNPCTOAGENTBYALLEGIANCE, $CA_GETNEARESTAGENTTOCOORDS, $CA_GETVARS, _
-			$CA_GETNEARESTNPCTOCOORDS, _
-			$CA_GETGOLD = 0x510, $CA_GETBAGSIZE, $CA_GETBACKPACKITEMID, $CA_GETBELTPOUCHITEMID, $CA_GETBAG1ITEMID, $CA_GETBAG2ITEMID, $CA_GETEQUIPMENTPACKITEMID, _
-			$CA_GETIDKIT, $CA_IDENTIFYITEM, $CA_IDENTIFYITEMBYID, $CA_DEPOSITGOLD, $CA_WITHDRAWGOLD, $CA_SELLITEM, $CA_SELLITEMBYID, _
-			$CA_BUYIDKIT, $CA_BUYSUPERIORIDKIT, $CA_PREPAREMOVEITEM, $CA_MOVEITEM, $CA_GETBACKPACKITEMINFO, $CA_GETBELTPOUCHITEMINFO, _
-			$CA_GETBAG1ITEMINFO, $CA_GETBAG2ITEMINFO, $CA_GETEQUIPMENTPACKITEMINFO, $CA_USEITEM, $CA_USEITEMBYID, $CA_DROPITEM, $CA_DROPITEMBYID, _
-			$CA_ACCEPTALLITEMS, $CA_GETSTORAGE1ITEMID, $CA_GETSTORAGE2ITEMID, $CA_GETSTORAGE3ITEMID, $CA_GETSTORAGE4ITEMID, _
-			$CA_GETSTORAGE1ITEMINFO, $CA_GETSTORAGE2ITEMINFO, $CA_GETSTORAGE3ITEMINFO, $CA_GETSTORAGE4ITEMINFO, _
-			$CA_GETTITLESUNSPEAR = 0x550, $CA_GETTITLELIGHTBRINGER, $CA_GETTITLEVANGUARD, $CA_GETTITLENORN, $CA_GETTITLEASURA, $CA_GETTITLEDELRIMOR, _
-			$CA_GETTITLENORTHMASTERY, $CA_GETTITLEDRUNKARD, $CA_GETTITLESWEET, $CA_GETTITLEPARTY, $CA_GETTITLECOMMANDER, $CA_GETTITLELUXON, $CA_GETTITLEKURZICK, _
-			$CA_ADDHERO = 0x580, $CA_KICKHERO, $CA_SWITCHMODE, $CA_ADDNPC, $CA_KICKNPC, $CA_TRAVELGH, $CA_LEAVEGH, $CA_DONATEFACTION
+Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, _
+			$CA_StoreVar, $CA_SetLogAndHwnd, $CA_GetAgentAndTargetPtr, $CA_GetSkillbarSkillId, $CA_GetMyMaxHP, $CA_GetMyMaxEnergy, $CA_GetBuildNumber, _
+			$CA_ChangeMaxZoom, $CA_GetLastDialogId, $CA_SetEngineHook, _
+			$CA_Attack = 0x410, $CA_Move, $CA_UseSkill, _
+			$CA_ChangeWeaponSet, $CA_ZoneMap, $CA_DropGold, $CA_GoNpc, $CA_GoPlayer, $CA_GoSignpost, $CA_UseAttackSkill, _
+			$CA_EnterChallenge, $CA_OpenChest, $CA_SetEventSkillMode, $CA_UseSkillbarSkill, $CA_PickupItem, _
+			$CA_UseSkillbarAttackSkill, $CA_Dialog, $CA_ChangeTarget, $CA_StatusBot, $CA_TargetNearestFoe, $CA_TargetNearestAlly, _
+			$CA_TargetNearestItem, $CA_StatusDelay, $CA_TargetCalledTarget, $CA_UseHero1Skill, $CA_UseHero2Skill, $CA_UseHero3Skill, $CA_StatusMiss, _
+			$CA_CancelAction, $CA_StatusTab, $CA_GetNamePtr, $CA_CommandHero1, $CA_CommandHero2, $CA_CommandHero3, $CA_CommandAll, $CA_ChangeDistrict, _
+			$CA_Resign, $CA_ReturnToOutpost, $CA_GoAgent, $CA_DonateFaction, $CA_SetSkillbarSkill, _
+			$CA_GetMapLoading = 0x440, $CA_GetMapId, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead, $CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction, _
+			$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, _
+			$CA_GetAgentExist = 0x450, $CA_GetProfessions, $CA_GetPlayerNumber, _
+			$CA_GetHP, $CA_GetRotation, _
+			$CA_GetSkill, $CA_GetCoords, $CA_GetWeaponSpeeds, $CA_GetSpiritRange, $CA_GetTeamId, $CA_GetCombatMode, _
+			$CA_GetModelMode, $CA_GetHpPips, $CA_GetEffects, $CA_GetHex, $CA_GetModelAnimation, $CA_GetEnergy, $CA_GetAgentPtr, _
+			$CA_GetType, $CA_GetLevel, $CA_GetNameProperties, $CA_GetMaxId, $CA_GetMyNearestAgent, _
+			$CA_GetMyDistanceToAgent, $CA_GetNearestAgentToAgent, $CA_GetDistanceFromAgentToAgent, $CA_GetNearestAgentToAgentEx, _
+			$CA_GetModelState, $CA_GetIsAttacking, $CA_GetIsKnockedDown, $CA_GetIsMoving, $CA_GetIsDead, $CA_GetIsCasting, _
+			$CA_GetFirstAgentByPlayerNumber, $CA_GetAllegiance, $CA_GetNearestEnemyToAgentEx, $CA_GetIsAttackedMelee, $CA_GetNearestItemToAgentEx, _
+			$CA_GetNearestAgentByPlayerNumber, $CA_GetSpeed, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent, _
+			$CA_GetWeaponType, $CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, $CA_GetVars, _
+			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, _
+			$CA_GetGold = 0x510, $CA_GetBagSize, $CA_SetBag, $CA_GetItemId, _
+			$CA_GetIdKit, $CA_IdentifyItem, $CA_IdentifyItemById, $CA_DepositGold, $CA_WithdrawGold, $CA_SellItem, $CA_SellItemById, _
+			$CA_BuyIdKit, $CA_BuySuperiorIdKit, $CA_PrepareMoveItem, $CA_MoveItem, $CA_GetItemInfo, _
+			$CA_UseItem, $CA_UseItemById, $CA_DropItem, $CA_DropItemById, _
+			$CA_AcceptAllItems, $CA_GetItemLastModifier, $CA_FindItemByModelId, _
+			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
+			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick, _
+			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
 
-Global Enum $BAG_BACKPACK, $BAG_BELTPOUCH, $BAG_BAG1, $BAG_BAG2, $BAG_EQUIPMENTPACK, $BAG_UNCLAIMEDITEMS = 7, $BAG_STORAGE1, $BAG_STORAGE2, _
-			$BAG_STORAGE3, $BAG_STORAGE4
+Global Enum $BAG_BackPack = 1, $BAG_BeltPouch, $BAG_Bag1, $BAG_Bag2, $BAG_EquipmentPack, $BAG_UnclaimedItems = 7, $BAG_Storage1, $BAG_Storage2, _
+			$BAG_Storage3, $BAG_Storage4, $BAG_Storage5, $BAG_Storage6, $BAG_Storage7, $BAG_Storage8, $BAG_StorageAnniversary
 
-Global Enum $HERO_NORGU = 1, $HERO_GOREN, $HERO_TAHLKORA, $HERO_MASTEROFWHISPERS, $HERO_ACOLYTEJIN, $HERO_KOSS, $HERO_DUNKORO, $HERO_ACOLYTESOUSUKE, $HERO_MELONNI, _
-			$HERO_ZHEDSHADOWHOOF, $HERO_GENERALMORGAHN, $HERO_MARGRIDTHESLY, $HERO_OLIAS = 14, $HERO_RAZAH, $HERO_MOX, $HERO_JORA = 18, $HERO_PYREFIERCESHOT, _
-			$HERO_LIVIA = 21, $HERO_KAHMU, $HERO_GWEN, $HERO_XANDRA, $HERO_VEKK, $HERO_OGDEN
+Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers, $HERO_AcolyteJin, $HERO_Koss, $HERO_Dunkoro, $HERO_AcolyteSousuke, $HERO_Melonni, _
+			$HERO_ZhedShadowhoof, $HERO_GeneralMorgahn, $HERO_MargridTheSly, $HERO_Olias = 14, $HERO_Razah, $HERO_MOX, $HERO_Jora = 18, $HERO_PyreFierceshot, _
+			$HERO_Livia = 21, $HERO_Kahmu, $HERO_Gwen, $HERO_Xandra, $HERO_Vekk, $HERO_Ogden
 
 ; VARIABLES
 
@@ -60,6 +59,7 @@ Global $cbType = "int" ;What to read the callback values as
 Global $cbVar[2] ;Array for callback wParam and lParam
 Global $sGW = "Guild Wars -" ;Name of window
 Global $cGUI = 0 ;Init GUI hwnd var
+Global $bGWCA_INTERNAL = False ;Is set to True when inside a Cmd() or CmdCB() call
 
 ; FUNCTIONS
 
@@ -97,16 +97,20 @@ Func WndCallback($hwnd, $msg, $wparam, $lparam)
 EndFunc
 
 Func Cmd($uMsg, $wparam = 0, $lparam = 0)
+	$bGWCA_INTERNAL = True
 	$cbVar[0] = ""
 	$cbVar[1] = ""
 	DllCall("user32.dll", "lparam", "PostMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
+	$bGWCA_INTERNAL = False
 EndFunc
 
 Func CmdCB($uMsg, $wparam = 0)
+	$bGWCA_INTERNAL = True
 	$cbVar[0] = ""
 	$cbVar[1] = ""
 	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $cGUI)
 	If $cbVar[0] = "" AND $cbVar[1] = "" Then SetError(-1)
+	$bGWCA_INTERNAL = False
 	Return $cbVar
 EndFunc
 
@@ -178,21 +182,62 @@ Func PickupItems($iItems = -1, $fMaxDistance = 1012)
 
 	$cbType = "int"
 
-	$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+	$tDeadlock = TimerInit()
 	Do
-		If $aItem[0] = 0 OR _IntToFloat($aItem[1]) > $fMaxDistance Then ExitLoop
+		$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
+		If $aItem[0] = 0 OR _IntToFloat($aItem[1]) > $fMaxDistance OR TimerDiff($tDeadlock) > 30000 Then ExitLoop
 
 		Cmd($CA_PICKUPITEM, $aItem[0])
+		$tDeadlock = TimerInit()
 		Do
 			Sleep(500)
 			CmdCB($CA_GETAGENTEXIST, $aItem[0])
+			If TimerDiff($tDeadlock) > 5000 Then ContinueLoop 2
 		Until $cbVar[0] = 0
 
 		$iItemsPicked += 1
-		$aItem = CmdCB($CA_GETNEARESTITEMTOAGENTEX, -2)
-	Until $aItem[0] = 0 OR $iItemsPicked = $iItems
+	Until $iItemsPicked = $iItems
 
 	$cbType = $oldCbType
+EndFunc
+
+Func GetItemId($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	CmdCB($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemId, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar
+EndFunc
+
+Func GetItemInfo($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	CmdCB($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemInfo, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar
+EndFunc
+
+Func GetItemLastModifier($iBag, $iSlot)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	CmdCB($CA_SetBag, $iBag)
+	CmdCB($CA_GetItemLastModifier, $iSlot)
+
+	$cbType = $oldCbType
+
+	Return $cbVar
 EndFunc
 
 ; END OF FILE
