@@ -57,6 +57,7 @@ void TargetNearestItem();
 void TargetCalledTarget();
 void GoAgent(long agentId);
 void UseHeroSkill(long HeroId, long SkillNumber, long Target);
+void UseSkillNew(long SkillId, long Target, long Event);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
 void SetEngineHook(int Enable);
