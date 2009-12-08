@@ -41,6 +41,7 @@ byte* MapIdLocation = NULL;
 byte* DialogStart = NULL;
 byte* DialogReturn = NULL;
 byte* EngineStart = NULL;
+byte* SkillTypeBase = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -53,6 +54,7 @@ wchar_t* pName;
 long MoveItemId = NULL;
 long TmpVariable = NULL;
 long CurrentBag = 1;
+SkillType* tmpSkillType = NULL;
 
 long SellSessionId = NULL;
 long LastDialogId = 0;
@@ -256,9 +258,12 @@ void _declspec(naked) CustomMsgHandler(){
 			MovePlayer(MsgFloat, MsgFloat2);
 			break;
 		case 0x412: //Use skill : No return
+			ReloadSkillbar();
+			if(MySkillbar == NULL){break;}
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
 			if(MsgLParam == -2){MsgLParam = myId;}
-			UseSkill(MsgWParam, MsgLParam, MsgEvent);
+			MsgInt = MySkillbar->Skill[MsgWParam-1].Id;
+			UseSkillNew(MsgInt, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
 			break;
 		case 0x413: //Change weapon set : No return
 			ChangeWeaponSet(MsgWParam-1);
@@ -285,8 +290,12 @@ void _declspec(naked) CustomMsgHandler(){
 			GoSignpost(MsgWParam);
 			break;
 		case 0x419: //Use attack skill : No return
+			ReloadSkillbar();
+			if(MySkillbar == NULL){break;}
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
-			UseAttackSkill(MsgWParam, MsgLParam, MsgEvent);
+			if(MsgLParam == -2){MsgLParam = myId;}
+			MsgInt = MySkillbar->Skill[MsgWParam-1].Id;
+			UseSkillNew(MsgInt, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
 			break;
 		case 0x41A: //Enter challenge mission : No return
 			EnterChallenge();
@@ -299,10 +308,11 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x41D: //Use skillbar skill : No return
 			ReloadSkillbar();
+			if(MySkillbar == NULL){break;}
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
 			if(MsgLParam == -2){MsgLParam = myId;}
-			if(MySkillbar==NULL){RESPONSE_INVALID;}
-			UseSkill(MySkillbar->Skill[MsgWParam-1].Id, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
+			MsgInt = MySkillbar->Skill[MsgWParam-1].Id;
+			UseSkillNew(MsgInt, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
 			break;
 		case 0x41E: //Pick up item : No return
 			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
@@ -310,9 +320,11 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x41F: //Use skillbar attack skill : No return
 			ReloadSkillbar();
+			if(MySkillbar == NULL){break;}
 			if(MsgLParam == -1){MsgLParam = *(long*)CurrentTarget;}
-			if(MySkillbar==NULL){RESPONSE_INVALID;}
-			UseAttackSkill(MySkillbar->Skill[MsgWParam-1].Id, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
+			if(MsgLParam == -2){MsgLParam = myId;}
+			MsgInt = MySkillbar->Skill[MsgWParam-1].Id;
+			UseSkillNew(MsgInt, MsgLParam, MySkillbar->Skill[MsgWParam-1].Event);
 			break;
 		case 0x420: //Dialog packet : No return
 			Dialog(MsgWParam);
@@ -450,6 +462,10 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x438: //Set skillbar skill : No return
 			SetSkillbarSkill(MsgWParam, MsgLParam);
+			break;
+		case 0x439: //Change second profession : No return
+			if(MsgWParam < 1 || MsgWParam > 10){break;}
+			ChangeSecondProfession(MsgWParam);
 			break;
 
 		//SectionA related commands
@@ -1162,6 +1178,16 @@ void UseHeroSkill(long HeroId, long SkillNumber, long Target){
 	}
 }
 
+void UseSkillNew(long SkillId, long Target, long Event){
+	tmpSkillType = (SkillType*)(SkillTypeBase + (MsgInt * 160));
+	if(tmpSkillType == NULL){return;}
+	if(tmpSkillType->Type == GW_SKILL_TYPE_ATTACKS){
+		UseAttackSkill(MsgInt, MsgLParam, Event);
+	}else{
+		UseSkill(MsgInt, MsgLParam, Event);
+	}
+}
+
 bool CompareAccName(wchar_t* cmpName){
 	if(wcscmp(cmpName, MySectionA->Email()) == NULL)
 		return true;
@@ -1393,6 +1419,8 @@ void FindOffsets(){
 
 	byte EngineCode[] = { 0x53, 0x56, 0xDF, 0xE0, 0xF6, 0xC4, 0x41 };
 
+	byte SkillTypeBaseCode[] = { 0x8D, 0x04, 0xB6, 0x5E, 0xC1, 0xE0, 0x05, 0x05 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1481,6 +1509,9 @@ void FindOffsets(){
 			EngineStart = start+0x65;
 			memcpy(EngineHookSave, EngineStart, 0x20);
 		}
+		if(!memcmp(start, SkillTypeBaseCode, sizeof(SkillTypeBaseCode))){
+			SkillTypeBase = (byte*)(*(dword*)(start+8));
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1505,7 +1536,8 @@ void FindOffsets(){
 			DeadLocation &&
 			BasePointerLocation &&
 			DialogStart &&
-			EngineStart){
+			EngineStart &&
+			SkillTypeBase){
 			return;
 		}
 		start++;
@@ -1679,6 +1711,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("EngineStart");
 				return false;
 			}
+			if(!SkillTypeBase){
+				InjectErr("SkillTypeBase");
+				return false;
+			}
 			
 			/*
 			AllocConsole();
@@ -1716,6 +1752,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("DialogStart=0x%06X\n", DialogStart);
 			printf("DialogReturn=0x%06X\n", DialogReturn);
 			printf("EngineStart=0x%06X\n", EngineStart);
+			printf("SkillTypeBase=0x%06X\n", SkillTypeBase);
 			*/
 			break;
 
