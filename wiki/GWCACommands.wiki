@@ -70,7 +70,7 @@ Action-related commands:
 
   * CA_Move (0x411): Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command.
 
-  * CA_UseSkill (0x412): Obsolete, use CA_UseSkillbarSkill instead.
+  * CA_UseSkill (0x412): Parameter = skill slot, parameter 2 = target id. Works on all skills including attack skills. Remember that some skills that target yourself may require that specified (if so, use -2 as target id). Current target = -1.
 
   * CA_ChangeWeaponSet (0x413): Parameter = weapon slot, changes weapon set.
 
@@ -84,7 +84,7 @@ Action-related commands:
 
   * CA_GoSignpost (0x418): Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name).
 
-  * CA_UseAttackSkill (0x419): Obsolete, use CA_UseSkillbarAttackSkill instead.
+  * CA_UseAttackSkill (0x419): Obsolete, please refer to CA_UseSkill.
 
   * CA_EnterChallenge (0x41A): No parameters, enters the challenge if you're in a Challenge Mission outpost.
 
@@ -92,11 +92,11 @@ Action-related commands:
 
   * CA_SetEventSkillMode (0x41C): Obsolete, don't use it.
 
-  * CA_UseSkillbarSkill (0x41D): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseSkillbarSkill (0x41D): Obsolete, please refer to CA_UseSkill.
 
   * CA_PickupItem (0x41E): Parameter = id of item, picks up the specified item.
 
-  * CA_UseSkillbarAttackSkill (0x41F): Parameter = skillslot, parameter 2 = id of target.
+  * CA_UseSkillbarAttackSkill (0x41F): Obsolete, please refer to CA_UseSkill.
 
   * CA_Dialog (0x420): Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId
 
@@ -147,6 +147,9 @@ Action-related commands:
   * CA_DonateFaction (0x437): No parameters. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc.
 
   * CA_SetSkillbarSkill (0x438): Parameter = skill slot, parameter 2 = skill id.
+
+  * CA_ChangeSecondProfession (0x439): Parameter = profession number. Follows this enumeration 0-10 = { None,W,R,Mo,N,Me,E,A,Rt,P,D }.
+
 
 Specific memory commands:
 
