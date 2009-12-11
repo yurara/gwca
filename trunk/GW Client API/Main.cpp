@@ -42,6 +42,7 @@ byte* DialogStart = NULL;
 byte* DialogReturn = NULL;
 byte* EngineStart = NULL;
 byte* SkillTypeBase = NULL;
+byte* WinHandle = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -1264,14 +1265,14 @@ void SendPacketQueueThread(){
 			std::vector<CPacket*>::iterator itrPak = PacketQueue.begin();
 			CPacket* CurPacket = *itrPak;
 
-			dword testValue = 0x99;
-			_asm {
-				MOV ECX, FlagLocation
-				MOV ECX, DWORD PTR DS:[ECX]
-				MOVZX ECX, BYTE PTR DS:[ECX+8]
-				MOV testValue, ECX
-			}
-			if((testValue & 1)){
+			//dword testValue = 0x99;
+			//_asm {
+			//	MOV ECX, FlagLocation
+			//	MOV ECX, DWORD PTR DS:[ECX]
+			//	MOVZX ECX, BYTE PTR DS:[ECX+8]
+			//	MOV testValue, ECX
+			//}
+			//if((testValue & 1)){
 				{
 					byte* buffer = CurPacket->Buffer;
 					dword psize = CurPacket->Size;
@@ -1288,7 +1289,7 @@ void SendPacketQueueThread(){
 
 				delete [] CurPacket->Buffer;
 				delete CurPacket;
-			}
+			//}
 
 			PacketQueue.erase(itrPak);
 		}
@@ -1342,15 +1343,15 @@ void SkillLogQueueThread(){
 			SkillCancelQueue.clear();
 		}
 		
-		if(MsgHwnd){
+		if(*(HWND*)WinHandle){
 			if((GetTickCount() - tTicks) > 5000){
 				tTicks = GetTickCount();
 
 				if(!MySectionA->Name()[0]){
-					SetWindowTextW(MsgHwnd, L"Guild Wars");
+					SetWindowTextW(*(HWND*)WinHandle, L"Guild Wars");
 				}else{
 					swprintf(sWindowText, L"Guild Wars - %s", MySectionA->Name());
-					SetWindowTextW(MsgHwnd, sWindowText);
+					SetWindowTextW(*(HWND*)WinHandle, sWindowText);
 				}
 			}
 		}
@@ -1420,6 +1421,8 @@ void FindOffsets(){
 	byte EngineCode[] = { 0x53, 0x56, 0xDF, 0xE0, 0xF6, 0xC4, 0x41 };
 
 	byte SkillTypeBaseCode[] = { 0x8D, 0x04, 0xB6, 0x5E, 0xC1, 0xE0, 0x05, 0x05 };
+
+	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
 
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -1512,6 +1515,9 @@ void FindOffsets(){
 		if(!memcmp(start, SkillTypeBaseCode, sizeof(SkillTypeBaseCode))){
 			SkillTypeBase = (byte*)(*(dword*)(start+8));
 		}
+		if(!memcmp(start, WinHandleCode, sizeof(WinHandleCode))){
+			WinHandle = (byte*)(*(dword*)(start+7));
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1537,7 +1543,8 @@ void FindOffsets(){
 			BasePointerLocation &&
 			DialogStart &&
 			EngineStart &&
-			SkillTypeBase){
+			SkillTypeBase &&
+			WinHandle){
 			return;
 		}
 		start++;
@@ -1713,6 +1720,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			}
 			if(!SkillTypeBase){
 				InjectErr("SkillTypeBase");
+				return false;
+			}
+			if(!WinHandle){
+				InjectErr("WinHandle");
 				return false;
 			}
 			
