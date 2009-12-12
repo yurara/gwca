@@ -265,6 +265,14 @@ Func SkillLogCallback($hwnd, $msg, $wparam, $lparam)
 			Next
 		EndIf
 
+		;If $lock <> 0 AND GUICtrlRead($checkLockmode) = 4 AND $bFound = 1 Then
+		;	If $lock <> DllStructGetData($skillStruct, "AgentId") Then $bFound = 0
+		;ElseIf $lock = 0 AND GUICtrlRead($checkLockmode) = 4 AND $bFound = 1 Then
+		;	$bFound = 0
+		;ElseIf GUICtrlRead($checkLockmode) = 1 AND $bFound = 2 Then
+		;	If $lock = 0 OR $lock <> DllStructGetData($skillStruct, "AgentId") Then $bFound = 0
+		;EndIf
+
 		If GUICtrlRead($checkLockmode) = 1 AND $bFound = 2 Then
 			If $lock = 0 OR $lock <> DllStructGetData($skillStruct, "AgentId") Then $bFound = 0
 		ElseIf GUICtrlRead($checkLockmode) = 4 Then
@@ -441,6 +449,19 @@ EndFunc
 
 Func LockOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
+		#cs
+		$cbType = "int"
+		CmdCB($CA_GETCURRENTTARGET)
+		If @error OR $cbVar[0] = 0 Then
+			;MsgBox(48, "No target", "Either Guild Wars ain't running, or you're simply not targetting anything!")
+			$lock = 0
+			GUICtrlSetData($itemLock, "Lock off")
+		Else
+			$lock = $cbVar[0]
+			GUICtrlSetData($itemLock, "Lock on")
+			Cmd($CA_STATUSBOT, 0, 1)
+		EndIf
+		#ce
 		Switch($lock)
 			Case 0
 				$cbType = "int"
