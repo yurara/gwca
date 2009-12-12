@@ -278,6 +278,8 @@ Agent info commands:
 
   * CA_GetLoginNumber (0x480): Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0.
 
+  * CA_GetNumberOfAgentsByPlayerNumber (0x481): Parameter = player/model number. Returns the number of agents within compass range with specified id.
+
 
 Item related commands:
 
