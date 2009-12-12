@@ -867,6 +867,10 @@ void _declspec(naked) CustomMsgHandler(){
 			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, Agents[MsgWParam]->LoginNumber, 0);
 			break;
+		case 0x481: //Get number of agents with certain player/model number : Return int/long
+			if(MsgWParam == NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, GetNumberOfAgentsByPlayerNumber(MsgWParam), 0);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -1360,7 +1364,7 @@ void SkillLogQueueThread(){
 
 void FindOffsets(){
 	byte* start = (byte*)0x00401000;
-	byte* end = (byte*)0x00DF0000;
+	byte* end = (byte*)0x00900000;
 
 	byte PacketSendCode[] = { 0x55, 0x8B, 0xEC, 0x83, 0xEC, 0x2C, 0x53, 0x56, 0x57, 0x8B,
 		0xF9, 0x85 };

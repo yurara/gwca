@@ -31,7 +31,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_GetFirstAgentByPlayerNumber, $CA_GetAllegiance, $CA_GetNearestEnemyToAgentEx, $CA_GetIsAttackedMelee, $CA_GetNearestItemToAgentEx, _
 			$CA_GetNearestAgentByPlayerNumber, $CA_GetSpeed, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent, _
 			$CA_GetWeaponType, $CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, $CA_GetVars, _
-			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, _
+			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, _
 			$CA_GetGold = 0x510, $CA_GetBagSize, $CA_SetBag, $CA_GetItemId, _
 			$CA_GetIdKit, $CA_IdentifyItem, $CA_IdentifyItemById, $CA_DepositGold, $CA_WithdrawGold, $CA_SellItem, $CA_SellItemById, _
 			$CA_BuyIdKit, $CA_BuySuperiorIdKit, $CA_PrepareMoveItem, $CA_MoveItem, $CA_GetItemInfo, _
@@ -188,11 +188,11 @@ Func PickupItems($iItems = -1, $fMaxDistance = 1012)
 		If $aItem[0] = 0 OR _IntToFloat($aItem[1]) > $fMaxDistance OR TimerDiff($tDeadlock) > 30000 Then ExitLoop
 
 		Cmd($CA_PICKUPITEM, $aItem[0])
-		$tDeadlock = TimerInit()
+		$tDeadlock2 = TimerInit()
 		Do
 			Sleep(500)
 			CmdCB($CA_GETAGENTEXIST, $aItem[0])
-			If TimerDiff($tDeadlock) > 5000 Then ContinueLoop 2
+			If TimerDiff($tDeadlock2) > 5000 Then ContinueLoop 2
 		Until $cbVar[0] = 0
 
 		$iItemsPicked += 1
@@ -238,6 +238,56 @@ Func GetItemLastModifier($iBag, $iSlot)
 	$cbType = $oldCbType
 
 	Return $cbVar
+EndFunc
+
+Func MoveToEx($x, $y, $random = 50)
+	Local $iBlocked = 0
+
+	$cbType = "int"
+	$mState = CmdCB($CA_GetMapLoading)
+
+	$cbType = "float"
+	MoveEx($x, $y, $random)
+
+	CmdCB($CA_GETCOORDS, -2)
+	Do
+		Sleep(250)
+		$oldCoords = $cbVar
+		$cbType = "int"
+		CmdCB($CA_GETDEAD)
+		If $cbVar[0] = 1 Then Return
+
+		$mStateOld = $mState
+		$mState = CmdCB($CA_GetMapLoading)
+		If $mState[0] <> $mStateOld[0] Then Return
+
+		$cbType = "float"
+		CmdCB($CA_GETCOORDS, -2)
+		If $oldCoords[0] = $cbVar[0] AND $oldCoords[1] = $cbVar[1] Then
+			$iBlocked += 1
+			MoveEx($x, $y, $random)
+		EndIf
+	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 250 OR $iBlocked > 20
+EndFunc
+
+Func ComputeDistanceEx($x1, $y1, $x2, $y2)
+	Return Sqrt(($y2 - $y1)^2 + ($x2 - $x1)^2)
+EndFunc
+
+Func UseSkillEx($iSkillSlot, $iTarget = 0)
+	$oldCbType = $cbType
+
+	$tDeadlock = TimerInit()
+	$cbType = "int"
+	Cmd($CA_USESKILLBARSKILL, $iSkillSlot, $iTarget)
+	Do
+		Sleep(250)
+		CmdCB($CA_GETDEAD)
+		If $cbVar[0] = 1 Then Return
+		CmdCB($CA_SKILLRECHARGE, $iSkillSlot)
+	Until $cbVar[0] <> 0 OR TimerDiff($tDeadlock) > 15000
+
+	$cbType = $oldCbType
 EndFunc
 
 ; END OF FILE
