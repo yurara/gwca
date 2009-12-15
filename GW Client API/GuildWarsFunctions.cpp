@@ -519,6 +519,7 @@ long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->HP = 0){continue;}
 		if(Agents[i]->PlayerNumber == playerNumber){lCount++;}
 	}
 	}
