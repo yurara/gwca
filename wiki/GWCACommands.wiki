@@ -170,7 +170,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetVars || 0x47E || Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though. ||
 || CA_GetNearestNpcToCoords || 0x47F || Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead. ||
 || CA_GetLoginNumber || 0x480 || Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0. ||
-|| CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of agents within compass range with specified id. ||
+|| CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
 
 ----
 
