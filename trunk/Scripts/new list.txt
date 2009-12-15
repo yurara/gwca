@@ -2380,3 +2380,81 @@
 3055|Pain (attack) (Signet of Spirits)
 3056|Pain (attack) (Signet of Spirits)
 3057|Pain (attack) (Signet of Spirits)
+3058|Unholy Feast (PvP)
+3059|Signet of Agony (PvP)
+3060|Escape (PvP)
+3061|Death Blossom (PvP)
+3062|Finale of Restoration (PvP)
+3063|Mantra of Resolve (PvP)
+3064|Lesser Hard Mode NPC Buff
+3065|Charm Animal
+3066|Charm Animal
+3067|Henchman
+3068|Charm Animal (Codex)
+3069|Agent of the Mad King
+3070|Sugar Rush (Agent of the Mad King)
+3071|Sticky Ground
+3072|Sugar Shock
+3073|The Mad King's Influence
+3074|Bone Spike
+3075|Flurry of Splinters
+3076|Everlasting Mobstopper (skill)
+3077|Weakened by Dhuum
+3078|Curse of Dhuum
+3079|Dhuum's Rest (Reaper skill)
+3080|Dhuum (skill)
+3081|Summon Champion
+3082|Summon Minions
+3083|Touch of Dhuum
+3084|Reaping of Dhuum
+3085|Judgment of Dhuum
+3086|Weight of Dhuum
+3087|Dhuum's Rest
+3088|Spiritual Healing
+3089|Encase Skeletal
+3090|Reversal of Death
+3091|Ghostly Fury
+3092|Henchman Form [Pudash]
+3093|Henchman Form [Dahlia]
+3094|Henchman Form [Disenmaedel]
+3095|Henchman Form [Errol Hyl]
+3096|Henchman Form [Lulu Xan]
+3097|Henchman Form [Tannaros]
+3098|Henchman Form [Cassie Santi]
+3099|Henchman Form [Redemptor Frohs]
+3100|Henchman Form [Julyia]
+3101|Henchman Form [Bellicus]
+3102|Henchman Form [Dirk Shadowrise]
+3103|Henchman Form [Vincent Evan]
+3104|Henchman Form [Luzy Fiera]
+3105|Henchman Form [Motoko Kai]
+3106|Henchman Form [Hinata]
+3107|Henchman Form [Kah Xan]
+3108|Henchman Form [Narcissia]
+3109|Henchman Form [Zen Siert]
+3110|Henchman Form [Blenkeh]
+3111|Henchman Form [Aurora Allesandra]
+3112|Henchman Form [Teena the Raptor]
+3113|Henchman Form [Lora Lanaya]
+3114|Henchman Form [Adepte]
+3115|Henchman Form [Haldibarn Earendul]
+3116|Henchman Form [Daky]
+3117|Henchman Form [Syn Spellstrike]
+3118|Henchman Form [Divinus Tutela]
+3119|Henchman Form [Blahks]
+3120|Henchman Form [Erick]
+3121|Henchman Form [Ghavin]
+3122|Henchman Form [Hobba Inaste]
+3123|Henchman Form [Bacchi Coi]
+3124|Henchman Form [Suzu]
+3125|Henchman Form [Rollo Lowlo]
+3126|Henchman Form [Fuu Rin]
+3127|Henchman Form [Nuno]
+3128|Henchman Form [Alsacien]
+3129|Henchman Form [Uto Wrotki]
+3130|Henchman Form [Khai Kemnebi]
+3131|Henchman Form [Cole]
+3133|Weight of Dhuum (2)
+3134|Spirit Form (underworld)
+3135|Spiritual Healing (2)
+3136|Ghostly Fury (2) 

@@ -1557,12 +1557,10 @@ void FindOffsets(){
 
 void WriteJMP(byte* location, byte* newFunction){
 	DWORD dwOldProtection;
-	VirtualProtect(location, 7, PAGE_EXECUTE_READWRITE, &dwOldProtection);
-		location[0] = 0xB8;
-		*((dword*)(location + 1)) = (dword)newFunction;
-		location[5] = 0xFF;
-		location[6] = 0xE0;
-	VirtualProtect(location, 7, dwOldProtection, &dwOldProtection);
+	VirtualProtect(location, 5, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+		location[0] = 0xE9;
+		*((dword*)(location + 1)) = (dword)(newFunction - location) - 5;
+	VirtualProtect(location, 5, dwOldProtection, &dwOldProtection);
 }
 
 void InjectErr(const char* lpzText){
