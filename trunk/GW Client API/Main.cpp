@@ -871,6 +871,9 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam == NULL){break;}
 			PostMessage((HWND)MsgLParam, 0x500, GetNumberOfAgentsByPlayerNumber(MsgWParam), 0);
 			break;
+		case 0x482: //Get number of alive enemy agents in total : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, GetNumberOfAliveEnemyAgents(), 0);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -997,6 +1000,14 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x526: //Find item by item model id : Return int/long
 			if(MsgWParam==NULL){break;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemByModelId(MsgWParam), 0);
+			break;
+		case 0x527: //Find next empty inventory/storage slot : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindEmptySlot(MsgWParam, 1), MyItemManager->FindEmptySlot(MsgWParam, 2));
+			break;
+		case 0x528: //Find next gold item in inventory/storage : Return int/long
+			if(MsgWParam==NULL){MsgWParam = 15;}
+			MsgInt = MyItemManager->FindNextGoldItem(MsgWParam);
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MyItemManager->GetItemPtr(MsgInt)->id);
 			break;
 
 		//Title related commands

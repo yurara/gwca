@@ -94,6 +94,40 @@ public:
 		return 0;
 	}
 
+	long FindEmptySlot(long startingBag, long mode){
+		for(int i = startingBag;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ 
+					if(mode == 1){ return i; }
+					if(mode == 2){ return j+1; }
+				}
+			}
+		}
+		return 0;
+	}
+
+	long FindNextGoldItem(long lastBag){
+		for(int i = 1;i < lastBag+1;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->extraItemInfo->rarity == 0x40){ return pCurrentItem->id; }
+			}
+		}
+		return 0;
+	}
+
 	Bag* GetBagPtr(int iBag){
 		if(iBag < 1){ return 0; }
 		Bag* pBag = MySectionA->BagArrayPointer()[iBag];

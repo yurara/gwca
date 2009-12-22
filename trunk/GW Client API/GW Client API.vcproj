@@ -133,6 +133,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\Graphics.dll"
 				GenerateDebugInformation="false"
+				GenerateMapFile="false"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
