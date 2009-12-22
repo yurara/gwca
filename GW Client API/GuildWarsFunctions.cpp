@@ -529,6 +529,21 @@ long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	return lCount;
 }
 
+long GetNumberOfAliveEnemyAgents(){
+	long lCount = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->HP == 0){continue;}
+		if(Agents[i]->Allegiance == 0x300){lCount++;}
+	}
+	}
+	__except(1) {
+		return lCount;
+	}
+	return lCount;
+}
+
 int IsAttackedMelee(long agentId){
 	if(Agents[agentId] == NULL){return -10;}
 
