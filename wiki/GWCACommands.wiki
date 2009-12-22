@@ -86,7 +86,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_CancelAction || 0x42C || No parameters, cancels your current action. Just like pressing ESC. ||
 || CA_StatusTab || 0x42D || Yay for obsolete. ||
 || CA_GetNamePtr || 0x42E || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
-|| CA_CommandHero1 || 0x42F || Parameters = X and Y floats packed of course. ||
+|| CA_CommandHero1 || 0x42F || Parameters = X and Y floats packed of course. To unflag, set X and Y to 0 like this: Cmd($CA_CommandHero1, 0, 0)||
 || CA_CommandHero2 || 0x430 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || 0x431 || Same as CA_COMMANDHERO1. ||
 || CA_CommandAll || 0x432 || Same as CA_COMMANDHERO1. ||
