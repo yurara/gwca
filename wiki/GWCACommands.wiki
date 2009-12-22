@@ -171,6 +171,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetNearestNpcToCoords || 0x47F || Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead. ||
 || CA_GetLoginNumber || 0x480 || Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0. ||
 || CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
+|| CA_GetNumberOfAliveEnemyAgents || 0x482 || No parameters. Returns the number of alive and visible enemy agents in total. ||
 
 ----
 
@@ -200,6 +201,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_AcceptAllItems || 0x524 || No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them! ||
 || CA_GetItemLastModifier || 0x525 || Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized. ||
 || CA_FindItemByModelId || 0x526 || Parameter = item model id. Searches for the first occurence of the specified model id and returns integer with the item id or 0 if item wasn't found. ||
+|| CA_FindEmptySlot || 0x527 || Parameter = bag index to start searching from. Returns integer with bag index and integer with item slot. This function also searches the storage. If any of the returns = 0, then no empty slots were found. ||
+|| CA_FindGoldItem || 0x528 || Optional parameter = bag index of last bag to search in. Searches from the backpack until (and including) the bag index supplied. If not set the function will search all bags including storage. The return is integer with item id of the gold item found and integer with the item's model id. If return value is 0 then no gold items were found. ||
 
 ----
 
