@@ -94,6 +94,44 @@ public:
 		return 0;
 	}
 
+	long GetItemPositionByItemId(long itemId, long mode){
+		for(int i = 1;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->id == itemId){
+					if(mode == 1){ return i; }
+					if(mode == 2){ return j+1; }
+				}
+			}
+		}
+		return 0;
+	}
+
+	long GetItemPositionByModelId(long modelId, long mode){
+			for(int i = 1;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->modelId == modelId){
+					if(mode == 1){ return i; }
+					if(mode == 2){ return j+1; }
+				}
+			}
+		}
+		return 0;
+	}
+
 	long FindEmptySlot(long startingBag, long mode){
 		for(int i = startingBag;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);
@@ -128,6 +166,25 @@ public:
 		return 0;
 	}
 
+	long GetItemPositionByRarity(byte rarity, long mode){
+		for(int i = 1;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->extraItemInfo->rarity == rarity){
+					if(mode == 1){ return i; }
+					if(mode == 2){ return j+1; }
+				}
+			}
+		}
+		return 0;
+	}
+
 	Bag* GetBagPtr(int iBag){
 		if(iBag < 1){ return 0; }
 		Bag* pBag = MySectionA->BagArrayPointer()[iBag];
@@ -145,7 +202,7 @@ public:
 	}
 
 	Item* GetItemPtr(long itemId){
-		for(int i = 1;i < 5;i++){
+		for(int i = 1;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
