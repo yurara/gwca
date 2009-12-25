@@ -1009,6 +1009,18 @@ void _declspec(naked) CustomMsgHandler(){
 			MsgInt = MyItemManager->FindNextGoldItem(MsgWParam);
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MyItemManager->GetItemPtr(MsgInt)->id);
 			break;
+		case 0x529: //Get item position by item id : Return int/long & int/long
+			if(MsgWParam==NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByItemId(MsgWParam, 1), MyItemManager->GetItemPositionByItemId(MsgWParam, 2));
+			break;
+		case 0x52A: //Get item position by model id : Return int/long & int/long
+			if(MsgWParam==NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByModelId(MsgWParam, 1), MyItemManager->GetItemPositionByModelId(MsgWParam, 2));
+			break;
+		case 0x52B: //Get item position by rarity : Return int/long & int/long
+			if(MsgWParam=NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByRarity(MsgWParam, 1), MyItemManager->GetItemPositionByRarity(MsgWParam, 2));
+			break;
 
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
@@ -1777,6 +1789,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("DialogReturn=0x%06X\n", DialogReturn);
 			printf("EngineStart=0x%06X\n", EngineStart);
 			printf("SkillTypeBase=0x%06X\n", SkillTypeBase);
+			printf("WinHandle=0x%06X\n", WinHandle);
 			*/
 			break;
 

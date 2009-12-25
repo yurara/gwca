@@ -47,6 +47,7 @@ extern AgentArray Agents;
 #include "Item.h"
 
 void SendPacket(CPacket* pak);
+void Login();
 void ReloadSkillbar();
 void SellItem(long itemId);
 void BuyItem(long id, long quantity, long value);
