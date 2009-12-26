@@ -885,7 +885,7 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x512: //Select bag to work with : No return
 			CurrentBag = MsgWParam;
 			break;
-		case 0x513: //Get current bag item id : Return int/long
+		case 0x513: //Get current bag item id and model id : Return int/long
 			if(!CurrentBag){break;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemId(CurrentBag, MsgWParam), MyItemManager->GetItemModelId(CurrentBag, MsgWParam));
 			break;
@@ -1020,6 +1020,20 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x52B: //Get item position by rarity : Return int/long & int/long
 			if(MsgWParam=NULL){break;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByRarity(MsgWParam, 1), MyItemManager->GetItemPositionByRarity(MsgWParam, 2));
+			break;
+		case 0x52C: //Get item model id by item id : Return int/long
+			if(MsgWParam==NULL){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemModelId(MsgWParam), 0);
+			break;
+		case 0x52D: //Get item rarity and quantity by item id : Return byte & byte
+			if(!MyItemManager->GetItemPtr(MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(MsgWParam)->extraItemInfo->rarity,
+				MyItemManager->GetItemPtr(MsgWParam)->quantity);
+			break;
+		case 0x52E: //Get item last modifier and customized : Return byte & wchar_t*
+			if(!MyItemManager->GetItemPtr(MsgWParam)){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(MsgWParam)->extraItemInfo->lastModifier,
+				(LPARAM)MyItemManager->GetItemPtr(MsgWParam)->customized);
 			break;
 
 		//Title related commands
