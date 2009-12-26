@@ -62,6 +62,13 @@ public:
 		return pItem->modelId;
 	}
 
+	long GetItemModelId(long itemId){
+		Item* pItem = GetItemPtr(itemId);
+		if(!pItem){ return 0; }
+
+		return pItem->modelId;
+	}
+
 	long FindIdKit(){	
 		for(int i = 1;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);

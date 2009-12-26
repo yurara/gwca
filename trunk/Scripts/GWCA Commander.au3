@@ -42,7 +42,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_GetTitleNorthMastery|$CA_GetTitleDrunkard|$CA_GetTitleSweet|$CA_GetTitleParty|$CA_GetTitleCommander|$CA_GetTitleLuxon|$CA_GetTitleKurzick|"& _
 					"$CA_AddHero|$CA_KickHero|$CA_SwitchMode|$CA_AddNpc|$CA_KickNpc|$CA_TravelGH|$CA_LeaveGH|$CA_GoAgent|$CA_DonateFaction|$CA_SetSkillbarSkill|"& _
 					"$CA_FindItemByModelId|$CA_ChangeSecondProfession|$CA_GetNumberOfAgentsByPlayerNumber|$CA_FindEmptySlot|$CA_FindGoldItem|"& _
-					"$CA_GetNumberOfAliveEnemyAgents|$CA_GetItemPositionByItemId|$CA_GetItemPositionByModelId|$CA_GetItemPositionByRarity")
+					"$CA_GetNumberOfAliveEnemyAgents|$CA_GetItemPositionByItemId|$CA_GetItemPositionByModelId|$CA_GetItemPositionByRarity|"& _
+					"$CA_GetItemModelIdById|$CA_GetItemInfoById|$CA_GetItemLastModifierById")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
