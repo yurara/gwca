@@ -206,6 +206,9 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemPositionByItemId || 0x529 || Parameter = item id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
 || CA_GetItemPositionByModelId || 0x52A || Parameter = item model id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
 || CA_GetItemPositionByRarity || 0x52B || Parameter = rarity (use constants declared in GWCAConstants.au3). Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
+|| CA_GetItemModelIdById || 0x52C || Parameter = item id. Returns the model id of the specified item. ||
+|| CA_GetItemInfoById ||0x52D || Parameter = item id. Returns the rarity and quantity of the specified item. ||
+|| CA_GetItemLastModifierById || 0x52E || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
 
 ----
 
