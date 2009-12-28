@@ -1111,7 +1111,11 @@ void _declspec(naked) CustomMsgHandler(){
 			FinishedLoading = false;
 			break;
 		case 0x588: //IsLoaded : Return bool/int
-			(FinishedLoading)?PostMessage((HWND)MsgLParam, 0x500, 1, 1):PostMessage((HWND)MsgLParam, 0x500, 1, 0);
+			if(FinishedLoading){
+				PostMessage((HWND)MsgLParam, 0x500, 1, 1);
+			}else{
+				PostMessage((HWND)MsgLParam, 0x500, 1, 0);
+			}
 			break;
 	}
 	
@@ -1478,8 +1482,46 @@ void FindOffsets(){
 	byte SkillTypeBaseCode[] = { 0x8D, 0x04, 0xB6, 0x5E, 0xC1, 0xE0, 0x05, 0x05 };
 
 	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
+/*
+007FD820   /$  55                PUSH EBP
+007FD821   |.  8BEC              MOV EBP,ESP
+007FD823   |.  83EC 30           SUB ESP,30
+007FD826   |.  8B81 BC010000     MOV EAX,DWORD PTR DS:[ECX+1BC]
+007FD82C   |.  8B89 C4010000     MOV ECX,DWORD PTR DS:[ECX+1C4]
+007FD832   |.  8945 D4           MOV [LOCAL.11],EAX
+007FD835   |.  8B45 08           MOV EAX,[ARG.1]
+007FD838   |.  56                PUSH ESI
+007FD839   |.  8BF2              MOV ESI,EDX
+007FD83B   |.  8B10              MOV EDX,DWORD PTR DS:[EAX]
+007FD83D   |.  8B40 04           MOV EAX,DWORD PTR DS:[EAX+4]
+007FD840   |.  894D D8           MOV [LOCAL.10],ECX
+007FD843   |.  8B4D 0C           MOV ECX,[ARG.2]
+007FD846   |.  8955 DC           MOV [LOCAL.9],EDX
+007FD849   |.  8B55 10           MOV EDX,[ARG.3]
+007FD84C   |.  8945 E0           MOV [LOCAL.8],EAX
+007FD84F   |.  894D E4           MOV [LOCAL.7],ECX
+007FD852   |.  8955 E8           MOV [LOCAL.6],EDX
+007FD855   |.  8D45 08           LEA EAX,[ARG.1]
+007FD858   |.  8D55 F0           LEA EDX,[LOCAL.4]
+007FD85B   |.  8BCE              MOV ECX,ESI
+007FD85D   |.  8945 EC           MOV [LOCAL.5],EAX
+007FD860   |.  E8 AB81D9FF       CALL Gw_MC.00595A10
+007FD865   |.  8D4D F0           LEA ECX,[LOCAL.4]
+007FD868   |.  8D55 D0           LEA EDX,[LOCAL.12]
+007FD86B   |.  894D D0           MOV [LOCAL.12],ECX
+007FD86E   |.  6A 00             PUSH 0                                               ; /Arg1 = 00000000
+007FD870   |.  B9 93000010       MOV ECX,10000093                                     ; |
+007FD875   |.  E8 B6F5DFFF       CALL Gw_MC.005FCE30                                  ; \Gw_MC.005FCE30
+007FD87A   |.  8B45 08           MOV EAX,[ARG.1]
+007FD87D   |.  85C0              TEST EAX,EAX
+007FD87F   |.  74 13             JE SHORT Gw_MC.007FD894
+007FD881   |.  8B45 14           MOV EAX,[ARG.4]
+007FD884   |.  85C0              TEST EAX,EAX
+007FD886   |.  74 42             JE SHORT Gw_MC.007FD8CA
+007FD888   |.  E8 63D3FFFF       CALL Gw_MC.007FABF0
 
-	byte LoadFinishedCode[] = {0x55,0x8B,0xEC,0x83,0xEC,0x10,0x8B,0x01,0x8B,0x51,0x04,0x89,0x45,0xF4,0x8B,0x41,0x08,0x8D,0x4D,0xF0,0xC7,0x45,0xF0,0x40,0x00,0x00,0x00};
+*/
+	byte LoadFinishedCode[] = {0x89,0x4D,0xD8,0x8B,0x4D,0x0C,0x89,0x55,0xDC};
 	
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -1576,7 +1618,8 @@ void FindOffsets(){
 			WinHandle = (byte*)(*(dword*)(start+7));
 		}
 		if(!memcmp(start,LoadFinishedCode,sizeof(LoadFinishedCode))){
-			LoadFinished = start + 0x36;
+			LoadFinished = (byte*)(*(dword*)(start + 0x49));
+			LoadFinished += 0x23;
 		}
 		if(	CurrentTarget &&
 			BaseOffset &&
@@ -1789,6 +1832,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("LoadFinished");
 				return false;
 			}else{
+				LoadFinished = (byte*)0x007FAC13;
 				WriteJMP(LoadFinished,(byte*)LoadHook);
 			}
 			/*
