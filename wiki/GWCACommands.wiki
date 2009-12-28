@@ -172,6 +172,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetLoginNumber || 0x480 || Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0. ||
 || CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
 || CA_GetNumberOfAliveEnemyAgents || 0x482 || No parameters. Returns the number of alive and visible enemy agents in total. ||
+|| CA_GetNextItem || 0x483 || Parameter = starting id. Returns the agent id of the next item. For looping through all items, use this command with the returned agent id as parameter after taking care of that item. ||
 
 ----
 
