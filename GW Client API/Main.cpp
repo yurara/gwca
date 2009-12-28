@@ -156,7 +156,11 @@ void _declspec(naked) EngineHook(){
 
 void _declspec(naked) LoadHook(){
 	FinishedLoading = true;
-	_asm RET
+	_asm {
+		MOV ESP,EBP
+		POP EBP
+		RETN 0x10
+	}
 }
 
 void _declspec(naked) CustomMsgHandler(){
@@ -1493,7 +1497,7 @@ void FindOffsets(){
 
 	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
 
-	byte LoadFinishedCode[] = { 0x89, 0x4D, 0xD8, 0x8B, 0x4D, 0x0C, 0x89, 0x55, 0xDC};
+	byte LoadFinishedCode[] = { 0x89, 0x4D, 0xD8, 0x8B, 0x4D, 0x0C, 0x89, 0x55, 0xDC, 0x8B };
 	
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -1590,8 +1594,7 @@ void FindOffsets(){
 			WinHandle = (byte*)(*(dword*)(start+7));
 		}
 		if(!memcmp(start,LoadFinishedCode,sizeof(LoadFinishedCode))){
-			LoadFinished = (byte*)(*(dword*)(start + 0x49));
-			LoadFinished += 0x23;
+			LoadFinished = start+0x4E;
 		}
 		if(	CurrentTarget &&
 			BaseOffset &&
@@ -1804,8 +1807,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("LoadFinished");
 				return false;
 			}else{
-				LoadFinished = (byte*)0x007FAC13;
-				WriteJMP(LoadFinished,(byte*)LoadHook);
+				DWORD dwOldProtection;
+				VirtualProtect(LoadFinished, 6, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(LoadFinished, 0x90, 6);
+				VirtualProtect(LoadFinished, 6, dwOldProtection, NULL);
+				WriteJMP(LoadFinished, (byte*)LoadHook);
 			}
 			/*
 			AllocConsole();
