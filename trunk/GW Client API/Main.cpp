@@ -43,6 +43,7 @@ byte* DialogReturn = NULL;
 byte* EngineStart = NULL;
 byte* SkillTypeBase = NULL;
 byte* WinHandle = NULL;
+byte* LoadFinished = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -60,6 +61,8 @@ SkillType* tmpSkillType = NULL;
 long SellSessionId = NULL;
 long LastDialogId = 0;
 byte EngineHookSave[32];
+
+bool FinishedLoading = false;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -148,6 +151,11 @@ void _declspec(naked) DialogHook(){
 
 void _declspec(naked) EngineHook(){
 	Sleep(100);
+	_asm RET
+}
+
+void _declspec(naked) LoadHook(){
+	FinishedLoading = true;
 	_asm RET
 }
 
@@ -1099,6 +1107,12 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x586: //Leave Guild Hall : No return
 			LeaveGH();
 			break;
+		case 0x587: //Init LoadOut : No return
+			FinishedLoading = false;
+			break;
+		case 0x588: //IsLoaded : Return bool/int
+			(FinishedLoading)?PostMessage((HWND)MsgLParam, 0x500, 1, 1):PostMessage((HWND)MsgLParam, 0x500, 1, 0);
+			break;
 	}
 	
 	_asm {
@@ -1465,6 +1479,8 @@ void FindOffsets(){
 
 	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
 
+	byte LoadFinishedCode[] = {0x55,0x8B,0xEC,0x83,0xEC,0x10,0x8B,0x01,0x8B,0x51,0x04,0x89,0x45,0xF4,0x8B,0x41,0x08,0x8D,0x4D,0xF0,0xC7,0x45,0xF0,0x40,0x00,0x00,0x00};
+	
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1559,6 +1575,9 @@ void FindOffsets(){
 		if(!memcmp(start, WinHandleCode, sizeof(WinHandleCode))){
 			WinHandle = (byte*)(*(dword*)(start+7));
 		}
+		if(!memcmp(start,LoadFinishedCode,sizeof(LoadFinishedCode))){
+			LoadFinished = start + 0x36;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1585,7 +1604,8 @@ void FindOffsets(){
 			DialogStart &&
 			EngineStart &&
 			SkillTypeBase &&
-			WinHandle){
+			WinHandle &&
+			LoadFinished){
 			return;
 		}
 		start++;
@@ -1765,7 +1785,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("WinHandle");
 				return false;
 			}
-			
+			if(!LoadFinished){
+				InjectErr("LoadFinished");
+				return false;
+			}else{
+				WriteJMP(LoadFinished,(byte*)LoadHook);
+			}
 			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
@@ -1804,9 +1829,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("EngineStart=0x%06X\n", EngineStart);
 			printf("SkillTypeBase=0x%06X\n", SkillTypeBase);
 			printf("WinHandle=0x%06X\n", WinHandle);
-			*/
+			printf("LoadFinished=0x%06X\n",LoadFinished);
 			break;
-
+			*/
 		case DLL_PROCESS_DETACH:
 			break;
 	}
