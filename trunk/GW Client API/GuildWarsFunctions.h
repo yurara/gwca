@@ -57,6 +57,7 @@ long GetNearestAgentToCoords(float x, float y);
 long GetNearestNPCToCoords(float x, float y);
 long GetNumberOfAgentsByPlayerNumber(long playerNumber);
 long GetNumberOfAliveEnemyAgents();
+long GetNextItem(unsigned long startId);
 int IsAttackedMelee(long agentId);
 
 #endif

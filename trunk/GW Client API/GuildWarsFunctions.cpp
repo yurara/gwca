@@ -544,6 +544,27 @@ long GetNumberOfAliveEnemyAgents(){
 	return lCount;
 }
 
+long GetNextItem(unsigned long startId){
+	if(startId + 1 < maxAgent){
+		startId++;
+	} else {
+		return false;
+	}
+	long lReturn = 0;
+	__try {
+	for(unsigned int i = startId;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->Type == 0x400){
+			lReturn = i;
+			break;
+		}
+	}
+	}__except(1) {
+		return false;
+	}
+	return lReturn;
+}
+
 int IsAttackedMelee(long agentId){
 	if(Agents[agentId] == NULL){return -10;}
 
