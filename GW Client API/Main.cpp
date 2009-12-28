@@ -882,6 +882,16 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x482: //Get number of alive enemy agents in total : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, GetNumberOfAliveEnemyAgents(), 0);
 			break;
+		case 0x483: //Get next item in iteration and the distance to it : Return int/long & float
+			MsgInt = GetNextItem(MsgWParam);
+			if(MsgInt){
+				MsgFloat = GetDistanceFromAgentToAgent(myId, MsgInt);
+				memcpy(&MsgInt2, &MsgFloat, sizeof(float));
+			}else{
+				MsgInt2 = 0;
+			}
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -1483,7 +1493,7 @@ void FindOffsets(){
 
 	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
 
-	byte LoadFinishedCode[] = {0x89,0x4D,0xD8,0x8B,0x4D,0x0C,0x89,0x55,0xDC};
+	byte LoadFinishedCode[] = { 0x89, 0x4D, 0xD8, 0x8B, 0x4D, 0x0C, 0x89, 0x55, 0xDC};
 	
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
