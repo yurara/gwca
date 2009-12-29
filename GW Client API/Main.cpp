@@ -44,6 +44,8 @@ byte* EngineStart = NULL;
 byte* SkillTypeBase = NULL;
 byte* WinHandle = NULL;
 byte* LoadFinished = NULL;
+byte* TargetLogStart = NULL;
+byte* TargetLogReturn = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -63,6 +65,8 @@ long LastDialogId = 0;
 byte EngineHookSave[32];
 
 bool FinishedLoading = false;
+
+long* AgentTargets = new long[2560];
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -160,6 +164,30 @@ void _declspec(naked) LoadHook(){
 		MOV ESP,EBP
 		POP EBP
 		RETN 0x10
+	}
+}
+
+void _declspec(naked) TargetLogHook(){
+	long agentTarget, agentCaster, actionType;
+
+	_asm {
+		PUSHAD
+		MOV EAX,DWORD PTR DS:[EBP+8]
+		MOV agentTarget,EAX
+		MOV agentCaster,EDX
+		MOV actionType,ECX
+	}
+
+	if(LogSkills && actionType == 0x39){
+		AgentTargets[agentCaster] = agentTarget;
+	}
+
+	_asm {
+		POPAD
+		PUSH EBX
+		MOV DWORD PTR SS:[EBP-0xC],ECX
+		PUSH ESI
+		JMP TargetLogReturn
 	}
 }
 
@@ -479,6 +507,9 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x439: //Change second profession : No return
 			if(MsgWParam < 1 || MsgWParam > 10){break;}
 			ChangeSecondProfession(MsgWParam);
+			break;
+		case 0x43A: //Target next party member : No return
+			TargetNextPartyMember();
 			break;
 
 		//SectionA related commands
@@ -1233,6 +1264,15 @@ void TargetCalledTarget(){
 	}
 }
 
+void TargetNextPartyMember(){
+	_asm {
+		MOV ECX,0
+		MOV EAX,TargetFunctions
+		ADD EAX,0x63
+		CALL EAX
+	}
+}
+
 void GoAgent(long agentId){
 	byte* pGoAgent = (byte*)((TargetFunctions - 0x616) + *(dword*)(TargetFunctions - 0x616) + 4);
 
@@ -1401,6 +1441,7 @@ void SkillLogQueueThread(){
 			SkillInfo.SkillId = SkillLogQueue.front().Skill;
 			SkillInfo.Activation = SkillLogQueue.front().Activation;
 			SkillInfo.Ping = MySectionA->Ping();
+			SkillInfo.TargetId = AgentTargets[SkillInfo.AgentId];
 
 			SendMessage(ScriptHwnd, WM_COPYDATA, 0, (LPARAM)(LPVOID)&SkillLogCDS);
 
@@ -1498,6 +1539,8 @@ void FindOffsets(){
 	byte WinHandleCode[] = { 0x56, 0x8B, 0xF1, 0x85, 0xC0, 0x89, 0x35 };
 
 	byte LoadFinishedCode[] = { 0x89, 0x4D, 0xD8, 0x8B, 0x4D, 0x0C, 0x89, 0x55, 0xDC, 0x8B };
+
+	byte TargetLogCode[] = { 0x53, 0x89, 0x4D, 0xF4, 0x56, 0x64 };
 	
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -1593,8 +1636,12 @@ void FindOffsets(){
 		if(!memcmp(start, WinHandleCode, sizeof(WinHandleCode))){
 			WinHandle = (byte*)(*(dword*)(start+7));
 		}
-		if(!memcmp(start,LoadFinishedCode,sizeof(LoadFinishedCode))){
+		if(!memcmp(start, LoadFinishedCode, sizeof(LoadFinishedCode))){
 			LoadFinished = start+0x4E;
+		}
+		if(!memcmp(start, TargetLogCode, sizeof(TargetLogCode))){
+			TargetLogStart = start;
+			TargetLogReturn = TargetLogStart+5;
 		}
 		if(	CurrentTarget &&
 			BaseOffset &&
@@ -1623,7 +1670,8 @@ void FindOffsets(){
 			EngineStart &&
 			SkillTypeBase &&
 			WinHandle &&
-			LoadFinished){
+			LoadFinished &&
+			TargetLogStart){
 			return;
 		}
 		start++;
@@ -1813,6 +1861,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				VirtualProtect(LoadFinished, 6, dwOldProtection, NULL);
 				WriteJMP(LoadFinished, (byte*)LoadHook);
 			}
+			if(!TargetLogStart){
+				InjectErr("TargetLogStart");
+				return false;
+			}else{
+				for(int i = 1;i < 2560;i++){ AgentTargets[i] = 0; }
+				WriteJMP(TargetLogStart, (byte*)TargetLogHook);
+			}
+
 			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
@@ -1851,9 +1907,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("EngineStart=0x%06X\n", EngineStart);
 			printf("SkillTypeBase=0x%06X\n", SkillTypeBase);
 			printf("WinHandle=0x%06X\n", WinHandle);
-			printf("LoadFinished=0x%06X\n",LoadFinished);
-			break;
+			printf("LoadFinished=0x%06X\n", LoadFinished);
+			printf("TargetLogStart=0x%06X\n", TargetLogStart);
+			printf("TargetLogReturn=0x%06X\n", TargetLogReturn);
 			*/
+			break;
+
 		case DLL_PROCESS_DETACH:
 			break;
 	}
