@@ -146,7 +146,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetMyNearestAgent || 0x466 || No parameters, returns id of your nearest agent. ||
 || CA_GetMyDistanceToAgent || 0x467 || Parameter = id of agent, returns float with distance. ||
 || CA_GetNearestAgentToAgent || 0x468 || Parameter = id of agent, returns id of the nearest agent to the specified agent. ||
-|| CA_GetDistanceFromAgentToAgent || 0x469 || Obsolete, so don't bother using it.
+|| CA_GetDistanceFromAgentToAgent || 0x469 || Obsolete, so don't bother using it. ||
 || CA_GetNearestAgentToAgentEx || 0x46A || Parameter = id of agent, same as CA_GetNearestAgentToAgent, but also returns float with distance between them. ||
 || CA_GetModelState || 0x46B || Kinda obsolete. ||
 || CA_GetIsAttacking || 0x46C || Parameter = id of agent, returns boolean. ||
