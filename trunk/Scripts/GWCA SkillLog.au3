@@ -60,7 +60,7 @@ Func SkillLogCallback($hwnd, $msg, $wparam, $lparam)
 
 		_LogAdd("Id "&DllStructGetData($skillStruct, "AgentId")&" team "&DllStructGetData($skillStruct, "TeamId")& _
 				" used "&ReadSkillName(@ScriptDir&"\new list.txt", DllStructGetData($skillStruct, "SkillId"))& _
-				" ("&Round(DllStructGetData($skillStruct, "Activation"), 2)&")")
+				" ("&Round(DllStructGetData($skillStruct, "Activation"), 2)&") on "&DllStructGetData($skillStruct, "TargetId"))
 	EndIf
 EndFunc
 

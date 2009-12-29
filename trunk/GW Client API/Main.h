@@ -56,6 +56,7 @@ void TargetNearestFoe();
 void TargetNearestAlly();
 void TargetNearestItem();
 void TargetCalledTarget();
+void TargetNextPartyMember();
 void GoAgent(long agentId);
 void UseHeroSkill(long HeroId, long SkillNumber, long Target);
 void UseSkillNew(long SkillId, long Target, long Event);
@@ -75,6 +76,7 @@ struct LoggedSkillStruct {
 	word Allegiance;
 	float Distance;
 	long Ping;
+	long TargetId;
 };
 
 struct SellItemStruct {
