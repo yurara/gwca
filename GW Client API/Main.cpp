@@ -642,7 +642,7 @@ void _declspec(naked) CustomMsgHandler(){
 			MsgInt = ((Agents[MsgWParam]->HPPips / 0.0038) > 0.0) ? floor((Agents[MsgWParam]->HPPips / 0.0038) + 0.5) : ceil((Agents[MsgWParam]->HPPips / 0.0038) - 0.5);//floor((Agents[MsgWParam]->HPPips / 0.0038) + 0.5);
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, 0);
 			break;
-		case 0x45D: //Get agent's effect bit map : Return byte
+		case 0x45D: //Get agent's effect bit map : Return int/long
 			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
 			if(MsgWParam == -2){MsgWParam = myId;}
 			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
@@ -652,7 +652,10 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
 			if(MsgWParam == -2){MsgWParam = myId;}
 			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
-			PostMessage((HWND)MsgLParam, 0x500, Agents[MsgWParam]->Hex, 0);
+			MsgInt = 0;
+			if((Agents[MsgWParam]->Effects & 0x0800)) MsgInt += 1;
+			if((Agents[MsgWParam]->Effects & 0x0400)) MsgInt += 1;
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, 0);
 			break;
 		case 0x45F: //Get agent's model animation : Return int/dword
 			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}

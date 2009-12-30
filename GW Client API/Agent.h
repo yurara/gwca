@@ -48,9 +48,9 @@ struct Agent {
 	//Offset +0x130
 	float HP; //Health in % where 1=100% and 0=0%
 	long MaxHP; //Only works for yourself
-	byte Effects; //Bitmap for effects to display when targetted. Does not include hexes
-	byte unknown15[7];
-	byte Hex; //Bitmap for the hex effect when targetted
+	long Effects; //Bitmap for effects to display when targetted. DOES include hexes
+	byte unknown15[4];
+	byte Hex; //Bitmap for the hex effect when targetted (apparently obsolete!)
 	byte unknown16[18];
 	long ModelState; //Different values for different states of the model.
 	byte CombatMode; //Kinda dodgy, don't rely on it too much.
