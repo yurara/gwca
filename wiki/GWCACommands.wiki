@@ -98,6 +98,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_SetSkillbarSkill || 0x438 || Parameter = skill slot, parameter 2 = skill id. ||
 || CA_ChangeSecondProfession || 0x439 || Parameter = profession number. Follows this enumeration 0-10 = { None,W,R,Mo,N,Me,E,A,Rt,P,D }. ||
 || CA_TargetNextPartyMember || 0x43A || No parameters. Functions like the GW Control: Targetting - Party Member: Next ||
+|| CA_TargetNextFoe || 0x43B || No parameters. Functions like the GW Control: Targetting - Next Foe ||
 
 ----
 
