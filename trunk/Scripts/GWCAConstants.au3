@@ -19,6 +19,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_TargetNearestItem, $CA_StatusDelay, $CA_TargetCalledTarget, $CA_UseHero1Skill, $CA_UseHero2Skill, $CA_UseHero3Skill, $CA_StatusMiss, _
 			$CA_CancelAction, $CA_StatusTab, $CA_GetNamePtr, $CA_CommandHero1, $CA_CommandHero2, $CA_CommandHero3, $CA_CommandAll, $CA_ChangeDistrict, _
 			$CA_Resign, $CA_ReturnToOutpost, $CA_GoAgent, $CA_DonateFaction, $CA_SetSkillbarSkill, $CA_ChangeSecondProfession, $CA_TargetNextPartyMember, _
+			$CA_TargetNextFoe, _
 			$CA_GetMapLoading = 0x440, $CA_GetMapId, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead, $CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction, _
 			$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, _
 			$CA_GetAgentExist = 0x450, $CA_GetProfessions, $CA_GetPlayerNumber, _

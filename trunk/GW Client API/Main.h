@@ -57,6 +57,7 @@ void TargetNearestAlly();
 void TargetNearestItem();
 void TargetCalledTarget();
 void TargetNextPartyMember();
+void TargetNextFoe();
 void GoAgent(long agentId);
 void UseHeroSkill(long HeroId, long SkillNumber, long Target);
 void UseSkillNew(long SkillId, long Target, long Event);
