@@ -511,6 +511,9 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x43A: //Target next party member : No return
 			TargetNextPartyMember();
 			break;
+		case 0x43B: //Target next foe : No return
+			TargetNextFoe();
+			break;
 
 		//SectionA related commands
 		case 0x440: //Check if map is loading : Return int/long
@@ -1272,6 +1275,14 @@ void TargetNextPartyMember(){
 		MOV ECX,0
 		MOV EAX,TargetFunctions
 		ADD EAX,0x63
+		CALL EAX
+	}
+}
+
+void TargetNextFoe(){
+	_asm {
+		MOV EAX,TargetFunctions
+		ADD EAX,0x57
 		CALL EAX
 	}
 }
