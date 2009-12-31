@@ -26,7 +26,7 @@ byte* MaxZoomStill = NULL;
 byte* MaxZoomMobile = NULL;
 byte* SkillCancelStart = NULL;
 byte* SkillCancelReturn = NULL;
-byte* AgentNameFunction = NULL;
+//byte* AgentNameFunction = NULL;
 byte* SellSessionStart = NULL;
 byte* SellSessionReturn = NULL;
 byte* SellItemFunction = NULL;
@@ -111,14 +111,17 @@ void _declspec(naked) SkillCancelHook(){
 	_asm {
 		MOV ESI,ECX
 		MOV EAX,DWORD PTR DS:[EDI]
-		MOV ECX,DWORD PTR DS:[ESI+0x4]
+		MOV ECX,DWORD PTR DS:[ESI+4]
 		PUSHAD
 		MOV cancelSkillPtr,EDI
+		CMP EAX,ECX
+		JNZ SkillCancelSkip
 	}
 
 	SkillCancelQueue.push_back(*cancelSkillPtr);
 
 	_asm {
+SkillCancelSkip:
 		POPAD
 		JMP SkillCancelReturn
 	}
@@ -1094,6 +1097,14 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtr(MsgWParam)->extraItemInfo->lastModifier,
 				(LPARAM)MyItemManager->GetItemPtr(MsgWParam)->customized);
 			break;
+		case 0x52F: //Equip item by indexes : No return
+			if(MyItemManager->GetItemPtr(MsgWParam, MsgLParam)){
+				EquipItem(MyItemManager->GetItemId(MsgWParam, MsgLParam));
+			}
+			break;
+		case 0x530: //Equip item by item id : No return
+			EquipItem(MsgWParam);
+			break;
 
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
@@ -1228,10 +1239,13 @@ void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName){
 }
 
 wchar_t* GetAgentName(int agentId){
-	_asm {
-		MOV ECX,agentId
-		CALL AgentNameFunction
-		ADD EAX,4
+	__try {
+		wchar_t* NamePtr = ReadPtrChain<wchar_t*>(MySectionA->BasePointer(), 0x18, 0x2C, 0x794,
+			(Agents[agentId]->LoginNumber * 76) + 0x28);
+		return NamePtr;
+	}
+	__except(1) {
+		return NULL;
 	}
 }
 
@@ -1524,8 +1538,8 @@ void FindOffsets(){
 
 	byte SkillCancelCode[] = { 0x85, 0xC0, 0x74, 0x1D, 0x6A, 0x00, 0x6A, 0x42 };
 
-	byte AgentNameCode[] = { 0x57, 0x8B, 0x14, 0x81, 0x8B, 0x82, 0x04, 0x00, 0x00, 0x00,
-		0x8B, 0x78, 0x2C, 0xE8 };
+	//byte AgentNameCode[] = { 0x57, 0x8B, 0x14, 0x81, 0x8B, 0x82, 0x04, 0x00, 0x00, 0x00,
+	//	0x8B, 0x78, 0x2C, 0xE8 };
 
 	byte SellSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
 
@@ -1607,9 +1621,9 @@ void FindOffsets(){
 			SkillCancelStart = start-0xE;
 			SkillCancelReturn = SkillCancelStart+7;
 		}
-		if(!memcmp(start, AgentNameCode, sizeof(AgentNameCode))){
-			AgentNameFunction = start-0x16;
-		}
+		//if(!memcmp(start, AgentNameCode, sizeof(AgentNameCode))){
+		//	AgentNameFunction = start-0x16;
+		//}
 		if(!memcmp(start, SellSessionCode, sizeof(SellSessionCode))){
 			SellSessionStart = start-0x48;
 			SellSessionReturn = SellSessionStart+9;
@@ -1672,6 +1686,7 @@ void FindOffsets(){
 			MaxZoomStill &&
 			MaxZoomMobile &&
 			SkillCancelStart &&
+			//AgentNameFunction &&
 			SellSessionStart &&
 			SellItemFunction &&
 			BuyItemFunction &&
@@ -1801,10 +1816,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				VirtualProtect(SkillCancelStart, 7, dwOldProtection, NULL);
 				WriteJMP(SkillCancelStart, (byte*)SkillCancelHook);
 			}
-			if(!AgentNameFunction){
-				InjectErr("AgentNameFunction");
-				return false;
-			}
+			//if(!AgentNameFunction){
+			//	InjectErr("AgentNameFunction");
+			//	return false;
+			//}
 			if(!SellSessionStart){
 				InjectErr("SellSessionStart");
 				return false;
@@ -1907,7 +1922,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("MaxZoomMobile=0x%06X\n", MaxZoomMobile);
 			printf("SkillCancelStart=0x%06X\n", SkillCancelStart);
 			printf("SkillCancelReturn=0x%06X\n", SkillCancelReturn);
-			printf("AgentNameFunction=0x%06X\n", AgentNameFunction);
+			//printf("AgentNameFunction=0x%06X\n", AgentNameFunction);
 			printf("SellSessionStart=0x%06X\n", SellSessionStart);
 			printf("SellItemFunction=0x%06X\n", SellItemFunction);
 			printf("BuyItemFunction=0x%06X\n", BuyItemFunction);
