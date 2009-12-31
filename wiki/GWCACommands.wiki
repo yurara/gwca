@@ -212,6 +212,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemModelIdById || 0x52C || Parameter = item id. Returns the model id of the specified item. ||
 || CA_GetItemInfoById ||0x52D || Parameter = item id. Returns the rarity and quantity of the specified item. ||
 || CA_GetItemLastModifierById || 0x52E || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
+|| CA_EquipItem || 0x52F || Parameter = bag index, parameter 2 = item slot. Equips the specified item. ||
+|| CA_EquipItemById || 0x530 || Parameter = item id. Equips the specified item. ||
 
 ----
 
