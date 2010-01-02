@@ -34,7 +34,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 *General commands:*
 
 || *Command* || *Id* || *Description* ||
-|| CA_GetCurrentTarget || 0x401 || No parameters, returns an integer with the id of the current target. ||
+|| CA_GetCurrentTarget || 0x401 || No parameters, returns an integer with the id of your current target. ||
 || CA_GetMyId || 0x402 || No parameters, returns an integer with the id of your own agent. ||
 || CA_Casting || 0x403 || No parameters, returns a boolean which tells whether or not you're using a skill. ||
 || CA_SkillRecharge || 0x404 || Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged. ||
@@ -175,6 +175,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
 || CA_GetNumberOfAliveEnemyAgents || 0x482 || No parameters. Returns the number of alive and visible enemy agents in total. ||
 || CA_GetNextItem || 0x483 || Parameter = starting id. Returns the agent id of the next item. For looping through all items, use this command with the returned agent id as parameter after taking care of that item. ||
+|| CA_GetTarget || 0x484 || Parameter = agent id. Returns the currently logged target of the specified agent. ||
 
 ----
 
