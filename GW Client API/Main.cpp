@@ -46,6 +46,7 @@ byte* WinHandle = NULL;
 byte* LoadFinished = NULL;
 byte* TargetLogStart = NULL;
 byte* TargetLogReturn = NULL;
+byte* VirtualHeroFlagFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -162,7 +163,9 @@ void _declspec(naked) EngineHook(){
 }
 
 void _declspec(naked) LoadHook(){
+	for(int i = 1;i < 2560;i++){ AgentTargets[i] = 0; }
 	FinishedLoading = true;
+
 	_asm {
 		MOV ESP,EBP
 		POP EBP
@@ -181,7 +184,8 @@ void _declspec(naked) TargetLogHook(){
 		MOV actionType,ECX
 	}
 
-	if(LogSkills && actionType == 0x39){
+	if(	actionType == 0x39 ||
+		actionType == 0x03){
 		AgentTargets[agentCaster] = agentTarget;
 	}
 
@@ -936,6 +940,12 @@ void _declspec(naked) CustomMsgHandler(){
 			}
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
 			break;
+		case 0x484: //Get target of agent : Return int/long
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
+			PostMessage((HWND)MsgLParam, 0x500, AgentTargets[MsgWParam], 0);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -1169,11 +1179,11 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x586: //Leave Guild Hall : No return
 			LeaveGH();
 			break;
-		case 0x587: //Init LoadOut : No return
+		case 0x587: //Init Map Load : No return
 			FinishedLoading = false;
 			break;
-		case 0x588: //IsLoaded : Return bool/int
-			if(FinishedLoading){
+		case 0x588: //Map Is Loaded : Return bool/int
+			if(FinishedLoading == true){
 				PostMessage((HWND)MsgLParam, 0x500, 1, 1);
 			}else{
 				PostMessage((HWND)MsgLParam, 0x500, 0, 0);
