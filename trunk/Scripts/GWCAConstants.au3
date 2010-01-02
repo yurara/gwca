@@ -33,6 +33,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_GetNearestAgentByPlayerNumber, $CA_GetSpeed, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent, _
 			$CA_GetWeaponType, $CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, $CA_GetVars, _
 			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem, _
+			$CA_GetTarget, _
 			$CA_GetGold = 0x510, $CA_GetBagSize, $CA_SetBag, $CA_GetItemId, _
 			$CA_GetIdKit, $CA_IdentifyItem, $CA_IdentifyItemById, $CA_DepositGold, $CA_WithdrawGold, $CA_SellItem, $CA_SellItemById, _
 			$CA_BuyIdKit, $CA_BuySuperiorIdKit, $CA_PrepareMoveItem, $CA_MoveItem, $CA_GetItemInfo, _
@@ -42,7 +43,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, _
 			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
 			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick, _
-			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitLoaded, $CA_IsLoaded
+			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43

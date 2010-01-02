@@ -43,8 +43,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_AddHero|$CA_KickHero|$CA_SwitchMode|$CA_AddNpc|$CA_KickNpc|$CA_TravelGH|$CA_LeaveGH|$CA_GoAgent|$CA_DonateFaction|$CA_SetSkillbarSkill|"& _
 					"$CA_FindItemByModelId|$CA_ChangeSecondProfession|$CA_GetNumberOfAgentsByPlayerNumber|$CA_FindEmptySlot|$CA_FindGoldItem|"& _
 					"$CA_GetNumberOfAliveEnemyAgents|$CA_GetItemPositionByItemId|$CA_GetItemPositionByModelId|$CA_GetItemPositionByRarity|"& _
-					"$CA_GetItemModelIdById|$CA_GetItemInfoById|$CA_GetItemLastModifierById|$CA_InitLoadout|$CA_IsLoaded|$CA_GetNextItem|$CA_TargetNextPartyMember|" & _
-					"$CA_TargetNextFoe|$CA_EquipItem|$CA_EquipItemById")
+					"$CA_GetItemModelIdById|$CA_GetItemInfoById|$CA_GetItemLastModifierById|$CA_InitMapLoad|$CA_MapIsLoaded|$CA_GetNextItem|$CA_TargetNextPartyMember|" & _
+					"$CA_TargetNextFoe|$CA_EquipItem|$CA_EquipItemById|$CA_GetTarget")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
