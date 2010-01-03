@@ -247,5 +247,5 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_KickNpc || 0x584 || Parameter = henchman id. Kicks henchman from the party. ||
 || CA_TravelGH || 0x585 || No parameters. Travels to your Guild Hall. ||
 || CA_LeaveGH || 0x586 || No parameters. Leaves your Guild Hall. ||
-|| CA_InitLoadout || 0x587 || No parameters. Inits the Loadout Function. ||
-|| CA_IsLoaded || 0x588 || No parameters. Returns boolean. Use CA_InitLoadout before !!! ||
+|| CA_InitMapLoad || 0x587 || No parameters. Inits the CA_MapIsLoaded command. ||
+|| CA_MapIsLoaded || 0x588 || No parameters. Returns boolean. Use CA_InitMapLoad before !!! ||
