@@ -249,3 +249,6 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_LeaveGH || 0x586 || No parameters. Leaves your Guild Hall. ||
 || CA_InitMapLoad || 0x587 || No parameters. Inits the CA_MapIsLoaded command. ||
 || CA_MapIsLoaded || 0x588 || No parameters. Returns boolean. Use CA_InitMapLoad before !!! ||
+|| CA_GetMapOverlayCoords || 0x589 || Parameter = map overlay id (get this with GetNearestMapOverlayToCoords() function). Returns the x,y coords of the specified map overlay. ||
+|| CA_GetMapOverlayInfo || 0x58A || Parameter = map overlay id. Returns the option variable (usually color) and the icon model id of the specified map overlay. ||
+|| CA_GetNearestMapOverlayToCoords || 0x58B || INTERNAL COMMAND! Do not use this. Please use the function GetNearestMapOverlayToCoords() defined in GWCAConstants.au3 ||
