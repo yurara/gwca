@@ -55,6 +55,7 @@ long GetFirstAgentByPlayerNumber(word playerNum);
 long GetNearestAgentByPlayerNumber(word playerNum);
 long GetNearestAgentToCoords(float x, float y);
 long GetNearestNPCToCoords(float x, float y);
+long GetNearestMapOverlayToCoords(float x, float y);
 long GetNumberOfAgentsByPlayerNumber(long playerNumber);
 long GetNumberOfAliveEnemyAgents();
 long GetNextItem(unsigned long startId);

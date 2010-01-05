@@ -1189,6 +1189,22 @@ void _declspec(naked) CustomMsgHandler(){
 				PostMessage((HWND)MsgLParam, 0x500, 0, 0);
 			}
 			break;
+		case 0x589: //Get coordinates of MapOverlay by index : Return float & float
+			if(MsgWParam < 1 || MsgWParam > (WPARAM)(MySectionA->MapOverlaySize() - 1)){break;}
+			memcpy(&MsgInt, &MySectionA->MapOverlayPointer()[MsgWParam].X, sizeof(float));
+			memcpy(&MsgInt2, &MySectionA->MapOverlayPointer()[MsgWParam].Y, sizeof(float));
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+			break;
+		case 0x58A: //Get MapOverlay option and model id by index : Return int/long
+			if(MsgWParam < 1 || MsgWParam > (WPARAM)(MySectionA->MapOverlaySize() - 1)){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MapOverlayPointer()[MsgWParam].option,
+				MySectionA->MapOverlayPointer()[MsgWParam].modelId);
+			break;
+		case 0x58B: //Get nearest MapOverlay to coordinates : No return (use 0x47E to return)
+			memcpy(&MsgFloat, &MsgWParam, sizeof(float));
+			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
+			TmpVariable = GetNearestMapOverlayToCoords(MsgFloat, MsgFloat2);
+			break;
 	}
 	
 	_asm {

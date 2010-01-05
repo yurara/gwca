@@ -43,7 +43,8 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, _
 			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
 			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick, _
-			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded
+			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
+			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
@@ -108,6 +109,14 @@ Func Cmd($uMsg, $wparam = 0, $lparam = 0)
 	$bGWCA_INTERNAL = False
 EndFunc
 
+Func CmdEx($uMsg, $wparam = 0, $lparam = 0)
+	$bGWCA_INTERNAL = True
+	$cbVar[0] = ""
+	$cbVar[1] = ""
+	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
+	$bGWCA_INTERNAL = False
+EndFunc
+
 Func CmdCB($uMsg, $wparam = 0)
 	$bGWCA_INTERNAL = True
 	$cbVar[0] = ""
@@ -134,9 +143,8 @@ Func GetNearestAgentToCoords($x, $y)
 	$oldCbType = $cbType
 
 	$cbType = "int"
-	Cmd($CA_GETNEARESTAGENTTOCOORDS, _FloatToInt($x), _FloatToInt($y))
-	Sleep(50)
-	CmdCB($CA_GETVARS)
+	CmdEx($CA_GetNearestAgentToCoords, _FloatToInt($x), _FloatToInt($y))
+	CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
@@ -147,9 +155,20 @@ Func GetNearestNPCToCoords($x, $y)
 	$oldCbType = $cbType
 
 	$cbType = "int"
-	Cmd($CA_GETNEARESTNPCTOCOORDS, _FloatToInt($x), _FloatToInt($y))
-	Sleep(50)
-	CmdCB($CA_GETVARS)
+	CmdEx($CA_GetNearestNpcToCoords, _FloatToInt($x), _FloatToInt($y))
+	CmdCB($CA_GetVars)
+
+	$cbType = $oldCbType
+
+	Return $cbVar[1]
+EndFunc
+
+Func GetNearestMapOverlayToCoords($x, $y)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdEx($CA_GetNearestMapOverlayToCoords, _FloatToInt($x), _FloatToInt($y))
+	CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
@@ -287,7 +306,9 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 	Do
 		Sleep(250)
 		CmdCB($CA_GETDEAD)
-		If $cbVar[0] = 1 Then Return
+		If $cbVar[0] = 1 Then ExitLoop
+		CmdCB($CA_GETSKILL, -2)
+		If $cbVar[0] = 0 AND TimerDiff($tDeadlock) > 750 Then ExitLoop
 		CmdCB($CA_SKILLRECHARGE, $iSkillSlot)
 	Until $cbVar[0] <> 0 OR TimerDiff($tDeadlock) > 15000
 

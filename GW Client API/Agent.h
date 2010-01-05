@@ -208,6 +208,12 @@ public:
 	dword GHStruct(){
 		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x3C);
 	}
+	MapOverlay* MapOverlayPointer(){
+		return ReadPtrChain<MapOverlay*>(BasePointer(), 0x18, 0x2C, 0x774);
+	}
+	long MapOverlaySize(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x77C);
+	}
 };
 
 #endif
