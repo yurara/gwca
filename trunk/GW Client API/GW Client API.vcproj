@@ -204,6 +204,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MapOverlay.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Skillbar.h"
 				>
 			</File>

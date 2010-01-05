@@ -514,6 +514,24 @@ long GetNearestNPCToCoords(float x, float y){
 	return lLowest;
 }
 
+long GetNearestMapOverlayToCoords(float x, float y){
+	float* aDistance = new float[MySectionA->MapOverlaySize()+1];
+	MapOverlay* MOArray = MySectionA->MapOverlayPointer();
+	aDistance[0] = 50000;
+	long lLowest = 0;
+	__try {
+	for(int i = 0;i < MySectionA->MapOverlaySize();i++){
+		if(&MOArray[i] == NULL){continue;}
+		aDistance[i] = sqrt(pow((MOArray[i].Y - y), 2) + pow((MOArray[i].X - x), 2));
+		if(aDistance[i] < aDistance[lLowest]){lLowest = i;}
+	}
+	}
+	__except(1) {
+		return false;
+	}
+	return lLowest;
+}
+
 long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	long lCount = 0;
 	__try {

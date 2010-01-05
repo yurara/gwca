@@ -24,6 +24,8 @@ struct Bag;
 struct Item;
 struct ItemExtra;
 
+struct MapOverlay;
+
 template <typename T> T ReadPtrChain(
 									 dword pBase = 0,
 									 long pOffset1 = 0,
@@ -37,14 +39,15 @@ template <typename T> T ReadPtrChain(
 #define buildNumber *(long*)BuildNumber
 
 #include "Agent.h"
-#include "CPacket.h"
-#include "Skillbar.h"
-#include "GuildWarsFunctions.h"
 
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
 
+#include "MapOverlay.h"
 #include "Item.h"
+#include "CPacket.h"
+#include "Skillbar.h"
+#include "GuildWarsFunctions.h"
 
 void SendPacket(CPacket* pak);
 void Login();
