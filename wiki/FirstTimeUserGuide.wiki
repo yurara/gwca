@@ -9,9 +9,8 @@ First of all, you need to choose whether you use the pre-compiled .dll or compil
 
 ==Using the pre-compiled Dll==
 First, go and download [http://gwca.googlecode.com/files/Graphics.dll Graphics.dll] by clicking this link.
-Now move it to your Guild Wars folder (the one where Gw.dat and Gw.exe are located).
 
-The next time you launch Guild Wars, GWCA will automatically load, and when you log in, the window title will change to `Guild Wars - <Character Name>` where `<Character Name>` is your character's name of course.
+You will need a Dll Injector (google) to load GWCA, and to see that it's working, the window title will change when you log in to `Guild Wars - <Character Name>` where `<Character Name>` is your character's name of course.
 
 Skip the next paragraph.
 
