@@ -8,14 +8,14 @@
 ; The SkillLog structure for use with the Skill Log feature
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping;long TargetId"
 Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
-	"long Agent1Id;float Agent1X;float Agent1Y;float Agent1HP;long Agent1Effects;byte Agent1Hex;dword Agent1Name;byte Agent1Primary;byte Agent1Secondary;" & _
-	"long Agent2Id;float Agent2X;float Agent2Y;float Agent2HP;long Agent2Effects;byte Agent2Hex;dword Agent2Name;byte Agent2Primary;byte Agent2Secondary;" & _
-	"long Agent3Id;float Agent3X;float Agent3Y;float Agent3HP;long Agent3Effects;byte Agent3Hex;dword Agent3Name;byte Agent3Primary;byte Agent3Secondary;" & _
-	"long Agent4Id;float Agent4X;float Agent4Y;float Agent4HP;long Agent4Effects;byte Agent4Hex;dword Agent4Name;byte Agent4Primary;byte Agent4Secondary;" & _
-	"long Agent5Id;float Agent5X;float Agent5Y;float Agent5HP;long Agent5Effects;byte Agent5Hex;dword Agent5Name;byte Agent5Primary;byte Agent5Secondary;" & _
-	"long Agent6Id;float Agent6X;float Agent6Y;float Agent6HP;long Agent6Effects;byte Agent6Hex;dword Agent6Name;byte Agent6Primary;byte Agent6Secondary;" & _
-	"long Agent7Id;float Agent7X;float Agent7Y;float Agent7HP;long Agent7Effects;byte Agent7Hex;dword Agent7Name;byte Agent7Primary;byte Agent7Secondary;" & _
-	"long Agent8Id;float Agent8X;float Agent8Y;float Agent8HP;long Agent8Effects;byte Agent8Hex;dword Agent8Name;byte Agent8Primary;byte Agent8Secondary;"
+	"long Agent1Id;float Agent1X;float Agent1Y;float Agent1HP;long Agent1Effects;byte Agent1Hex;dword Agent1Name;byte Agent1Primary;byte Agent1Secondary;long Agent1Target;word Agent1Skill;" & _
+	"long Agent2Id;float Agent2X;float Agent2Y;float Agent2HP;long Agent2Effects;byte Agent2Hex;dword Agent2Name;byte Agent2Primary;byte Agent2Secondary;long Agent2Target;word Agent2Skill;" & _
+	"long Agent3Id;float Agent3X;float Agent3Y;float Agent3HP;long Agent3Effects;byte Agent3Hex;dword Agent3Name;byte Agent3Primary;byte Agent3Secondary;long Agent3Target;word Agent3Skill;" & _
+	"long Agent4Id;float Agent4X;float Agent4Y;float Agent4HP;long Agent4Effects;byte Agent4Hex;dword Agent4Name;byte Agent4Primary;byte Agent4Secondary;long Agent4Target;word Agent4Skill;" & _
+	"long Agent5Id;float Agent5X;float Agent5Y;float Agent5HP;long Agent5Effects;byte Agent5Hex;dword Agent5Name;byte Agent5Primary;byte Agent5Secondary;long Agent5Target;word Agent5Skill;" & _
+	"long Agent6Id;float Agent6X;float Agent6Y;float Agent6HP;long Agent6Effects;byte Agent6Hex;dword Agent6Name;byte Agent6Primary;byte Agent6Secondary;long Agent6Target;word Agent6Skill;" & _
+	"long Agent7Id;float Agent7X;float Agent7Y;float Agent7HP;long Agent7Effects;byte Agent7Hex;dword Agent7Name;byte Agent7Primary;byte Agent7Secondary;long Agent7Target;word Agent7Skill;" & _
+	"long Agent8Id;float Agent8X;float Agent8Y;float Agent8HP;long Agent8Effects;byte Agent8Hex;dword Agent8Name;byte Agent8Primary;byte Agent8Secondary;long Agent8Target;word Agent8Skill;"
 
 ; The constants
 Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, _

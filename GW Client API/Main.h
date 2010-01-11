@@ -101,6 +101,8 @@ struct PartyPlayerInfo {
 	wchar_t* NamePtr;
 	byte Primary;
 	byte Secondary;
+	long Target;
+	word Skill;
 };
 
 struct PartyInfo {
