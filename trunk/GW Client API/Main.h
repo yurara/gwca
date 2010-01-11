@@ -54,6 +54,7 @@ void Login();
 void ReloadSkillbar();
 void SellItem(long itemId);
 void BuyItem(long id, long quantity, long value);
+void SendPartyInfo(HWND hwndReceiver, long teamId);
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName);
 void TargetNearestFoe();
 void TargetNearestAlly();
@@ -88,6 +89,25 @@ struct SellItemStruct {
 	long sessionId;
 	long random;
 	long itemId;
+};
+
+struct PartyPlayerInfo {
+	long AgentId;
+	float X;
+	float Y;
+	float HP;
+	long Effects;
+	byte Hex;
+	wchar_t* NamePtr;
+	byte Primary;
+	byte Secondary;
+};
+
+struct PartyInfo {
+	HWND HwndReceiver;
+	long TeamSize;
+	long TeamId;
+	PartyPlayerInfo Players[8];
 };
 
 #endif

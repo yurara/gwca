@@ -42,6 +42,7 @@ void TravelGH();
 void LeaveGH();
 void SetSkillbarSkill(long slot, long skillId);
 void ChangeSecondProfession(long newProfession);
+void SkipCinematic();
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);
