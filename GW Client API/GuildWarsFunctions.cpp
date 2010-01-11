@@ -293,6 +293,11 @@ void ChangeSecondProfession(long newProfession){
 	SendPacket(newPak);
 }
 
+void SkipCinematic(){
+	NEWPAK(5b,04);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

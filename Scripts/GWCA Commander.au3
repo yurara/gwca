@@ -5,8 +5,6 @@
 #include <StaticConstants.au3>
 #include "GWCAConstants.au3"
 
-$sGW = "Guild Wars"
-
 $myGUI = GUICreate("GWCA Commander", 300, 100)
 $inputCmd = GUICtrlCreateCombo("", 5, 5, 290, 20, BitOr($GUI_SS_DEFAULT_COMBO, $CBS_SORT, $CBS_DROPDOWNLIST))
 GUICtrlSetFont(-1, 7.5)
@@ -44,7 +42,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_FindItemByModelId|$CA_ChangeSecondProfession|$CA_GetNumberOfAgentsByPlayerNumber|$CA_FindEmptySlot|$CA_FindGoldItem|"& _
 					"$CA_GetNumberOfAliveEnemyAgents|$CA_GetItemPositionByItemId|$CA_GetItemPositionByModelId|$CA_GetItemPositionByRarity|"& _
 					"$CA_GetItemModelIdById|$CA_GetItemInfoById|$CA_GetItemLastModifierById|$CA_InitMapLoad|$CA_MapIsLoaded|$CA_GetNextItem|$CA_TargetNextPartyMember|" & _
-					"$CA_TargetNextFoe|$CA_EquipItem|$CA_EquipItemById|$CA_GetTarget|$CA_GetMapOverlayCoords|$CA_GetMapOverlayInfo|$CA_GetNearestMapOverlayToCoords")
+					"$CA_TargetNextFoe|$CA_EquipItem|$CA_EquipItemById|$CA_GetTarget|$CA_GetMapOverlayCoords|$CA_GetMapOverlayInfo|$CA_GetNearestMapOverlayToCoords" & _
+					"$CA_SkipCinematic|$CA_GetPartyInfo")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)

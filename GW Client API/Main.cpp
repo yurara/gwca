@@ -87,6 +87,7 @@ HANDLE PacketMutex;
 std::vector<CPacket*> PacketQueue;
 std::vector<SkillLogSkill> SkillLogQueue;
 std::vector<SkillLogSkill> SkillCancelQueue;
+std::vector<PartyInfo> PartyInfoQueue;
 
 void _declspec(naked) SkillLogHook(){
 	SkillLogSkill* skillPtr;
@@ -520,6 +521,9 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x43B: //Target next foe : No return
 			TargetNextFoe();
+			break;
+		case 0x43C: //Skip cinematic : No return
+			SkipCinematic();
 			break;
 
 		//SectionA related commands
@@ -1205,6 +1209,9 @@ void _declspec(naked) CustomMsgHandler(){
 			memcpy(&MsgFloat2, &MsgLParam, sizeof(float));
 			TmpVariable = GetNearestMapOverlayToCoords(MsgFloat, MsgFloat2);
 			break;
+		case 0x58C: //Get party info : Return in WM_COPYDATA
+			SendPartyInfo((HWND)MsgLParam, MsgWParam);
+			break;
 	}
 	
 	_asm {
@@ -1251,6 +1258,45 @@ void BuyItem(long id, long quantity, long value){
 		MOV ECX,1
 		CALL BuyItemFunction
 	}
+}
+
+void SendPartyInfo(HWND hwndReceiver, long teamId){
+	PartyInfo PtInfo;
+
+	PtInfo.HwndReceiver = hwndReceiver;
+
+	PtInfo.TeamId = teamId;
+	std::vector<long> TeamAgents;
+
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->TeamId == teamId && Agents[i]->LoginNumber != 0){TeamAgents.push_back(i);}
+	}
+
+	if(TeamAgents.size() < 1)
+		PtInfo.TeamSize = 0;
+	else if(TeamAgents.size() <= 4)
+		PtInfo.TeamSize = 4;
+	else
+		PtInfo.TeamSize = 8;
+
+	long plNum;
+	for(unsigned int i = 0;i < TeamAgents.size();i++){
+		plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo.TeamSize * (teamId - 1)) - 1;
+		PtInfo.Players[plNum].AgentId = TeamAgents[i];
+		PtInfo.Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
+		PtInfo.Players[plNum].Hex = 0;
+		if((Agents[TeamAgents[i]]->Effects & 0x0800)) PtInfo.Players[plNum].Hex += 1;
+		if((Agents[TeamAgents[i]]->Effects & 0x0400)) PtInfo.Players[plNum].Hex += 1;
+		PtInfo.Players[plNum].X = Agents[TeamAgents[i]]->X;
+		PtInfo.Players[plNum].Y = Agents[TeamAgents[i]]->Y;
+		PtInfo.Players[plNum].HP = Agents[TeamAgents[i]]->HP;
+		PtInfo.Players[plNum].NamePtr = GetAgentName(TeamAgents[i]);
+		PtInfo.Players[plNum].Primary = Agents[TeamAgents[i]]->Primary;
+		PtInfo.Players[plNum].Secondary = Agents[TeamAgents[i]]->Secondary;
+	}
+
+	PartyInfoQueue.push_back(PtInfo);
 }
 
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName){
@@ -1468,11 +1514,15 @@ nextLoop:
 
 void SkillLogQueueThread(){
 	COPYDATASTRUCT SkillLogCDS;
+	COPYDATASTRUCT PartyInfoCDS;
 	LoggedSkillStruct SkillInfo;
 
 	SkillLogCDS.dwData = 1;
 	SkillLogCDS.lpData = &SkillInfo;
 	SkillLogCDS.cbData = sizeof(LoggedSkillStruct);
+
+	PartyInfoCDS.dwData = 2;
+	PartyInfoCDS.cbData = sizeof(PartyInfo);
 
 	wchar_t* sWindowText = new wchar_t[50];
 	dword tTicks = 0;
@@ -1510,7 +1560,13 @@ void SkillLogQueueThread(){
 		}else{
 			SkillCancelQueue.clear();
 		}
-		
+
+		if(PartyInfoQueue.size() > 0){
+			PartyInfoCDS.lpData = &PartyInfoQueue.front();
+			SendMessage(PartyInfoQueue.front().HwndReceiver, WM_COPYDATA, 0, (LPARAM)(LPVOID)&PartyInfoCDS);
+			PartyInfoQueue.erase(PartyInfoQueue.begin());
+		}
+
 		if(*(HWND*)WinHandle){
 			if((GetTickCount() - tTicks) > 5000){
 				tTicks = GetTickCount();
