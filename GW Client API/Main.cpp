@@ -59,7 +59,6 @@ wchar_t* pName;
 long MoveItemId = NULL;
 long TmpVariable = NULL;
 long CurrentBag = 1;
-SkillType* tmpSkillType = NULL;
 
 long SellSessionId = NULL;
 long LastDialogId = 0;
@@ -1213,6 +1212,13 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x58C: //Get party info : Return in WM_COPYDATA
 			SendPartyInfo((HWND)MsgLParam, MsgWParam);
 			break;
+		case 0x58D: //Clear PacketQueue : Return int/long
+			if(WaitForSingleObject(PacketMutex, 200) == WAIT_TIMEOUT) break;
+			MsgInt = PacketQueue.size();
+			PacketQueue.clear();
+			ReleaseMutex(PacketMutex);
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, 0);
+			break;
 	}
 	
 	_asm {
@@ -1400,7 +1406,7 @@ void UseHeroSkill(long HeroId, long SkillNumber, long Target){
 }
 
 void UseSkillNew(long SkillId, long Target, long Event){
-	tmpSkillType = (SkillType*)(SkillTypeBase + (MsgInt * 160));
+	SkillType* tmpSkillType = (SkillType*)(SkillTypeBase + (MsgInt * 160));
 	if(tmpSkillType == NULL){return;}
 	if(tmpSkillType->Type == GW_SKILL_TYPE_ATTACKS){
 		UseAttackSkill(MsgInt, MsgLParam, Event);
