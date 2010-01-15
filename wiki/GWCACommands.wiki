@@ -255,3 +255,4 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetNearestMapOverlayToCoords || 0x58B || INTERNAL COMMAND! Do not use this. Please use the function GetNearestMapOverlayToCoords() defined in GWCAConstants.au3 ||
 || CA_GetPartyInfo || 0x58C || Parameter = team id, parameter 2 = script hwnd. Advanced command. See the definition of $tagPARTYINFO in GWCAConstants.au3 and the example on this link [http://harboe.pastebin.com/f3cc0d5c5] ||
 || CA_ClearPacketQueue || 0x58D || No parameters. Advanced command to clean up packet queue if GW surprises you with a load screen (to avoid crashing). If used with CmdCB() it returns the number of packets removed from the queue. ||
+|| CA_SetHeroMode || 0x58E || Parameter = hero index (1,2,3), parameter 2 = hero mode (see $HEROMODE_ variables). Changes the mode of the specified hero to the specified state. 0 = fight, 1 = guard, 2 = avoid. ||
