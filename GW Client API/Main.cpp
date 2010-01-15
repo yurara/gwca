@@ -71,6 +71,7 @@ long* AgentTargets = new long[2560];
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
 ItemManager* MyItemManager = new ItemManager();
+PartyInfo PtInfo;
 
 unsigned int MsgUInt = NULL;
 WPARAM MsgWParam = NULL;
@@ -1219,6 +1220,17 @@ void _declspec(naked) CustomMsgHandler(){
 			ReleaseMutex(PacketMutex);
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, 0);
 			break;
+		case 0x58E: //Set hero combat mode : No return
+			switch(MsgWParam){
+				case 1:
+					MsgWParam = *(long*)(MySectionA->HeroesStruct() + 0x4); break;
+				case 2:
+					MsgWParam = *(long*)(MySectionA->HeroesStruct() + 0x28); break;
+				case 3:
+					MsgWParam = *(long*)(MySectionA->HeroesStruct() + 0x4C); break;
+			}
+			SetHeroMode(MsgWParam, MsgLParam);
+			break;
 	}
 	
 	_asm {
@@ -1268,8 +1280,6 @@ void BuyItem(long id, long quantity, long value){
 }
 
 void SendPartyInfo(HWND hwndReceiver, long teamId){
-	PartyInfo PtInfo;
-
 	__try {
 		PtInfo.HwndReceiver = hwndReceiver;
 		PtInfo.TeamId = teamId;
@@ -1587,7 +1597,7 @@ void SkillLogQueueThread(){
 				if(!MySectionA->Name()[0]){
 					SetWindowTextW(*(HWND*)WinHandle, L"Guild Wars");
 				}else{
-					swprintf(sWindowText, L"Guild Wars - %s", MySectionA->Name());
+					swprintf(sWindowText, 50, L"Guild Wars - %s", MySectionA->Name());
 					SetWindowTextW(*(HWND*)WinHandle, sWindowText);
 				}
 			}
@@ -1812,7 +1822,7 @@ void WriteJMP(byte* location, byte* newFunction){
 
 void InjectErr(const char* lpzText){
 	char* buf = new char[100];
-	sprintf(buf, "The %s could not be found!\nPlease contact SOMEONE about this issue.", lpzText);
+	sprintf_s(buf, 100, "The %s could not be found!\nPlease contact SOMEONE about this issue.", lpzText);
 	MessageBox(NULL, buf, "Hooking error!", MB_OK);
 }
 

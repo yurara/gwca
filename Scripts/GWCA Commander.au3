@@ -43,7 +43,7 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_GetNumberOfAliveEnemyAgents|$CA_GetItemPositionByItemId|$CA_GetItemPositionByModelId|$CA_GetItemPositionByRarity|"& _
 					"$CA_GetItemModelIdById|$CA_GetItemInfoById|$CA_GetItemLastModifierById|$CA_InitMapLoad|$CA_MapIsLoaded|$CA_GetNextItem|$CA_TargetNextPartyMember|" & _
 					"$CA_TargetNextFoe|$CA_EquipItem|$CA_EquipItemById|$CA_GetTarget|$CA_GetMapOverlayCoords|$CA_GetMapOverlayInfo|$CA_GetNearestMapOverlayToCoords" & _
-					"$CA_SkipCinematic|$CA_GetPartyInfo|$CA_ClearPacketQueue")
+					"$CA_SkipCinematic|$CA_GetPartyInfo|$CA_ClearPacketQueue|$CA_SetHeroMode")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)

@@ -43,6 +43,7 @@ void LeaveGH();
 void SetSkillbarSkill(long slot, long skillId);
 void ChangeSecondProfession(long newProfession);
 void SkipCinematic();
+void SetHeroMode(long HeroId, long Mode);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);
