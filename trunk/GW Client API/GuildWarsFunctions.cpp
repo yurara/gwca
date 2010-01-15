@@ -298,6 +298,13 @@ void SkipCinematic(){
 	SendPacket(newPak);
 }
 
+void SetHeroMode(long HeroId, long Mode){
+	NEWPAK(0d, 0c);
+	newPak->Set<dword>(4, HeroId);
+	newPak->Set<dword>(8, Mode);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
