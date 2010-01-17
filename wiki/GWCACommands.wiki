@@ -90,7 +90,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_CommandHero2 || 0x430 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || 0x431 || Same as CA_COMMANDHERO1. ||
 || CA_CommandAll || 0x432 || Same as CA_COMMANDHERO1. ||
-|| CA_ChangeDistrict || 0x433 || Parameter = region (0 = america, 1 = asia korean, 2 = europe,3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
+|| CA_ChangeDistrict || 0x433 || Parameter = region (0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
 || CA_Resign || 0x434 || No parameters. ||
 || CA_ReturnToOutpost || 0x435 || No parameters. "Presses" the Return To Outpost button after resigning. ||
 || CA_GoAgent || 0x436 || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
@@ -216,6 +216,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemLastModifierById || 0x52E || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
 || CA_EquipItem || 0x52F || Parameter = bag index, parameter 2 = item slot. Equips the specified item. ||
 || CA_EquipItemById || 0x530 || Parameter = item id. Equips the specified item. ||
+|| CA_SalvageItem || 0x531 || Parameter = item id OR locate item by index with bag index,item slot. Searches for a salvage kit and uses it on the specified item. ||
+|| CA_GetSalvageKit || 0x532 || No parameters. Searches for a salvage kit and returns the item id if it finds one. ||
 
 ----
 
@@ -256,3 +258,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetPartyInfo || 0x58C || Parameter = team id, parameter 2 = script hwnd. Advanced command. See the definition of $tagPARTYINFO in GWCAConstants.au3 and the example on this link [http://harboe.pastebin.com/f3cc0d5c5] ||
 || CA_ClearPacketQueue || 0x58D || No parameters. Advanced command to clean up packet queue if GW surprises you with a load screen (to avoid crashing). If used with CmdCB() it returns the number of packets removed from the queue. ||
 || CA_SetHeroMode || 0x58E || Parameter = hero index (1,2,3), parameter 2 = hero mode (see $HEROMODE_ variables). Changes the mode of the specified hero to the specified state. 0 = fight, 1 = guard, 2 = avoid. ||
+|| CA_QuestCheck || 0x58F || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the quest id and the current log state. ||
+|| CA_QuestCoords || 0x590 || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the X,Y coordinates of the marker. ||
+|| CA_QuestActive || 0x591 || No parameters. Returns the quest id of the currently active quest. ||
+|| CA_QuestAbandon || 0x592 || Parameter = quest id (or -1 for active quest). Abandons the specified quest. ||
