@@ -94,7 +94,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_Resign || 0x434 || No parameters. ||
 || CA_ReturnToOutpost || 0x435 || No parameters. "Presses" the Return To Outpost button after resigning. ||
 || CA_GoAgent || 0x436 || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
-|| CA_DonateFaction || 0x437 || No parameters. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
+|| CA_DonateFaction || 0x437 || Parameter = 0 for Kurzick, 1 for Luxon. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
 || CA_SetSkillbarSkill || 0x438 || Parameter = skill slot, parameter 2 = skill id. ||
 || CA_ChangeSecondProfession || 0x439 || Parameter = profession number. Follows this enumeration 0-10 = { None,W,R,Mo,N,Me,E,A,Rt,P,D }. ||
 || CA_TargetNextPartyMember || 0x43A || No parameters. Functions like the GW Control: Targetting - Party Member: Next ||
