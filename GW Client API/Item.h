@@ -85,6 +85,22 @@ public:
 		return 0;
 	}
 
+	long FindSalvageKit(){
+		for(int i = 1;i < 16;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->modelId == 2991||pCurrentItem->modelId == 2992){ return pCurrentItem->id; }
+			}
+		}
+		return 0;
+	}
+
 	long GetItemByModelId(long model){
 		for(int i = 1;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);

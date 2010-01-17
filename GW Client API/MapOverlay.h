@@ -14,4 +14,19 @@ struct MapOverlay {
 	void* unknown5; // May concern the name
 };
 
+struct Quest {
+	long Id; //Quest id
+	long LogState;
+	byte* unknown1;
+	byte* unknown2;
+	byte* unknown3;
+	long MapFrom;
+	float X; //Coordinates of the marker
+	float Y;
+	byte unknown4[8]; // = 0
+	long MapTo;
+	byte* unknown5;
+	byte* unknown6;
+};
+
 #endif

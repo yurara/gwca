@@ -81,6 +81,7 @@ int MsgInt2;
 int MsgEvent = 0;
 float MsgFloat;
 float MsgFloat2;
+int MsgLoop = 0;
 
 HANDLE PacketMutex;
 HANDLE PartyMutex;
@@ -1121,9 +1122,17 @@ void _declspec(naked) CustomMsgHandler(){
 			EquipItem(MsgWParam);
 			break;
 		case 0x531: //Salvage Item : No return
-			if(!MsgWParam || !MsgLParam){RESPONSE_INVALID;}
-			SalvageItem(MsgWParam, MsgLParam);
+			if(MsgWParam==NULL){RESPONSE_INVALID;}
+			if(MsgLParam==NULL){
+				SalvageItem(MsgWParam, MyItemManager->FindSalvageKit());
+			}else{
+				SalvageItem(MyItemManager->GetItemId(MsgWParam, MsgLParam), MyItemManager->FindSalvageKit());
+			}
 			break;
+		case 0x532: //Find salvage kit : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindSalvageKit(), 0);
+			break;
+
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleSunspear(), 0);
@@ -1233,6 +1242,44 @@ void _declspec(naked) CustomMsgHandler(){
 					MsgWParam = *(long*)(MySectionA->HeroesStruct() + 0x4C); break;
 			}
 			SetHeroMode(MsgWParam, MsgLParam);
+			break;
+		case 0x58F: //Check if you have a certain quest in your log : Return int/long
+			if(MsgWParam==-1){MsgWParam = MySectionA->ActiveQuest();}
+			if(MsgWParam==NULL){break;}
+			MsgInt = 0;
+			MsgInt2 = 0;
+			for(MsgLoop = 0;MsgLoop < MySectionA->QuestLogSize();MsgLoop++){
+				if(MySectionA->QuestLogPointer()[MsgLoop].Id == MsgWParam){
+					MsgInt = MsgWParam;
+					MsgInt2 = MySectionA->QuestLogPointer()[MsgLoop].LogState;
+					break;
+				}
+			}
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+			break;
+		case 0x590: //Get coordinates of quest marker : Return float & float
+			if(MsgWParam==-1){MsgWParam = MySectionA->ActiveQuest();}
+			if(MsgWParam==NULL){break;}
+			MsgFloat = 0;
+			MsgFloat2 = 0;
+			for(MsgLoop = 0;MsgLoop < MySectionA->QuestLogSize();MsgLoop++){
+				if(MySectionA->QuestLogPointer()[MsgLoop].Id == MsgWParam){
+					MsgFloat = MySectionA->QuestLogPointer()[MsgLoop].X;
+					MsgFloat2 = MySectionA->QuestLogPointer()[MsgLoop].Y;
+					break;
+				}
+			}
+			memcpy(&MsgInt, &MsgFloat, sizeof(float));
+			memcpy(&MsgInt2, &MsgFloat2, sizeof(float));
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+			break;
+		case 0x591: //Get id of currently active quest : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->ActiveQuest(), 0);
+			break;
+		case 0x592: //Abandon specified quest : No return
+			if(MsgWParam==-1){MsgWParam = MySectionA->ActiveQuest();}
+			if(MsgWParam==NULL){break;}
+			AbandonQuest(MsgWParam);
 			break;
 	}
 	
@@ -1596,7 +1643,7 @@ void SkillLogQueueThread(){
 			if(PartyInfoQueue.size() > 0){
 				PartyInfoCDS.lpData = PartyInfoQueue.front();
 				SendMessage(PartyInfoQueue.front()->HwndReceiver, WM_COPYDATA, 0, (LPARAM)(LPVOID)&PartyInfoCDS);
-				delete [] PartyInfoQueue.front();
+				delete PartyInfoQueue.front();
 				PartyInfoQueue.erase(PartyInfoQueue.begin());
 			}
 			ReleaseMutex(PartyMutex);

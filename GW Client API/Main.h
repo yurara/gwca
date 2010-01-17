@@ -25,6 +25,7 @@ struct Item;
 struct ItemExtra;
 
 struct MapOverlay;
+struct Quest;
 
 template <typename T> T ReadPtrChain(
 									 dword pBase = 0,

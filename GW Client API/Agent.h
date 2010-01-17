@@ -214,6 +214,18 @@ public:
 	long MapOverlaySize(){
 		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x77C);
 	}
+	Quest* QuestLogPointer(){
+		return ReadPtrChain<Quest*>(BasePointer(), 0x18, 0x2C, 0x4C8);
+	}
+	long QuestLogSize(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x4D0);
+	}
+	long ActiveQuest(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x4C4);
+	}
+	long* ActiveQuestPtr(){
+		return (ReadPtrChain<long*>(BasePointer(), 0x18, 0x2C) + 0x4C4);
+	}
 };
 
 #endif

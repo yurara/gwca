@@ -49,11 +49,12 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_UseItem, $CA_UseItemById, $CA_DropItem, $CA_DropItemById, _
 			$CA_AcceptAllItems, $CA_GetItemLastModifier, $CA_FindItemByModelId, $CA_FindEmptySlot, $CA_FindGoldItem, _
 			$CA_GetItemPositionByItemId, $CA_GetItemPositionByModelId, $CA_GetItemPositionByRarity, $CA_GetItemModelIdById, $CA_GetItemInfoById, _
-			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById,$CA_SalvageItem, _
+			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, $CA_SalvageItem, _
 			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
 			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick, _
 			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
-			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode
+			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode, _
+			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
