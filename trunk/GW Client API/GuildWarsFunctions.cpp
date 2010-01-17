@@ -313,6 +313,12 @@ void SetHeroMode(long HeroId, long Mode){
 	SendPacket(newPak);
 }
 
+void AbandonQuest(long QuestId){
+	NEWPAK(09,08);
+	newPak->Set<dword>(4, QuestId);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
