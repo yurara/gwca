@@ -20,7 +20,7 @@ void GetQuest(byte id);
 void QuestReward(byte id);
 void Dialog(long pick);
 void GoNPC(long id);
-void DonateFaction();
+void DonateFaction(long KurzLux = 0);
 void ExchangeAmber();
 void OpenChest();
 void GoSignpost(long id);
