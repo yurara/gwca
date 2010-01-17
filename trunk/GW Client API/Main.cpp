@@ -71,7 +71,6 @@ long* AgentTargets = new long[2560];
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
 ItemManager* MyItemManager = new ItemManager();
-PartyInfo PtInfo;
 
 unsigned int MsgUInt = NULL;
 WPARAM MsgWParam = NULL;
@@ -84,10 +83,11 @@ float MsgFloat;
 float MsgFloat2;
 
 HANDLE PacketMutex;
+HANDLE PartyMutex;
 std::vector<CPacket*> PacketQueue;
 std::vector<SkillLogSkill> SkillLogQueue;
 std::vector<SkillLogSkill> SkillCancelQueue;
-std::vector<PartyInfo> PartyInfoQueue;
+std::vector<PartyInfo*> PartyInfoQueue;
 std::vector<long> TeamAgents;
 
 void _declspec(naked) SkillLogHook(){
@@ -508,7 +508,7 @@ void _declspec(naked) CustomMsgHandler(){
 			GoAgent(MsgWParam);
 			break;
 		case 0x437: //Donate faction : No return
-			DonateFaction();
+			DonateFaction(MsgWParam);
 			break;
 		case 0x438: //Set skillbar skill : No return
 			SetSkillbarSkill(MsgWParam, MsgLParam);
@@ -1280,9 +1280,11 @@ void BuyItem(long id, long quantity, long value){
 }
 
 void SendPartyInfo(HWND hwndReceiver, long teamId){
+	PartyInfo* PtInfo = new PartyInfo;
+
 	__try {
-		PtInfo.HwndReceiver = hwndReceiver;
-		PtInfo.TeamId = teamId;
+		PtInfo->HwndReceiver = hwndReceiver;
+		PtInfo->TeamId = teamId;
 		TeamAgents.clear();
 
 		for(unsigned int i = 1;i < maxAgent;i++){
@@ -1291,31 +1293,34 @@ void SendPartyInfo(HWND hwndReceiver, long teamId){
 		}
 
 		if(TeamAgents.size() < 1)
-			PtInfo.TeamSize = 0;
+			PtInfo->TeamSize = 0;
 		else if(TeamAgents.size() <= 4)
-			PtInfo.TeamSize = 4;
+			PtInfo->TeamSize = 4;
 		else
-			PtInfo.TeamSize = 8;
+			PtInfo->TeamSize = 8;
 
 		long plNum;
 		for(unsigned int i = 0;i < TeamAgents.size();i++){
-			plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo.TeamSize * (teamId - 1)) - 1;
-			PtInfo.Players[plNum].AgentId = TeamAgents[i];
-			PtInfo.Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
-			PtInfo.Players[plNum].Hex = 0;
-			if((Agents[TeamAgents[i]]->Effects & 0x0800)) PtInfo.Players[plNum].Hex += 1;
-			if((Agents[TeamAgents[i]]->Effects & 0x0400)) PtInfo.Players[plNum].Hex += 1;
-			PtInfo.Players[plNum].X = Agents[TeamAgents[i]]->X;
-			PtInfo.Players[plNum].Y = Agents[TeamAgents[i]]->Y;
-			PtInfo.Players[plNum].HP = Agents[TeamAgents[i]]->HP;
-			PtInfo.Players[plNum].NamePtr = GetAgentName(TeamAgents[i]);
-			PtInfo.Players[plNum].Primary = Agents[TeamAgents[i]]->Primary;
-			PtInfo.Players[plNum].Secondary = Agents[TeamAgents[i]]->Secondary;
-			PtInfo.Players[plNum].Target = AgentTargets[TeamAgents[i]];
-			PtInfo.Players[plNum].Skill = Agents[TeamAgents[i]]->Skill;
+			plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo->TeamSize * (teamId - 1)) - 1;
+			PtInfo->Players[plNum].AgentId = TeamAgents[i];
+			PtInfo->Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
+			PtInfo->Players[plNum].Hex = 0;
+			if((Agents[TeamAgents[i]]->Effects & 0x0800)) PtInfo->Players[plNum].Hex += 1;
+			if((Agents[TeamAgents[i]]->Effects & 0x0400)) PtInfo->Players[plNum].Hex += 1;
+			PtInfo->Players[plNum].X = Agents[TeamAgents[i]]->X;
+			PtInfo->Players[plNum].Y = Agents[TeamAgents[i]]->Y;
+			PtInfo->Players[plNum].HP = Agents[TeamAgents[i]]->HP;
+			PtInfo->Players[plNum].NamePtr = GetAgentName(TeamAgents[i]);
+			PtInfo->Players[plNum].Primary = Agents[TeamAgents[i]]->Primary;
+			PtInfo->Players[plNum].Secondary = Agents[TeamAgents[i]]->Secondary;
+			PtInfo->Players[plNum].Target = AgentTargets[TeamAgents[i]];
+			PtInfo->Players[plNum].Skill = Agents[TeamAgents[i]]->Skill;
 		}
 
-		PartyInfoQueue.push_back(PtInfo);
+		if(WaitForSingleObject(PartyMutex, 1000) != WAIT_TIMEOUT){
+			PartyInfoQueue.push_back(PtInfo);
+			ReleaseMutex(PartyMutex);
+		}
 	}
 	__except(1) {
 		return;
@@ -1584,10 +1589,14 @@ void SkillLogQueueThread(){
 			SkillCancelQueue.clear();
 		}
 
-		if(PartyInfoQueue.size() > 0){
-			PartyInfoCDS.lpData = &PartyInfoQueue.front();
-			SendMessage(PartyInfoQueue.front().HwndReceiver, WM_COPYDATA, 0, (LPARAM)(LPVOID)&PartyInfoCDS);
-			PartyInfoQueue.erase(PartyInfoQueue.begin());
+		if(WaitForSingleObject(PartyMutex, 50) != WAIT_TIMEOUT){
+			if(PartyInfoQueue.size() > 0){
+				PartyInfoCDS.lpData = PartyInfoQueue.front();
+				SendMessage(PartyInfoQueue.front()->HwndReceiver, WM_COPYDATA, 0, (LPARAM)(LPVOID)&PartyInfoCDS);
+				delete [] PartyInfoQueue.front();
+				PartyInfoQueue.erase(PartyInfoQueue.begin());
+			}
+			ReleaseMutex(PartyMutex);
 		}
 
 		if(*(HWND*)WinHandle){
@@ -1867,6 +1876,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				memset(SkillLogStart, 0x90, 8);
 				VirtualProtect(SkillLogStart, 8, dwOldProtection, NULL);
 				WriteJMP(SkillLogStart, (byte*)SkillLogHook);
+				PartyMutex = CreateMutex(NULL, false, NULL);
 				CreateThread(0, 0, (LPTHREAD_START_ROUTINE)&SkillLogQueueThread, 0, 0, 0);
 			}
 			if(!MapIdLocation){

@@ -167,10 +167,11 @@ void GoPlayer(long id){
 	SendPacket(newPak);
 }
 
-void DonateFaction(){
+void DonateFaction(long KurzLux){
 	NEWPAK(2e,10);
-	newPak->Set<dword>(12,0x88);
-	newPak->Set<byte>(13,0x13);
+	newPak->Set<dword>(4,0);
+	newPak->Set<dword>(8,KurzLux);
+	newPak->Set<dword>(12,5000);
 	SendPacket(newPak);
 }
 
