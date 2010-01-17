@@ -90,7 +90,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_CommandHero2 || 0x430 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || 0x431 || Same as CA_COMMANDHERO1. ||
 || CA_CommandAll || 0x432 || Same as CA_COMMANDHERO1. ||
-|| CA_ChangeDistrict || 0x433 || Parameter = region (0 = america, 1 = asia, 2 = europe), parameter 2 = language (experiment around with this!). ||
+|| CA_ChangeDistrict || 0x433 || Parameter = region (0 = america, 1 = asia korean, 2 = europe,3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
 || CA_Resign || 0x434 || No parameters. ||
 || CA_ReturnToOutpost || 0x435 || No parameters. "Presses" the Return To Outpost button after resigning. ||
 || CA_GoAgent || 0x436 || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
