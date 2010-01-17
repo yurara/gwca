@@ -1121,7 +1121,7 @@ void _declspec(naked) CustomMsgHandler(){
 			EquipItem(MsgWParam);
 			break;
 		case 0x531: //Salvage Item : No return
-			if(!MsgWParam || !MsgLParam)(RESPONSE_INVALID);
+			if(!MsgWParam || !MsgLParam){RESPONSE_INVALID;}
 			SalvageItem(MsgWParam, MsgLParam);
 			break;
 		//Title related commands
