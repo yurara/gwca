@@ -29,6 +29,7 @@ void GoPlayer(long id);
 void UseAttackSkill(dword SkillID, dword TargetID, dword Event = 0);
 void CancelAction();
 void IdentifyItem(long idKit, long itemId);
+void SalvageItem(long kit,long itemId);
 void ChangeGold(long goldSelf, long goldStorage);
 void MoveItem(long itemId, long bagId, long slot);
 void ReturnToOutpost();

@@ -206,6 +206,13 @@ void IdentifyItem(long idKit, long itemId){
 	SendPacket(newPak);
 }
 
+void SalvageItem(long kit,long itemId){
+	NEWPAK(6f,10);
+	newPak->Set<long>(4,myId);
+	newPak->Set<long>(8,kit);
+	newPak->Set<long>(12,itemId);
+}
+
 void MoveItem(long itemId, long bagId, long slot){
 	NEWPAK(6a, 10);
 	newPak->Set<long>(4, itemId);
