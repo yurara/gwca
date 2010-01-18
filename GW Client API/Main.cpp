@@ -47,6 +47,7 @@ byte* LoadFinished = NULL;
 byte* TargetLogStart = NULL;
 byte* TargetLogReturn = NULL;
 byte* VirtualHeroFlagFunction = NULL;
+byte* SetAttrisFunc = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -200,7 +201,20 @@ void _declspec(naked) TargetLogHook(){
 		JMP TargetLogReturn
 	}
 }
-
+void SetAttribute(dword atr,dword val){
+	dword Attribute = atr;
+	dword Value = val;
+	long id = myId;
+	_asm{
+		MOV EDX,1  //attri count
+		LEA ECX,Value//value
+		PUSH ECX
+		LEA EAX,Attribute//attribute
+		PUSH EAX
+		MOV ECX,id //AgentId to change attris
+		CALL SetAttrisFunc
+	}
+}
 void _declspec(naked) CustomMsgHandler(){
 	_asm {
 		MOV EAX,DWORD PTR DS:[EBP+0x8]
@@ -952,7 +966,10 @@ void _declspec(naked) CustomMsgHandler(){
 			if(Agents[MsgWParam]==NULL){RESPONSE_INVALID;}
 			PostMessage((HWND)MsgLParam, 0x500, AgentTargets[MsgWParam], 0);
 			break;
-
+		case 0x485: //Set Attribute (Attribute,Value)
+			if(MsgLParam < 1 || MsgLParam > 12){break;}
+			SetAttribute((dword)MsgWParam,(dword)MsgLParam);
+			break;
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MoneySelf(), MySectionA->MoneyStorage());
@@ -1734,6 +1751,8 @@ void FindOffsets(){
 
 	byte TargetLogCode[] = { 0x53, 0x89, 0x4D, 0xF4, 0x56, 0x64 };
 	
+	byte SetAttrisCode[] = {0x8B,0x56,0x08,0x8D,0x46,0x3C,0x8D,0x4E,0x0C,0x50,0x51,0x8B,0xCF,0xE8};
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1835,6 +1854,9 @@ void FindOffsets(){
 			TargetLogStart = start;
 			TargetLogReturn = TargetLogStart+5;
 		}
+		if(!memcmp(start, SetAttrisCode, sizeof(SetAttrisCode))){
+			SetAttrisFunc = start + 0xE + *(dword*)(start+0xE) + 4;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1864,7 +1886,8 @@ void FindOffsets(){
 			SkillTypeBase &&
 			WinHandle &&
 			LoadFinished &&
-			TargetLogStart){
+			TargetLogStart &&
+			SetAttrisFunc){
 			return;
 		}
 		start++;
@@ -2062,7 +2085,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				for(int i = 1;i < 2560;i++){ AgentTargets[i] = 0; }
 				WriteJMP(TargetLogStart, (byte*)TargetLogHook);
 			}
-
+			if(!SetAttrisFunc){
+				InjectErr("SetAttrisFunc");
+				return false;
+			}
 			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
