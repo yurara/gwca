@@ -967,9 +967,10 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, AgentTargets[MsgWParam], 0);
 			break;
 		case 0x485: //Set Attribute (Attribute,Value)
-			if(MsgLParam < 1 || MsgLParam > 12){break;}
+			if(MsgLParam < 0 || MsgLParam > 12){break;}
 			SetAttribute((dword)MsgWParam,(dword)MsgLParam);
 			break;
+
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MoneySelf(), MySectionA->MoneyStorage());
@@ -1751,7 +1752,7 @@ void FindOffsets(){
 
 	byte TargetLogCode[] = { 0x53, 0x89, 0x4D, 0xF4, 0x56, 0x64 };
 	
-	byte SetAttrisCode[] = {0x8B,0x56,0x08,0x8D,0x46,0x3C,0x8D,0x4E,0x0C,0x50,0x51,0x8B,0xCF,0xE8};
+	byte SetAttrisCode[] = { 0x8B, 0x56, 0x08, 0x8D, 0x46, 0x3C, 0x8D, 0x4E, 0x0C, 0x50, 0x51, 0x8B, 0xCF, 0xE8 };
 
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
