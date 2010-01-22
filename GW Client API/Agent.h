@@ -202,6 +202,9 @@ public:
 	dword MerchantItems(){
 		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x24);
 	}
+	unsigned long MerchantItemsSize(){
+		return ReadPtrChain<unsigned long>(BasePointer(), 0x18, 0x2C, 0x28);
+	}
 	dword HeroesStruct(){
 		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x520);
 	}
