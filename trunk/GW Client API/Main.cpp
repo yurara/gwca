@@ -69,6 +69,8 @@ bool FinishedLoading = false;
 
 long* AgentTargets = new long[2560];
 
+long PartyTeamSize = 8;
+
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
 ItemManager* MyItemManager = new ItemManager();
@@ -1150,6 +1152,11 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x532: //Find salvage kit : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindSalvageKit(), 0);
 			break;
+		case 0x533: //Buy item by index and cost : No return
+			if(!MySectionA->MerchantItems()){break;}
+			if(MsgWParam < 1 || MsgWParam > MySectionA->MerchantItemsSize()){break;}
+			BuyItem(*(long*)(MySectionA->MerchantItems() + ((MsgWParam - 1) * 4)), 1, MsgLParam);
+			break;
 
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
@@ -1241,7 +1248,7 @@ void _declspec(naked) CustomMsgHandler(){
 			TmpVariable = GetNearestMapOverlayToCoords(MsgFloat, MsgFloat2);
 			break;
 		case 0x58C: //Get party info : Return in WM_COPYDATA
-			SendPartyInfo((HWND)MsgLParam, MsgWParam);
+			SendPartyInfo((HWND)MsgLParam, MsgWParam, PartyTeamSize);
 			break;
 		case 0x58D: //Clear PacketQueue : Return int/long
 			if(WaitForSingleObject(PacketMutex, 200) == WAIT_TIMEOUT) break;
@@ -1299,6 +1306,10 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam==NULL){break;}
 			AbandonQuest(MsgWParam);
 			break;
+		case 0x593: //Set team size to use with SendPartyInfo
+			if(MsgWParam < 0 || MsgWParam > 8){break;}
+			PartyTeamSize = MsgWParam;
+			break;
 	}
 	
 	_asm {
@@ -1347,29 +1358,34 @@ void BuyItem(long id, long quantity, long value){
 	}
 }
 
-void SendPartyInfo(HWND hwndReceiver, long teamId){
+void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 	PartyInfo* PtInfo = new PartyInfo;
 
 	__try {
 		PtInfo->HwndReceiver = hwndReceiver;
 		PtInfo->TeamId = teamId;
+		PtInfo->TeamSize = teamSize;
 		TeamAgents.clear();
 
 		for(unsigned int i = 1;i < maxAgent;i++){
+			if(TeamAgents.size() == teamSize){break;}
 			if(Agents[i] == NULL){continue;}
 			if(Agents[i]->TeamId == teamId && Agents[i]->LoginNumber != 0){TeamAgents.push_back(i);}
 		}
 
-		if(TeamAgents.size() < 1)
+		for(int i = 0;i < 8;i++)
+			PtInfo->Players[i].AgentId = -1;
+
+		if(TeamAgents.size() == 0)
 			PtInfo->TeamSize = 0;
-		else if(TeamAgents.size() <= 4)
-			PtInfo->TeamSize = 4;
-		else
-			PtInfo->TeamSize = 8;
 
 		long plNum;
 		for(unsigned int i = 0;i < TeamAgents.size();i++){
+			if(Agents[TeamAgents[i]] == NULL){continue;}
+
 			plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo->TeamSize * (teamId - 1)) - 1;
+			if(plNum < 0 || plNum > 7){continue;}
+
 			PtInfo->Players[plNum].AgentId = TeamAgents[i];
 			PtInfo->Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
 			PtInfo->Players[plNum].Hex = 0;
@@ -1388,9 +1404,12 @@ void SendPartyInfo(HWND hwndReceiver, long teamId){
 		if(WaitForSingleObject(PartyMutex, 1000) != WAIT_TIMEOUT){
 			PartyInfoQueue.push_back(PtInfo);
 			ReleaseMutex(PartyMutex);
+		}else{
+			delete PtInfo;
 		}
 	}
 	__except(1) {
+		delete PtInfo;
 		return;
 	}
 }
