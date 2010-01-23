@@ -104,6 +104,7 @@ struct PartyPlayerInfo {
 	byte Secondary;
 	long Target;
 	word Skill;
+	word Weapon;
 };
 
 struct PartyInfo {
