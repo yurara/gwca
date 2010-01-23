@@ -397,6 +397,7 @@ void _declspec(naked) CustomMsgHandler(){
 			Dialog(MsgWParam);
 			break;
 		case 0x421: //Change target : No return
+			if(Agents[MsgWParam]==NULL){break;}
 			_asm MOV ECX,MsgWParam
 			_asm MOV EDX,0
 			_asm CALL ChangeTargetFunction
@@ -1360,13 +1361,14 @@ void BuyItem(long id, long quantity, long value){
 
 void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 	PartyInfo* PtInfo = new PartyInfo;
+	memset(PtInfo, '\0', sizeof(PartyInfo));
 
 	__try {
 		PtInfo->HwndReceiver = hwndReceiver;
 		PtInfo->TeamId = teamId;
 		PtInfo->TeamSize = teamSize;
-		TeamAgents.clear();
 
+		TeamAgents.clear();
 		for(unsigned int i = 1;i < maxAgent;i++){
 			if(TeamAgents.size() == teamSize){break;}
 			if(Agents[i] == NULL){continue;}
@@ -1374,7 +1376,7 @@ void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 		}
 
 		for(int i = 0;i < 8;i++)
-			PtInfo->Players[i].AgentId = -1;
+			PtInfo->Players[i].AgentId = 0;
 
 		if(TeamAgents.size() == 0)
 			PtInfo->TeamSize = 0;
@@ -1384,7 +1386,8 @@ void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 			if(Agents[TeamAgents[i]] == NULL){continue;}
 
 			plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo->TeamSize * (teamId - 1)) - 1;
-			if(plNum < 0 || plNum > 7){continue;}
+			if(plNum < 0){plNum += PtInfo->TeamSize;}
+			if(plNum > 7){continue;}
 
 			PtInfo->Players[plNum].AgentId = TeamAgents[i];
 			PtInfo->Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
@@ -1399,6 +1402,7 @@ void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 			PtInfo->Players[plNum].Secondary = Agents[TeamAgents[i]]->Secondary;
 			PtInfo->Players[plNum].Target = AgentTargets[TeamAgents[i]];
 			PtInfo->Players[plNum].Skill = Agents[TeamAgents[i]]->Skill;
+			PtInfo->Players[plNum].Weapon = Agents[TeamAgents[i]]->WeaponType;
 		}
 
 		if(WaitForSingleObject(PartyMutex, 1000) != WAIT_TIMEOUT){
