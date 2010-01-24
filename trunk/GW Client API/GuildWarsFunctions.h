@@ -46,6 +46,7 @@ void ChangeSecondProfession(long newProfession);
 void SkipCinematic();
 void SetHeroMode(long HeroId, long Mode);
 void AbandonQuest(long QuestId);
+void DismissBuff(long BuffId);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

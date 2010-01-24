@@ -319,6 +319,12 @@ void AbandonQuest(long QuestId){
 	SendPacket(newPak);
 }
 
+void DismissBuff(long BuffId){
+	NEWPAK(22,08);
+	newPak->Set<dword>(4,BuffId);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

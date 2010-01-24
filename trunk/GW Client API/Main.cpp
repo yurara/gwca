@@ -54,6 +54,8 @@ dword PacketLocation = 0;
 
 AgentArray Agents;
 
+BuffHandler MyBuffHandler;
+
 bool LogSkills = false;
 HWND ScriptHwnd = NULL;
 wchar_t* pName;
@@ -544,6 +546,11 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x43C: //Skip cinematic : No return
 			SkipCinematic();
 			break;
+		case 0x43D: //dismiss Buff : No return
+			if(MsgWParam < 0 || MsgWParam > 3){break;}
+			if(MsgLParam < 0){break;}
+			DismissBuff(MyBuffHandler.GetBuff(MsgWParam,MsgLParam)->BuffId);
+			break;
 
 		//SectionA related commands
 		case 0x440: //Check if map is loading : Return int/long
@@ -973,6 +980,18 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgLParam < 0 || MsgLParam > 12){break;}
 			SetAttribute((dword)MsgWParam,(dword)MsgLParam);
 			break;
+		case 0x486: //Player Has Buff : Return bool
+			if(MsgWParam < 0 || MsgWParam > 3500){break;}
+			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(myId,MsgWParam),(WPARAM)MyBuffHandler.HasBuff(myId,MsgWParam));
+		case 0x487: //Hero1 Has Buff : Return bool
+			if(MsgWParam < 0 || MsgWParam > 3500){break;}
+			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4),MsgWParam));
+		case 0x488: //Hero2 Has Buff : Return bool
+			if(MsgWParam < 0 || MsgWParam > 3500){break;}
+			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x28),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x28),MsgWParam));
+		case 0x489: //Hero3 Has Buff : Return bool
+			if(MsgWParam < 0 || MsgWParam > 3500){break;}
+			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C),MsgWParam));
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -1142,13 +1161,13 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x530: //Equip item by item id : No return
 			EquipItem(MsgWParam);
 			break;
-		case 0x531: //Salvage Item : No return
-			if(MsgWParam==NULL){RESPONSE_INVALID;}
+		case 0x531: //Salvage Item : No return <-- doenst work atm
+			/*if(MsgWParam==NULL){RESPONSE_INVALID;}
 			if(MsgLParam==NULL){
 				SalvageItem(MsgWParam, MyItemManager->FindSalvageKit());
 			}else{
 				SalvageItem(MyItemManager->GetItemId(MsgWParam, MsgLParam), MyItemManager->FindSalvageKit());
-			}
+			}*/
 			break;
 		case 0x532: //Find salvage kit : Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->FindSalvageKit(), 0);
