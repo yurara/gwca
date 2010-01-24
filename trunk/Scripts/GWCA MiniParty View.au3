@@ -9,7 +9,7 @@ Opt("MouseCoordMode", 2)
 _GDIPlus_Startup()
 
 Global $teamSize = 8
-Global $gap = 20, $width = 421, $height = 20 * $teamSize + 1, $hpSize = ($width - $gap + 1) / 2;170
+Global $gap = 20, $hpHeight = 21, $width = 421, $height = $hpHeight * $teamSize + 1, $hpSize = ($width - $gap - 1) / 2;170
 
 $cGUI = GUICreate("GWCA MiniParty View", $width, $height)
 $hGraphic = _GDIPlus_GraphicsCreateFromHWND($cGUI)
@@ -19,23 +19,20 @@ $hBackbuffer = _GDIPlus_ImageGetGraphicsContext($hBitmap)
 $hBrushRed = _GDIPlus_BrushCreateSolid(0xFFCC0000)
 $hBrushDarkRed = _GDIPlus_BrushCreateSolid(0xFF440000)
 $hBrushWhite = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
-$hBrushGreen = _GDIPlus_BrushCreateSolid(0xFF548331)
+$hBrushGreen = _GDIPlus_BrushCreateSolid(0xFF6a6a2e)
 $hBrushLightRed = _GDIPlus_BrushCreateSolid(0xFFE67E6D)
-$hBrushPurple = _GDIPlus_BrushCreateSolid(0xFFB815AB)
+$hBrushPurple = _GDIPlus_BrushCreateSolid(0xFFca18bc)
 $hBrushGray = _GDIPlus_BrushCreateSolid(0xFF999999)
 $hBrushLightGreen = _GDIPlus_BrushCreateSolid(0xFFBAFF42)
 $hBrushDarkGray = _GDIPlus_BrushCreateSolid(0xFF666666)
 $hBrushLightPurple = _GDIPlus_BrushCreateSolid(0xFFE659DB)
-$hBrushYellow = _GDIPlus_BrushCreateSolid(0xFFF8E685)
+$hBrushYellow = _GDIPlus_BrushCreateSolid(0xFFFFF27E)
 $hBrushBlack = _GDIPlus_BrushCreateSolid(0xFF000000)
 $hBrushGold = _GDIPlus_BrushCreateSolid(0xFFFFCB2E)
 $hBrushVeryDarkGray = _GDIPlus_BrushCreateSolid(0xFF222222)
 
-$hBrushHPOverlay1 = GDIPlus_CreateLineBrush(0, 0, 0, 10, 0x00000000, 0x40FFFFFF)
-$hBrushHPOverlay2 = GDIPlus_CreateLineBrush(0, 0, 0, 10, 0x00000000, 0x80000000)
-
 $hPenBlack = _GDIPlus_PenCreate(0xFF000000, 1, 2)
-$hPenLightGray = _GDIPlus_PenCreate(0x70FFFFFF, 1, 2)
+$hPenLightGray = _GDIPlus_PenCreate(0x80FFFFFF, 1, 2)
 $hPenThickBlack = _GDIPlus_PenCreate(0xFF000000, 2, 2)
 $hPenGold = _GDIPlus_PenCreate(0xFFFFCB2E, 1, 2)
 
@@ -65,29 +62,22 @@ Global $tNameUpdate = 0
 
 Cmd($CA_SetTeamSize, $teamSize)
 
-Dim $aAgentPrim[8] ;Presume a TeamSize of 8
-Dim $aAgentSeco[8] ;~^^
-Dim $aAgentHP[8] ;~^^
-Dim $aAgentTarget[8] ;~^^
-Dim $aAgentSkill[8] ;~^^
-Dim $aAgentId[8] ;~^^
-Dim $aAgentEffects[8] ;~^^
-Dim $aAgentWeapon[8] ;~^^
-Dim $aAgentName[8] ;~^^
-
-Dim $aTeam1Id[8], $aTeam2Id[8], $aTeam1Name[8], $aTeam2Name[8], $aTeam1Read[8], $aTeam2Read[8]
+Dim $aTeam1Prim[$teamSize], $aTeam2Prim[$teamSize]
+Dim $aTeam1Seco[$teamSize], $aTeam2Seco[$teamSize]
+Dim $aTeam1HP[$teamSize], $aTeam2HP[$teamSize]
+Dim $aTeam1Target[$teamSize], $aTeam2Target[$teamSize]
+Dim $aTeam1Skill[$teamSize], $aTeam2Skill[$teamSize]
+Dim $aTeam1Id[$teamSize], $aTeam2Id[$teamSize]
+Dim $aTeam1Effects[$teamSize], $aTeam2Effects[$teamSize]
+Dim $aTeam1Weapon[$teamSize], $aTeam2Weapon[$teamSize]
+Dim $aTeam1Name[$teamSize], $aTeam2Name[$teamSize]
+Dim $aTeam1Read[$teamSize], $aTeam2Read[$teamSize]
 
 While 1
 	$aTarget = CmdCB($CA_GetCurrentTarget)
 
 	GetPartyInfo(1)
-	$aTeam1Id = $aAgentId
-	$aTeam1Name = $aAgentName
-	Draw(1)
-
 	GetPartyInfo(2)
-	$aTeam2Id = $aAgentId
-	$aTeam2Name = $aAgentName
 	Draw(2)
 
 	If TimerDiff($tNameUpdate) > 1000 Then
@@ -117,157 +107,153 @@ While 1
 	EndIf
 WEnd
 
-Func Draw($iParty)
-	Local $hpBrush, $hpLength, $aPoly[4][2], $polyBase1 = $hpSize, $polyBase2 = $hpSize * 2 + $gap, $polyBase, $aSel[2] = [0, 0], $textBrush, $sText, $sName
+Func Draw($players = $teamSize)
+	Local $aSel[2] = [0, 0], $sText
+
+	_GDIPlus_GraphicsClear($hBackbuffer, 0xFF333333)
 
 	For $i = 0 To $teamSize-1 Step 1
-		If BitAND($aAgentEffects[$i], 0x0040) Then ;Poison/Disease
-			$hpBrush = $hBrushGreen
-		ElseIf BitAND($aAgentEffects[$i], 0x0001) Then ;Bleeding
-			$hpBrush = $hBrushLightRed
-		ElseIf BitAND($aAgentEffects[$i], 0x0400) Then ;Hex
-			$hpBrush = $hBrushPurple
-		Else ;Normal
-			$hpBrush = $hBrushRed
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x0020) Then ;Deep Wound
-			$hpLength = $hpSize - ($hpSize / 5)
-		Else
-			$hpLength = $hpSize
-		EndIf
-
-		If $aAgentId[$i] = $aTarget[0] AND $aAgentId[$i] <> 0 Then
-			$aSel[0] = $iParty
+		If $aTeam1Id[$i] = $aTarget[0] AND $aTeam1Id[$i] <> 0 Then
+			$aSel[0] = 1
+			$aSel[1] = $i
+		ElseIf $aTeam2Id[$i] = $aTarget[0] AND $aTeam2Id[$i] <> 0 Then
+			$aSel[0] = 2
 			$aSel[1] = $i
 		EndIf
 
-		If $iParty = 1 Then
-			_GDIPlus_GraphicsFillRect($hBackbuffer, 0, 20 * $i, $hpSize, 20, $hBrushDarkRed)
-			_GDIPlus_GraphicsFillRect($hBackbuffer, 0, 20 * $i, $hpLength * $aAgentHP[$i], 20, $hpBrush)
-			_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpLength * $aAgentHP[$i], 20 * $i, $hpLength * $aAgentHP[$i], 20 * $i + 20, $hPenLightGray)
-
-			If BitAND($aAgentEffects[$i], 0x0020) Then
-				_GDIPlus_GraphicsFillRect($hBackbuffer, $hpLength, 20 * $i, $hpSize / 5, 20, $hBrushGray)
-				_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpLength, 20 * $i, $hpLength, 20 * $i + 20, $hPenLightGray)
-			EndIf
-
-			$polyBase = $hpSize
-
-			If $aAgentId[$i] = 0 Then
-				_GDIPlus_GraphicsFillRect($hBackbuffer, 0, 20 * $i, $hpSize, 20, $hBrushVeryDarkGray)
-				_GDIPlus_GraphicsDrawRect($hBackbuffer, 0, 20 * $i, $hpSize, 20, $hPenBlack)
-			EndIf
-
-			_GDIPlus_GraphicsFillRect($hBackbuffer, 0, 20 * $i, $hpLength * $aAgentHP[$i], 10, $hBrushHPOverlay1)
-			_GDIPlus_GraphicsFillRect($hBackbuffer, 0, 10 + 20 * $i, $hpSize, 10, $hBrushHPOverlay2)
-
-			_GDIPlus_GraphicsDrawRect($hBackbuffer, 0, 20 * $i, $hpSize, 20, $hPenBlack)
-
-			$tLayout = _GDIPlus_RectFCreate(0, 3 + 20 * $i)
-			$tShadow = _GDIPlus_RectFCreate(0 + 1, 3 + 20 * $i + 1)
-
-		ElseIf $iParty = 2 Then
-			_GDIPlus_GraphicsFillRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpSize, 20, $hBrushDarkRed)
-			_GDIPlus_GraphicsFillRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpLength * $aAgentHP[$i], 20, $hpBrush)
-			_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpSize + $gap + $hpLength * $aAgentHP[$i], 20 * $i, $hpSize + $gap + $hpLength * $aAgentHP[$i], 20 * $i + 20, $hPenLightGray)
-
-			If BitAND($aAgentEffects[$i], 0x0020) Then
-				_GDIPlus_GraphicsFillRect($hBackbuffer, $hpLength + $hpSize + $gap, 20 * $i, $hpSize / 5, 20, $hBrushGray)
-				_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpLength + $hpSize + $gap, 20 * $i, $hpLength + $hpSize + $gap, 20 * $i + 20, $hPenLightGray)
-			EndIf
-
-			$polyBase = $hpSize * 2 + $gap
-
-			If $aAgentId[$i] = 0 Then
-				_GDIPlus_GraphicsFillRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpSize, 20, $hBrushVeryDarkGray)
-				_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpSize, 20, $hPenBlack)
-			EndIf
-
-			_GDIPlus_GraphicsFillRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpLength * $aAgentHP[$i], 10, $hBrushHPOverlay1)
-			_GDIPlus_GraphicsFillRect($hBackbuffer, $hpSize + $gap, 10 + 20 * $i, $hpSize, 10, $hBrushHPOverlay2)
-
-			_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpSize + $gap, 20 * $i, $hpSize, 20, $hPenBlack)
-
-			$tLayout = _GDIPlus_RectFCreate($hpSize + $gap, 3 + 20 * $i)
-			$tShadow = _GDIPlus_RectFCreate($hpSize + $gap + 1, 3 + 20 * $i + 1)
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x0080) Then ;Enchantment
-			$aPoly[0][0] = 3
-			$aPoly[1][0] = $polyBase - 14
-			$aPoly[1][1] = 14 + (20 * $i)
-			$aPoly[2][0] = $polyBase - 8
-			$aPoly[2][1] = 5 + (20 * $i)
-			$aPoly[3][0] = $polyBase - 2
-			$aPoly[3][1] = 14 + (20 * $i)
-			_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushLightGreen)
-			_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
-
-			$polyBase -= 9
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x0002) Then ;Condition
-			$aPoly[0][0] = 3
-			$aPoly[1][0] = $polyBase - 14
-			$aPoly[1][1] = 5 + (20 * $i)
-			$aPoly[2][0] = $polyBase - 8
-			$aPoly[2][1] = 14 + (20 * $i)
-			$aPoly[3][0] = $polyBase - 2
-			$aPoly[3][1] = 5 + (20 * $i)
-			_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushDarkGray)
-			_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
-
-			$polyBase -= 12
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x0800) Then ;Hex
-			$aPoly[0][0] = 3
-			$aPoly[1][0] = $polyBase - 14
-			$aPoly[1][1] = 5 + (20 * $i)
-			$aPoly[2][0] = $polyBase - 8
-			$aPoly[2][1] = 14 + (20 * $i)
-			$aPoly[3][0] = $polyBase - 2
-			$aPoly[3][1] = 5 + (20 * $i)
-			_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushLightPurple)
-			_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
-
-			$polyBase -= 12
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x8000) Then ;Weapon spell
-			_GDIPlus_GraphicsFillEllipse($hBackbuffer, $polyBase - 15, 4 + (20 * $i), 11, 11, $hBrushYellow)
-			_GDIPlus_GraphicsDrawEllipse($hBackbuffer, $polyBase - 15, 4 + (20 * $i), 11, 11, $hPenBlack)
-			_GDIPlus_GraphicsDrawLine($hBackbuffer, $polyBase - 5, 14 + (20 * $i), $polyBase - 14, 5 + (20 * $i), $hPenThickBlack)
-			_GDIPlus_GraphicsDrawLine($hBackbuffer, $polyBase - 11, 13 + (20 * $i), $polyBase - 6, 8 + (20 * $i), $hPenThickBlack)
-		EndIf
-
-		If BitAND($aAgentEffects[$i], 0x0010) OR $aAgentId[$i] = 0 Then
-			$textBrush = $hBrushDarkGray
-		ElseIf $aAgentId[$i] = $aTarget[0] Then
-			$textBrush = $hBrushGold
+		If $aTeam1Id[$i] = 0 Then
+			$sText = "Empty"
 		Else
-			$textBrush = $hBrushWhite
+			$sText = GetProf($aTeam1Prim[$i])&"/"&GetProf($aTeam1Seco[$i])&"20 "&$aTeam1Read[$i]
 		EndIf
+		DrawHealthBar($aTeam1Effects[$i], $aTeam1Id[$i], 0, $hpHeight * $i, $hpSize, $hpHeight, $sText, $aTeam1HP[$i])
 
-		If $iParty = 1 Then
-			$sName = $aTeam1Read[$i]
-		ElseIf $iParty = 2 Then
-			$sName = $aTeam2Read[$i]
+		If $aTeam2Id[$i] = 0 Then
+			$sText = "Empty"
+		Else
+			$sText = GetProf($aTeam2Prim[$i])&"/"&GetProf($aTeam2Seco[$i])&"20 "&$aTeam2Read[$i]
 		EndIf
-
-		$sText = GetProf($aAgentPrim[$i])&"/"&GetProf($aAgentSeco[$i])&"20 "&$sName;&" ("&$i+1&") - "&GetWeapon($aAgentWeapon[$i])
-		_GDIPlus_GraphicsDrawStringEx($hBackbuffer, $sText, $hFont, $tShadow, $hFormat, $hBrushBlack)
-		_GDIPlus_GraphicsDrawStringEx($hBackbuffer, $sText, $hFont, $tLayout, $hFormat, $textBrush)
+		DrawHealthBar($aTeam2Effects[$i], $aTeam2Id[$i], $hpSize + $gap, $hpHeight * $i, $hpSize, $hpHeight, $sText, $aTeam2HP[$i])
 	Next
 
 	If $aSel[0] = 1 Then
-		_GDIPlus_GraphicsDrawRect($hBackbuffer, 0, 20 * $aSel[1], $hpSize, 20, $hPenGold)
+		_GDIPlus_GraphicsDrawRect($hBackbuffer, 0, $hpHeight * $aSel[1], $hpSize, $hpHeight, $hPenGold)
 	ElseIf $aSel[0] = 2 Then
-		_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpSize + $gap, 20 * $aSel[1], $hpSize, 20, $hPenGold)
+		_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpSize + $gap, $hpHeight * $aSel[1], $hpSize, $hpHeight, $hPenGold)
 	EndIf
 
 	_GDIPlus_GraphicsDrawImageRect($hGraphic, $hBitmap, 0, 0, $width, $height)
+EndFunc
+
+Func DrawHealthBar($Effects, $AgentId, $X, $Y, $Width, $Height, $Name, $HP)
+	Local $hpBrush, $hpLength, $aSel[2] = [0, 0], $hpXOffset, $aPoly[4][2], $hBrushHPOverlay1, $hBrushHPOverlay2
+
+	If BitAND($Effects, 0x0040) Then ;Poison/Disease
+		$hpBrush = $hBrushGreen
+	ElseIf BitAND($Effects, 0x0001) Then ;Bleeding
+		$hpBrush = $hBrushLightRed
+	ElseIf BitAND($Effects, 0x0400) Then ;Hex
+		$hpBrush = $hBrushPurple
+	Else ;Normal
+		$hpBrush = $hBrushRed
+	EndIf
+
+	If BitAND($Effects, 0x0020) Then ;Deep Wound
+		$hpLength = $Width - ($Width / 5)
+	Else
+		$hpLength = $Width
+	EndIf
+
+	$hpXOffset = $X
+	$polyBase = $X + $Width
+
+	$hBrushHPOverlay1 = GDIPlus_CreateLineBrush(0, 0, 0, $Height / 2, 0x00000000, 0x40FFFFFF)
+	$hBrushHPOverlay2 = GDIPlus_CreateLineBrush(0, 0, 0, $Height / 2, 0x00000000, 0x80000000)
+
+	_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset, $Y, $Width, $hpHeight, $hBrushDarkRed)
+	_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset, $Y, $hpLength * $HP, $hpHeight, $hpBrush)
+	_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpXOffset + $hpLength * $HP, $Y, $hpXOffset + $hpLength * $HP, $Y + $Height, $hPenLightGray)
+
+	If BitAND($Effects, 0x0020) Then
+		_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset + $hpLength, $Y, $Width / 5, $Height, $hBrushGray)
+		_GDIPlus_GraphicsDrawLine($hBackbuffer, $hpXOffset + $hpLength, $Y, $hpXOffset + $hpLength, $Y + $Height, $hPenLightGray)
+	EndIf
+
+	If $AgentId = 0 Then
+		_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset, $Y, $Width, $Height, $hBrushVeryDarkGray)
+		_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpXOffset, $Y, $Width, $Height, $hPenBlack)
+	EndIf
+
+	_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset, $Y, $hpLength * $HP, $Height / 2, $hBrushHPOverlay1)
+	_GDIPlus_GraphicsFillRect($hBackbuffer, $hpXOffset, 1 + ($Height / 2) + $Y, $Width, $Height / 2, $hBrushHPOverlay2)
+
+	_GDIPlus_GraphicsDrawRect($hBackbuffer, $hpXOffset, $Y, $Width, $Height, $hPenBlack)
+
+	$tLayout = _GDIPlus_RectFCreate($hpXOffset, $Height / 6 + $Y)
+	$tShadow = _GDIPlus_RectFCreate($hpXOffset + 1, $Height / 6 + $Y + 1)
+
+	If BitAND($Effects, 0x0080) Then ;Enchantment
+		$aPoly[0][0] = 3
+		$aPoly[1][0] = $polyBase - 14
+		$aPoly[1][1] = 14 + ($Y)
+		$aPoly[2][0] = $polyBase - 8
+		$aPoly[2][1] = 5 + ($Y)
+		$aPoly[3][0] = $polyBase - 2
+		$aPoly[3][1] = 14 + ($Y)
+		_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushLightGreen)
+		_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
+
+		$polyBase -= 9
+	EndIf
+
+	If BitAND($Effects, 0x0002) Then ;Condition
+		$aPoly[0][0] = 3
+		$aPoly[1][0] = $polyBase - 14
+		$aPoly[1][1] = 5 + ($Y)
+		$aPoly[2][0] = $polyBase - 8
+		$aPoly[2][1] = 14 + ($Y)
+		$aPoly[3][0] = $polyBase - 2
+		$aPoly[3][1] = 5 + ($Y)
+		_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushDarkGray)
+		_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
+
+		$polyBase -= 12
+	EndIf
+
+	If BitAND($Effects, 0x0800) Then ;Hex
+		$aPoly[0][0] = 3
+		$aPoly[1][0] = $polyBase - 14
+		$aPoly[1][1] = 5 + ($Y)
+		$aPoly[2][0] = $polyBase - 8
+		$aPoly[2][1] = 14 + ($Y)
+		$aPoly[3][0] = $polyBase - 2
+		$aPoly[3][1] = 5 + ($Y)
+		_GDIPlus_GraphicsFillPolygon($hBackbuffer, $aPoly, $hBrushLightPurple)
+		_GDIPlus_GraphicsDrawPolygon($hBackbuffer, $aPoly, $hPenBlack)
+
+		$polyBase -= 12
+	EndIf
+
+	If BitAND($Effects, 0x8000) Then ;Weapon spell
+		_GDIPlus_GraphicsFillEllipse($hBackbuffer, $polyBase - 15, 4 + $Y, 11, 11, $hBrushYellow)
+		_GDIPlus_GraphicsDrawEllipse($hBackbuffer, $polyBase - 15, 4 + $Y, 11, 11, $hPenBlack)
+		_GDIPlus_GraphicsDrawLine($hBackbuffer, $polyBase - 5, 14 + $Y, $polyBase - 14, 5 + $Y, $hPenThickBlack)
+		_GDIPlus_GraphicsDrawLine($hBackbuffer, $polyBase - 11, 13 + $Y, $polyBase - 6, 8 + $Y, $hPenThickBlack)
+	EndIf
+
+	If BitAND($Effects, 0x0010) OR $AgentId = 0 Then
+		$textBrush = $hBrushGray
+	ElseIf $AgentId = $aTarget[0] Then
+		$textBrush = $hBrushGold
+	Else
+		$textBrush = $hBrushWhite
+	EndIf
+
+	_GDIPlus_GraphicsDrawStringEx($hBackbuffer, $Name, $hFont, $tShadow, $hFormat, $hBrushBlack)
+	_GDIPlus_GraphicsDrawStringEx($hBackbuffer, $Name, $hFont, $tLayout, $hFormat, $textBrush)
+
+	_GDIPlus_BrushDispose($hBrushHPOverlay1)
+	_GDIPlus_BrushDispose($hBrushHPOverlay2)
 EndFunc
 
 Func PartyCallback($hwnd, $msg, $wparam, $lparam)
@@ -276,29 +262,31 @@ Func PartyCallback($hwnd, $msg, $wparam, $lparam)
 	If DllStructGetData($recvCDS, 1) = 2 Then
 		$partyInfo = DllStructCreate($tagPARTYINFO, DllStructGetData($recvCDS, 3)) ;See Struct definition in GWCAConstants.au3
 
-		For $i = 0 To UBound($aAgentPrim)-1 Step 1
-			$aAgentPrim[$i] = 0
-			$aAgentSeco[$i] = 0
-			$aAgentHP[$i] = 0
-			$aAgentTarget[$i] = 0
-			$aAgentSkill[$i] = 0
-			$aAgentId[$i] = 0
-			$aAgentEffects[$i] = 0
-			$aAgentWeapon[$i] = 0
-			$aAgentName[$i] = 0
-		Next
-
-		For $i = 0 To DllStructGetData($partyInfo, "TeamSize")-1 Step 1
-			$aAgentPrim[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Primary")
-			$aAgentSeco[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Secondary")
-			$aAgentHP[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"HP")
-			$aAgentTarget[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Target")
-			$aAgentSkill[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Skill")
-			$aAgentId[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Id")
-			$aAgentEffects[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Effects")
-			$aAgentWeapon[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Weapon")
-			$aAgentName[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Name")
-		Next
+		If DllStructGetData($partyInfo, "TeamId") = 1 Then
+			For $i = 0 To DllStructGetData($partyInfo, "TeamSize")-1 Step 1
+				$aTeam1Prim[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Primary")
+				$aTeam1Seco[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Secondary")
+				$aTeam1HP[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"HP")
+				$aTeam1Target[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Target")
+				$aTeam1Skill[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Skill")
+				$aTeam1Id[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Id")
+				$aTeam1Effects[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Effects")
+				$aTeam1Weapon[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Weapon")
+				$aTeam1Name[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Name")
+			Next
+		ElseIf DllStructGetData($partyInfo, "TeamId") = 2 Then
+			For $i = 0 To DllStructGetData($partyInfo, "TeamSize")-1 Step 1
+				$aTeam2Prim[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Primary")
+				$aTeam2Seco[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Secondary")
+				$aTeam2HP[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"HP")
+				$aTeam2Target[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Target")
+				$aTeam2Skill[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Skill")
+				$aTeam2Id[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Id")
+				$aTeam2Effects[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Effects")
+				$aTeam2Weapon[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Weapon")
+				$aTeam2Name[$i] = DllStructGetData($partyInfo, "Agent"&$i+1&"Name")
+			Next
+		EndIf
 
 		$bGotInfo = True
 	EndIf
@@ -430,13 +418,13 @@ Func EventHandler()
 		Exit
 
 	Case $GUI_EVENT_PRIMARYDOWN
-		$iPl = Floor(MouseGetPos(1) / 20)
-		If _IsInRect(MouseGetPos(0), MouseGetPos(1), 0, 0, $hpSize, 20 * 8) AND $iPl >= 0 AND $iPl <= 7 Then
+		$iPl = Floor(MouseGetPos(1) / $hpHeight)
+		If _IsInRect(MouseGetPos(0), MouseGetPos(1), 0, 0, $hpSize, $hpHeight * 8) AND $iPl >= 0 AND $iPl <= 7 Then
 			If $aTeam1Id[$iPl] <> 0 Then
 				CmdCB($CA_GetAgentExist, $aTeam1Id[$iPl])
 				If $cbVar[0] = 1 Then Cmd($CA_ChangeTarget, $aTeam1Id[$iPl])
 			EndIf
-		ElseIf _IsInRect(MouseGetPos(0), MouseGetPos(1), $hpSize + 20, 0, $hpSize, 20 * 8) AND $iPl >= 0 AND $iPl <= 7 Then
+		ElseIf _IsInRect(MouseGetPos(0), MouseGetPos(1), $hpSize + $gap, 0, $hpSize, $hpHeight * 8) AND $iPl >= 0 AND $iPl <= 7 Then
 			If $aTeam2Id[$iPl] <> 0 Then
 				CmdCB($CA_GetAgentExist, $aTeam2Id[$iPl])
 				If $cbVar[0] = 1 Then Cmd($CA_ChangeTarget, $aTeam2Id[$iPl])

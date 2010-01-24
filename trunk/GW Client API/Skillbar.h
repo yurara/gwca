@@ -56,9 +56,9 @@ struct Skillbar {
 };
 
 struct Buff {
-	long SkillId;		//SkillId of the Buff
+	long SkillId; //SkillId of the Buff
 	byte unk2[4];
-	long BuffId;		//used to cancel the buff
+	long BuffId; //used to cancel the buff
 	long BuffedAgent; //the agent that is buffed
 };
 
@@ -68,27 +68,27 @@ public:
 	~BuffHandler(){};
 
 	int GetBuffCount(int Hero){ //Hero 0 = self
-		return ReadPtrChain<int>(MySectionA->BasePointer(),0x18,0x2C,0x4A4,(4 * (Hero + (Hero * 8))) + 8) + 1;
+		return ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (Hero * 36 + 8)) + 1;
 	}
 
-	Buff* GetBuff(int Hero,int index){ //Hero 0 = self
-		dword* Base = ReadPtrChain<dword*>(MySectionA->BasePointer(),0x18,0x2C,0x4A4,((4 * (Hero + (Hero * 8))) + 4));
+	Buff* GetBuff(int Hero, int index){ //Hero 0 = self
+		dword Base = ReadPtrChain<dword>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (Hero * 36 + 4));
 		Buff* pBuff = (Buff*)Base + (10 * index);
 		return pBuff;
 	}
 
 	Buff* GetBuff(long SkillId){
-		for(int i=0;i<4;i++)
-			for(int j=0;j<GetBuffCount(i);j++)
-				if(GetBuff(i,j)->SkillId == SkillId)
-					return GetBuff(i,j);
+		for(int i = 0;i < 4;i++)
+			for(int j = 0;j < GetBuffCount(i);j++)
+				if(GetBuff(i, j)->SkillId == SkillId)
+					return GetBuff(i, j);
 		return NULL;
 	}
 
-	bool HasBuff(long AgentId,long SkillId){
-		for(int i=0;i<4;i++)
-			for(int j=0;j<GetBuffCount(i);j++)
-				if(GetBuff(i,j)->SkillId == SkillId && GetBuff(i,j)->BuffedAgent == AgentId)
+	bool HasBuff(long AgentId, long SkillId){
+		for(int i = 0;i < 4;i++)
+			for(int j = 0;j < GetBuffCount(i);j++)
+				if(GetBuff(i, j)->SkillId == SkillId && GetBuff(i, j)->BuffedAgent == AgentId)
 					return true;
 		return false;
 	}

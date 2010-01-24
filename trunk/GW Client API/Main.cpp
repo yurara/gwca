@@ -546,7 +546,7 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x43C: //Skip cinematic : No return
 			SkipCinematic();
 			break;
-		case 0x43D: //dismiss Buff : No return
+		case 0x43D: //Dismiss Buff : No return
 			if(MsgWParam < 0 || MsgWParam > 3){break;}
 			if(MsgLParam < 0){break;}
 			DismissBuff(MyBuffHandler.GetBuff(MsgWParam,MsgLParam)->BuffId);
@@ -980,18 +980,22 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgLParam < 0 || MsgLParam > 12){break;}
 			SetAttribute((dword)MsgWParam,(dword)MsgLParam);
 			break;
-		case 0x486: //Player Has Buff : Return bool
+		case 0x486: //Player has buff : Return bool
 			if(MsgWParam < 0 || MsgWParam > 3500){break;}
-			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(myId,MsgWParam),(WPARAM)MyBuffHandler.HasBuff(myId,MsgWParam));
-		case 0x487: //Hero1 Has Buff : Return bool
+			PostMessage((HWND)MsgLParam, 0x500, MyBuffHandler.HasBuff(myId, MsgWParam), 0);
+			break;
+		case 0x487: //Hero1 has buff : Return bool
 			if(MsgWParam < 0 || MsgWParam > 3500){break;}
-			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4),MsgWParam));
-		case 0x488: //Hero2 Has Buff : Return bool
+			PostMessage((HWND)MsgLParam, 0x500, MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4), MsgWParam), 0);
+			break;
+		case 0x488: //Hero2 has buff : Return bool
 			if(MsgWParam < 0 || MsgWParam > 3500){break;}
-			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x28),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x28),MsgWParam));
-		case 0x489: //Hero3 Has Buff : Return bool
+			PostMessage((HWND)MsgLParam, 0x500, MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x28), MsgWParam), 0);
+			break;
+		case 0x489: //Hero3 has buff : Return bool
 			if(MsgWParam < 0 || MsgWParam > 3500){break;}
-			PostMessage((HWND)MsgLParam,0x500,(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C),MsgWParam),(WPARAM)MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C),MsgWParam));
+			PostMessage((HWND)MsgLParam, 0x500, MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C), MsgWParam), 0);
+			break;
 
 		//Item related commands
 		case 0x510: //Get gold : Return int/long & int/long
@@ -1393,9 +1397,6 @@ void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 			if(Agents[i] == NULL){continue;}
 			if(Agents[i]->TeamId == teamId && Agents[i]->LoginNumber != 0){TeamAgents.push_back(i);}
 		}
-
-		for(int i = 0;i < 8;i++)
-			PtInfo->Players[i].AgentId = 0;
 
 		if(TeamAgents.size() == 0)
 			PtInfo->TeamSize = 0;
