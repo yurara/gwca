@@ -100,6 +100,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TargetNextPartyMember || 0x43A || No parameters. Functions like the GW Control: Targetting - Party Member: Next ||
 || CA_TargetNextFoe || 0x43B || No parameters. Functions like the GW Control: Targetting - Next Foe ||
 || CA_SkipCinematic || 0x43C || No parameters. Skips the current cinematic/cutscene. ||
+|| CA_DismissBuff || 0x43D || Parameter 1 = Hero(from 0=self to 3 = Hero3),Parameter 2 = SkillId of the Buff. ||
 
 ----
 
@@ -178,6 +179,10 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetNextItem || 0x483 || Parameter = starting id. Returns the agent id of the next item. For looping through all items, use this command with the returned agent id as parameter after taking care of that item. ||
 || CA_GetTarget || 0x484 || Parameter = agent id. Returns the currently logged target of the specified agent. ||
 || CA_SetAttribute. || 0x485 || Parameter = Attribute id, Value.http://wiki.guildwars.com/wiki/Template_format||
+|| CA_PlayerHasBuff || 0x486 || Parameter = SkillId. return boolean||
+|| CA_Hero1HasBuff || 0x487 || Parameter = SkillId. return boolean||
+|| CA_Hero2HasBuff || 0x488 || Parameter = SkillId. return boolean ||
+|| CA_Hero3HasBuff || 0x489 || Parameter = SkillId. return boolean ||
 
 ----
 
@@ -217,7 +222,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemLastModifierById || 0x52E || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
 || CA_EquipItem || 0x52F || Parameter = bag index, parameter 2 = item slot. Equips the specified item. ||
 || CA_EquipItemById || 0x530 || Parameter = item id. Equips the specified item. ||
-|| CA_SalvageItem || 0x531 || Parameter = item id OR locate item by index with bag index,item slot. Searches for a salvage kit and uses it on the specified item. ||
+|| CA_SalvageItem || 0x531 || Parameter = item id OR locate item by index with bag index,item slot. Searches for a salvage kit and uses it on the specified item. Currently disabled cause it doesnt work! ||
 || CA_GetSalvageKit || 0x532 || No parameters. Searches for a salvage kit and returns the item id if it finds one. ||
 || CA_BuyItem || 0x533 || Parameter = merchant item index (in the order you see at your merchant's window, starting from 1), parameter 2 = gold cost of the item. Buys the specified item if you used the right gold cost. ||
 
