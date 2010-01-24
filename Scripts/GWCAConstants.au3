@@ -8,14 +8,14 @@
 ; The SkillLog structure for use with the Skill Log feature
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping;long TargetId"
 Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
-	"long Agent1Id;float Agent1X;float Agent1Y;float Agent1HP;long Agent1Effects;byte Agent1Hex;dword Agent1Name;byte Agent1Primary;byte Agent1Secondary;long Agent1Target;word Agent1Skill;" & _
-	"long Agent2Id;float Agent2X;float Agent2Y;float Agent2HP;long Agent2Effects;byte Agent2Hex;dword Agent2Name;byte Agent2Primary;byte Agent2Secondary;long Agent2Target;word Agent2Skill;" & _
-	"long Agent3Id;float Agent3X;float Agent3Y;float Agent3HP;long Agent3Effects;byte Agent3Hex;dword Agent3Name;byte Agent3Primary;byte Agent3Secondary;long Agent3Target;word Agent3Skill;" & _
-	"long Agent4Id;float Agent4X;float Agent4Y;float Agent4HP;long Agent4Effects;byte Agent4Hex;dword Agent4Name;byte Agent4Primary;byte Agent4Secondary;long Agent4Target;word Agent4Skill;" & _
-	"long Agent5Id;float Agent5X;float Agent5Y;float Agent5HP;long Agent5Effects;byte Agent5Hex;dword Agent5Name;byte Agent5Primary;byte Agent5Secondary;long Agent5Target;word Agent5Skill;" & _
-	"long Agent6Id;float Agent6X;float Agent6Y;float Agent6HP;long Agent6Effects;byte Agent6Hex;dword Agent6Name;byte Agent6Primary;byte Agent6Secondary;long Agent6Target;word Agent6Skill;" & _
-	"long Agent7Id;float Agent7X;float Agent7Y;float Agent7HP;long Agent7Effects;byte Agent7Hex;dword Agent7Name;byte Agent7Primary;byte Agent7Secondary;long Agent7Target;word Agent7Skill;" & _
-	"long Agent8Id;float Agent8X;float Agent8Y;float Agent8HP;long Agent8Effects;byte Agent8Hex;dword Agent8Name;byte Agent8Primary;byte Agent8Secondary;long Agent8Target;word Agent8Skill;"
+	"long Agent1Id;float Agent1X;float Agent1Y;float Agent1HP;long Agent1Effects;byte Agent1Hex;dword Agent1Name;byte Agent1Primary;byte Agent1Secondary;long Agent1Target;word Agent1Skill;word Agent1Weapon;" & _
+	"long Agent2Id;float Agent2X;float Agent2Y;float Agent2HP;long Agent2Effects;byte Agent2Hex;dword Agent2Name;byte Agent2Primary;byte Agent2Secondary;long Agent2Target;word Agent2Skill;word Agent2Weapon;" & _
+	"long Agent3Id;float Agent3X;float Agent3Y;float Agent3HP;long Agent3Effects;byte Agent3Hex;dword Agent3Name;byte Agent3Primary;byte Agent3Secondary;long Agent3Target;word Agent3Skill;word Agent3Weapon;" & _
+	"long Agent4Id;float Agent4X;float Agent4Y;float Agent4HP;long Agent4Effects;byte Agent4Hex;dword Agent4Name;byte Agent4Primary;byte Agent4Secondary;long Agent4Target;word Agent4Skill;word Agent4Weapon;" & _
+	"long Agent5Id;float Agent5X;float Agent5Y;float Agent5HP;long Agent5Effects;byte Agent5Hex;dword Agent5Name;byte Agent5Primary;byte Agent5Secondary;long Agent5Target;word Agent5Skill;word Agent5Weapon;" & _
+	"long Agent6Id;float Agent6X;float Agent6Y;float Agent6HP;long Agent6Effects;byte Agent6Hex;dword Agent6Name;byte Agent6Primary;byte Agent6Secondary;long Agent6Target;word Agent6Skill;word Agent6Weapon;" & _
+	"long Agent7Id;float Agent7X;float Agent7Y;float Agent7HP;long Agent7Effects;byte Agent7Hex;dword Agent7Name;byte Agent7Primary;byte Agent7Secondary;long Agent7Target;word Agent7Skill;word Agent7Weapon;" & _
+	"long Agent8Id;float Agent8X;float Agent8Y;float Agent8HP;long Agent8Effects;byte Agent8Hex;dword Agent8Name;byte Agent8Primary;byte Agent8Secondary;long Agent8Target;word Agent8Skill;word Agent8Weapon;"
 
 ; The constants
 Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, _
@@ -28,7 +28,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_TargetNearestItem, $CA_StatusDelay, $CA_TargetCalledTarget, $CA_UseHero1Skill, $CA_UseHero2Skill, $CA_UseHero3Skill, $CA_StatusMiss, _
 			$CA_CancelAction, $CA_StatusTab, $CA_GetNamePtr, $CA_CommandHero1, $CA_CommandHero2, $CA_CommandHero3, $CA_CommandAll, $CA_ChangeDistrict, _
 			$CA_Resign, $CA_ReturnToOutpost, $CA_GoAgent, $CA_DonateFaction, $CA_SetSkillbarSkill, $CA_ChangeSecondProfession, $CA_TargetNextPartyMember, _
-			$CA_TargetNextFoe, $CA_SkipCinematic, $CA_DismissBuff _
+			$CA_TargetNextFoe, $CA_SkipCinematic, $CA_DismissBuff, _
 			$CA_GetMapLoading = 0x440, $CA_GetMapId, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead, $CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction, _
 			$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, _
 			$CA_GetAgentExist = 0x450, $CA_GetProfessions, $CA_GetPlayerNumber, _
@@ -42,19 +42,19 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 			$CA_GetNearestAgentByPlayerNumber, $CA_GetSpeed, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent, _
 			$CA_GetWeaponType, $CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, $CA_GetVars, _
 			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem, _
-			$CA_GetTarget, $CA_SetAttribute, $CA_PlayerHasBuff, $CA_Hero1HasBuff, $CA_Hero2HasBuff, $CA_Hero3HasBuff _
+			$CA_GetTarget, $CA_SetAttribute, $CA_PlayerHasBuff, $CA_Hero1HasBuff, $CA_Hero2HasBuff, $CA_Hero3HasBuff, _
 			$CA_GetGold = 0x510, $CA_GetBagSize, $CA_SetBag, $CA_GetItemId, _
 			$CA_GetIdKit, $CA_IdentifyItem, $CA_IdentifyItemById, $CA_DepositGold, $CA_WithdrawGold, $CA_SellItem, $CA_SellItemById, _
 			$CA_BuyIdKit, $CA_BuySuperiorIdKit, $CA_PrepareMoveItem, $CA_MoveItem, $CA_GetItemInfo, _
 			$CA_UseItem, $CA_UseItemById, $CA_DropItem, $CA_DropItemById, _
 			$CA_AcceptAllItems, $CA_GetItemLastModifier, $CA_FindItemByModelId, $CA_FindEmptySlot, $CA_FindGoldItem, _
 			$CA_GetItemPositionByItemId, $CA_GetItemPositionByModelId, $CA_GetItemPositionByRarity, $CA_GetItemModelIdById, $CA_GetItemInfoById, _
-			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, $CA_SalvageItem, $CA_GetSalvageKit, _
+			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, $CA_SalvageItem, $CA_GetSalvageKit, $CA_BuyItem, _
 			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
 			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick, _
 			$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
 			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode, _
-			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon
+			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
@@ -191,13 +191,14 @@ EndFunc
 
 Func TravelTo($iMapId)
 	$tMap = TimerInit()
-	Cmd($CA_ZONEMAP, $iMapId)
+	Cmd($CA_InitMapLoad)
+	Cmd($CA_ZoneMap, $iMapId)
 	Do
 		Sleep(200)
-		$aLoad = CmdCB($CA_GETMAPLOADING)
-		If TimerDiff($tMap) > 20000 AND $aLoad[0] <> 2 Then Cmd($CA_ZONEMAP, $iMapId)
-		$aTmpMap = CmdCB($CA_GETMAPID)
-	Until $aLoad[0] = 0 AND $aTmpMap[0] = $iMapId
+		$aLoad = CmdCB($CA_GetMapLoading)
+		If TimerDiff($tMap) > 15000 AND $aLoad[0] <> 2 Then Cmd($CA_ZoneMap, $iMapId)
+		$aLoaded = CmdCB($CA_MapIsLoaded)
+	Until $aLoad[0] = 0 AND $aLoaded[0] = 1
 EndFunc
 
 Func MoveItem($itemBag, $itemSlot, $newBag, $newSlot)
@@ -322,7 +323,7 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 		CmdCB($CA_GETDEAD)
 		If $cbVar[0] = 1 Then ExitLoop
 		CmdCB($CA_GETSKILL, -2)
-		If $cbVar[0] = 0 AND TimerDiff($tDeadlock) > 750 Then ExitLoop
+		If $cbVar[0] = 0 AND TimerDiff($tDeadlock) > 1000 Then ExitLoop
 		CmdCB($CA_SKILLRECHARGE, $iSkillSlot)
 	Until $cbVar[0] <> 0 OR TimerDiff($tDeadlock) > 15000
 

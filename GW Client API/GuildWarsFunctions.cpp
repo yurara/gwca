@@ -321,7 +321,7 @@ void AbandonQuest(long QuestId){
 
 void DismissBuff(long BuffId){
 	NEWPAK(22,08);
-	newPak->Set<dword>(4,BuffId);
+	newPak->Set<dword>(4, BuffId);
 	SendPacket(newPak);
 }
 
