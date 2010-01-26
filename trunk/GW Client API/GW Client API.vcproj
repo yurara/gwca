@@ -119,6 +119,7 @@
 				EnableFunctionLevelLinking="true"
 				ExpandAttributedSource="false"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool

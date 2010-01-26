@@ -58,6 +58,7 @@ long GetNearestNpcToAgentByAllegiance(long agentId);
 float GetDistanceFromAgentToAgent(long agent1, long agent2);
 long GetFirstAgentByPlayerNumber(word playerNum);
 long GetNearestAgentByPlayerNumber(word playerNum);
+long GetFirstAgentByPlayerNumberByTeam(word playerNum, byte teamId);
 long GetNearestAgentToCoords(float x, float y);
 long GetNearestNPCToCoords(float x, float y);
 long GetNearestMapOverlayToCoords(float x, float y);

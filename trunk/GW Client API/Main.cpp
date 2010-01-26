@@ -1392,37 +1392,35 @@ void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 		PtInfo->TeamSize = teamSize;
 
 		TeamAgents.clear();
-		for(unsigned int i = 1;i < maxAgent;i++){
-			if(TeamAgents.size() == teamSize){break;}
-			if(Agents[i] == NULL){continue;}
-			if(Agents[i]->TeamId == teamId && Agents[i]->LoginNumber != 0){TeamAgents.push_back(i);}
+		for(unsigned int i = 1;i < 30;i++){
+			if(TeamAgents.size() == teamSize)
+				break;
+
+			long Agent = GetFirstAgentByPlayerNumber(i);
+			if(Agents[Agent] == NULL)
+				continue;
+			if(Agents[Agent]->TeamId == teamId && Agents[Agent]->LoginNumber != 0)
+				TeamAgents.push_back(Agent);
 		}
 
-		if(TeamAgents.size() == 0)
-			PtInfo->TeamSize = 0;
-
-		long plNum;
 		for(unsigned int i = 0;i < TeamAgents.size();i++){
-			if(Agents[TeamAgents[i]] == NULL){continue;}
+			if(!Agents[TeamAgents[i]])
+				continue;
 
-			plNum = Agents[TeamAgents[i]]->PlayerNumber - (PtInfo->TeamSize * (teamId - 1)) - 1;
-			if(plNum < 0){plNum += PtInfo->TeamSize;}
-			if(plNum > 7){continue;}
-
-			PtInfo->Players[plNum].AgentId = TeamAgents[i];
-			PtInfo->Players[plNum].Effects = Agents[TeamAgents[i]]->Effects;
-			PtInfo->Players[plNum].Hex = 0;
-			if((Agents[TeamAgents[i]]->Effects & 0x0800)) PtInfo->Players[plNum].Hex += 1;
-			if((Agents[TeamAgents[i]]->Effects & 0x0400)) PtInfo->Players[plNum].Hex += 1;
-			PtInfo->Players[plNum].X = Agents[TeamAgents[i]]->X;
-			PtInfo->Players[plNum].Y = Agents[TeamAgents[i]]->Y;
-			PtInfo->Players[plNum].HP = Agents[TeamAgents[i]]->HP;
-			PtInfo->Players[plNum].NamePtr = GetAgentName(TeamAgents[i]);
-			PtInfo->Players[plNum].Primary = Agents[TeamAgents[i]]->Primary;
-			PtInfo->Players[plNum].Secondary = Agents[TeamAgents[i]]->Secondary;
-			PtInfo->Players[plNum].Target = AgentTargets[TeamAgents[i]];
-			PtInfo->Players[plNum].Skill = Agents[TeamAgents[i]]->Skill;
-			PtInfo->Players[plNum].Weapon = Agents[TeamAgents[i]]->WeaponType;
+			PtInfo->Players[i].AgentId = TeamAgents[i];
+			PtInfo->Players[i].Effects = Agents[TeamAgents[i]]->Effects;
+			PtInfo->Players[i].Hex = 0;
+			if((Agents[TeamAgents[i]]->Effects & 0x0800)) PtInfo->Players[i].Hex += 1;
+			if((Agents[TeamAgents[i]]->Effects & 0x0400)) PtInfo->Players[i].Hex += 1;
+			PtInfo->Players[i].X = Agents[TeamAgents[i]]->X;
+			PtInfo->Players[i].Y = Agents[TeamAgents[i]]->Y;
+			PtInfo->Players[i].HP = Agents[TeamAgents[i]]->HP;
+			PtInfo->Players[i].NamePtr = GetAgentName(TeamAgents[i]);
+			PtInfo->Players[i].Primary = Agents[TeamAgents[i]]->Primary;
+			PtInfo->Players[i].Secondary = Agents[TeamAgents[i]]->Secondary;
+			PtInfo->Players[i].Target = AgentTargets[TeamAgents[i]];
+			PtInfo->Players[i].Skill = Agents[TeamAgents[i]]->Skill;
+			PtInfo->Players[i].Weapon = Agents[TeamAgents[i]]->WeaponType;
 		}
 
 		if(WaitForSingleObject(PartyMutex, 1000) != WAIT_TIMEOUT){
@@ -1668,6 +1666,7 @@ void SkillLogQueueThread(){
 
 	while(true){
 		Sleep(10);
+
 		if(SkillLogQueue.size() > 0 && LogSkills){
 			SkillInfo.AgentId = SkillLogQueue.front().AgentId;
 			
@@ -1763,9 +1762,6 @@ void FindOffsets(){
 
 	byte SkillCancelCode[] = { 0x85, 0xC0, 0x74, 0x1D, 0x6A, 0x00, 0x6A, 0x42 };
 
-	//byte AgentNameCode[] = { 0x57, 0x8B, 0x14, 0x81, 0x8B, 0x82, 0x04, 0x00, 0x00, 0x00,
-	//	0x8B, 0x78, 0x2C, 0xE8 };
-
 	byte SellSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
 
 	byte SellItemCode[] = { 0x8B, 0x46, 0x0C, 0x8D, 0x7E, 0x0C, 0x85 };
@@ -1848,9 +1844,6 @@ void FindOffsets(){
 			SkillCancelStart = start-0xE;
 			SkillCancelReturn = SkillCancelStart+7;
 		}
-		//if(!memcmp(start, AgentNameCode, sizeof(AgentNameCode))){
-		//	AgentNameFunction = start-0x16;
-		//}
 		if(!memcmp(start, SellSessionCode, sizeof(SellSessionCode))){
 			SellSessionStart = start-0x48;
 			SellSessionReturn = SellSessionStart+9;
@@ -1916,7 +1909,6 @@ void FindOffsets(){
 			MaxZoomStill &&
 			MaxZoomMobile &&
 			SkillCancelStart &&
-			//AgentNameFunction &&
 			SellSessionStart &&
 			SellItemFunction &&
 			BuyItemFunction &&
@@ -2048,10 +2040,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				VirtualProtect(SkillCancelStart, 7, dwOldProtection, NULL);
 				WriteJMP(SkillCancelStart, (byte*)SkillCancelHook);
 			}
-			//if(!AgentNameFunction){
-			//	InjectErr("AgentNameFunction");
-			//	return false;
-			//}
 			if(!SellSessionStart){
 				InjectErr("SellSessionStart");
 				return false;
@@ -2157,7 +2145,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("MaxZoomMobile=0x%06X\n", MaxZoomMobile);
 			printf("SkillCancelStart=0x%06X\n", SkillCancelStart);
 			printf("SkillCancelReturn=0x%06X\n", SkillCancelReturn);
-			//printf("AgentNameFunction=0x%06X\n", AgentNameFunction);
 			printf("SellSessionStart=0x%06X\n", SellSessionStart);
 			printf("SellItemFunction=0x%06X\n", SellItemFunction);
 			printf("BuyItemFunction=0x%06X\n", BuyItemFunction);
