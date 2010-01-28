@@ -101,6 +101,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TargetNextFoe || 0x43B || No parameters. Functions like the GW Control: Targetting - Next Foe ||
 || CA_SkipCinematic || 0x43C || No parameters. Skips the current cinematic/cutscene. ||
 || CA_DismissBuff || 0x43D || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
+|| CA_ASCIISendChat || 0x43E || Parameter = 0,parameter 2 = Pointer to char (ASCII) string||
+|| CA_UnicodeSendChat || 0x43F || Paramter = 0,paramter 2 = Pointer to wchar_t (Unicode) string ||
 
 ----
 
@@ -270,3 +272,5 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_QuestActive || 0x591 || No parameters. Returns the quest id of the currently active quest. ||
 || CA_QuestAbandon || 0x592 || Parameter = quest id (or -1 for active quest). Abandons the specified quest. ||
 || CA_SetTeamSize || 0x593 || Parameter = team size. For use with CA_GetPartyInfo. Set the team size to be evaluated using the CA_GetPartyInfo command. ||
+|| CA_AllocMem || 0x594 || Paramter = size. Returns pointer to Memory. ||
+|| CA_FreeMem || 0x595 || Paramter = 0,paramter 2 = pointer to Memory.Frees Allocated Memory. ||
