@@ -1257,12 +1257,14 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x589: //Get coordinates of MapOverlay by index : Return float & float
 			if(MsgWParam < 1 || MsgWParam > (WPARAM)(MySectionA->MapOverlaySize() - 1)){break;}
+			if(MySectionA->MapOverlayPointer() == NULL){break;}
 			memcpy(&MsgInt, &MySectionA->MapOverlayPointer()[MsgWParam].X, sizeof(float));
 			memcpy(&MsgInt2, &MySectionA->MapOverlayPointer()[MsgWParam].Y, sizeof(float));
 			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
 			break;
 		case 0x58A: //Get MapOverlay option and model id by index : Return int/long
 			if(MsgWParam < 1 || MsgWParam > (WPARAM)(MySectionA->MapOverlaySize() - 1)){break;}
+			if(MySectionA->MapOverlayPointer() == NULL){break;}
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MapOverlayPointer()[MsgWParam].option,
 				MySectionA->MapOverlayPointer()[MsgWParam].modelId);
 			break;
