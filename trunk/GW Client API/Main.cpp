@@ -48,6 +48,7 @@ byte* TargetLogStart = NULL;
 byte* TargetLogReturn = NULL;
 byte* VirtualHeroFlagFunction = NULL;
 byte* SetAttrisFunc = NULL;
+byte* LoginFunc = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -66,6 +67,7 @@ long CurrentBag = 1;
 long SellSessionId = NULL;
 long LastDialogId = 0;
 byte EngineHookSave[32];
+wchar_t* WhisperName = (wchar_t*)L"GWCA";
 
 bool FinishedLoading = false;
 
@@ -217,6 +219,22 @@ void SetAttribute(dword atr,dword val){
 		PUSH EAX
 		MOV ECX,id //AgentId to change attris
 		CALL SetAttrisFunc
+	}
+}
+//not working yet
+void login(wchar_t* Email,wchar_t* PW,wchar_t* Charr){
+	wchar_t* mail = Email;
+	wchar_t* pw = PW;
+	wchar_t* charr = Charr;
+	_asm{
+		PUSH 0x40
+		MOV ECX,DWORD PTR SS:[pw]
+		MOV EDX,DWORD PTR SS:[charr]
+		PUSH ECX
+		PUSH EDX
+		MOV EDX,DWORD PTR SS:[mail]
+		MOV ECX,0xA //??
+		CALL LoginFunc
 	}
 }
 void _declspec(naked) CustomMsgHandler(){
@@ -550,6 +568,14 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam < 0 || MsgWParam > 3){break;}
 			if(MsgLParam < 0){break;}
 			DismissBuff(MyBuffHandler.GetBuff(MsgWParam,MsgLParam)->BuffId);
+			break;
+		case 0x43E: //Unicode Send Chat : No return
+			if(MsgLParam == 0){break;}
+			SendChat((char)MsgWParam,(wchar_t*)MsgLParam);
+			break;
+		case 0x43F: //ASCII Send Chat : No return
+			if(MsgLParam == 0){break;}
+			SendChat((char)MsgWParam,(char*)MsgLParam);
 			break;
 
 		//SectionA related commands
@@ -1336,6 +1362,16 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam < 0 || MsgWParam > 8){break;}
 			PartyTeamSize = MsgWParam;
 			break;
+		case 0x594: //Alloc Mem. Returns ptr
+			if(MsgWParam == 0){break;}
+			byte* ptr;
+			ptr = (byte*)malloc(MsgWParam);
+			PostMessage((HWND)MsgLParam, 0x500,0,(LPARAM)(LPVOID)ptr);
+			break;
+		case 0x595: //Free Mem.
+			if(MsgLParam == 0){break;}
+			free((byte*)MsgLParam);
+			break;
 	}
 	
 	_asm {
@@ -1795,6 +1831,8 @@ void FindOffsets(){
 	
 	byte SetAttrisCode[] = { 0x8B, 0x56, 0x08, 0x8D, 0x46, 0x3C, 0x8D, 0x4E, 0x0C, 0x50, 0x51, 0x8B, 0xCF, 0xE8 };
 
+	byte LoginCode[] = { 0x81, 0xEC, 0x88, 0x00, 0x00, 0x00, 0x56, 0x57 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1896,6 +1934,9 @@ void FindOffsets(){
 		if(!memcmp(start, SetAttrisCode, sizeof(SetAttrisCode))){
 			SetAttrisFunc = start + 0xE + *(dword*)(start+0xE) + 4;
 		}
+		if(!memcmp(start, LoginCode, sizeof(LoginCode))){
+			LoginFunc = start - 0x3;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1925,7 +1966,8 @@ void FindOffsets(){
 			WinHandle &&
 			LoadFinished &&
 			TargetLogStart &&
-			SetAttrisFunc){
+			SetAttrisFunc &&
+			LoginFunc){
 			return;
 		}
 		start++;
@@ -2123,6 +2165,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("SetAttrisFunc");
 				return false;
 			}
+			if(!LoginFunc){
+				InjectErr("LoginFunc");
+				return false;
+			}
 			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
@@ -2163,6 +2209,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("LoadFinished=0x%06X\n", LoadFinished);
 			printf("TargetLogStart=0x%06X\n", TargetLogStart);
 			printf("TargetLogReturn=0x%06X\n", TargetLogReturn);
+			printf("LoginFunc=0x%06X\n", LoginFunc);
 			*/
 			break;
 
