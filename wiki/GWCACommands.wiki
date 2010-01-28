@@ -101,8 +101,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TargetNextFoe || 0x43B || No parameters. Functions like the GW Control: Targetting - Next Foe ||
 || CA_SkipCinematic || 0x43C || No parameters. Skips the current cinematic/cutscene. ||
 || CA_DismissBuff || 0x43D || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
-|| CA_ASCIISendChat || 0x43E || Parameter = channel (experiment around with this), parameter 2 = pointer to char (ASCII) string. See CA_AllocMem ||
-|| CA_UnicodeSendChat || 0x43F || Parameter = channel (experiment around with this), parameter 2 = pointer to wchar_t (Unicode) string. See CA_AllocMem ||
+|| CA_SendChat || 0x43E || Parameter = channel (0=all to 4=ally ), parameter 2 = pointer to text. See CA_AllocMem ||
 
 ----
 
