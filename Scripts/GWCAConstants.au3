@@ -4,7 +4,7 @@
 ; # +-+-+-+-+-+-+- #
 
 #include-once
-
+#include <NomadMemory.au3>
 ; The SkillLog structure for use with the Skill Log feature
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping;long TargetId"
 Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
@@ -330,4 +330,24 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 	$cbType = $oldCbType
 EndFunc
 
+Func SendChat($hprocess,$ChatNr, $Message, $MemPtr = "create")
+	$MemPtrCreated = False
+	$StringInString = StringInStr($Message, "/")
+	If $StringInString = 1 Then
+		$ChatNr = 14
+		$Message = StringSplit($Message, "/")
+		$Message = $Message[2]
+	EndIf
+	$StringLen = StringLen($Message)
+	If $MemPtr = "create" Then
+		$MemPtrCreated = True
+		$MemPtr = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
+		$MemPtr = $MemPtr[1]
+	EndIf
+	MsgBox(0,$MemPtr,hex($MemPtr))
+	_MemoryWrite($MemPtr, $hprocess, $Message, "wchar[" & $StringLen + 1 & "]")
+	Sleep(50)
+	Cmd($CA_SendChat, $ChatNr, $MemPtr)
+	If $MemPtrCreated = True Then cmd($CA_FreeMem, $MemPtr)
+EndFunc   ;==>SendChat
 ; END OF FILE

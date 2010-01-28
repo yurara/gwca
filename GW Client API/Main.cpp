@@ -568,9 +568,9 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgLParam < 0){break;}
 			DismissBuff(MyBuffHandler.GetBuff(MsgWParam,MsgLParam)->BuffId);
 			break;
-		case 0x43E: //Unicode Send Chat : No return
+		case 0x43E: // Send Chat : No return
 			if(MsgLParam == 0){break;}
-			SendChat((char)MsgWParam + 33,(wchar_t*)MsgLParam);
+			SendChat((char)(MsgWParam + 33),(wchar_t*)MsgLParam);
 			break;
 
 		//SectionA related commands
@@ -1361,7 +1361,7 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam == 0){break;}
 			byte* ptr;
 			ptr = (byte*)malloc(MsgWParam);
-			ZeroMemory(ptr,MsgWParam);
+			//ZeroMemory(ptr,MsgWParam);
 			PostMessage((HWND)MsgLParam, 0x500,0,(LPARAM)(LPVOID)ptr);
 			break;
 		case 0x595: //Free Mem.
