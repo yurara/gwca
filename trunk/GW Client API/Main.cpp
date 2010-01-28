@@ -67,7 +67,6 @@ long CurrentBag = 1;
 long SellSessionId = NULL;
 long LastDialogId = 0;
 byte EngineHookSave[32];
-wchar_t* WhisperName = (wchar_t*)L"GWCA";
 
 bool FinishedLoading = false;
 
@@ -571,11 +570,7 @@ void _declspec(naked) CustomMsgHandler(){
 			break;
 		case 0x43E: //Unicode Send Chat : No return
 			if(MsgLParam == 0){break;}
-			SendChat((char)MsgWParam,(wchar_t*)MsgLParam);
-			break;
-		case 0x43F: //ASCII Send Chat : No return
-			if(MsgLParam == 0){break;}
-			SendChat((char)MsgWParam,(char*)MsgLParam);
+			SendChat((char)MsgWParam + 33,(wchar_t*)MsgLParam);
 			break;
 
 		//SectionA related commands
@@ -1366,6 +1361,7 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam == 0){break;}
 			byte* ptr;
 			ptr = (byte*)malloc(MsgWParam);
+			ZeroMemory(ptr,MsgWParam);
 			PostMessage((HWND)MsgLParam, 0x500,0,(LPARAM)(LPVOID)ptr);
 			break;
 		case 0x595: //Free Mem.
