@@ -56,6 +56,7 @@ long GetNearestItemToAgent(long agentId);
 long GetNearestSignpostToAgent(long agentId);
 long GetNearestNpcToAgentByAllegiance(long agentId);
 float GetDistanceFromAgentToAgent(long agent1, long agent2);
+float GetPseudoDistFromAgentToAgent(long agent1, long agent2);
 long GetFirstAgentByPlayerNumber(word playerNum);
 long GetNearestAgentByPlayerNumber(word playerNum);
 long GetFirstAgentByPlayerNumberByTeam(word playerNum, byte teamId);

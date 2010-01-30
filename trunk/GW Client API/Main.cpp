@@ -26,7 +26,6 @@ byte* MaxZoomStill = NULL;
 byte* MaxZoomMobile = NULL;
 byte* SkillCancelStart = NULL;
 byte* SkillCancelReturn = NULL;
-//byte* AgentNameFunction = NULL;
 byte* SellSessionStart = NULL;
 byte* SellSessionReturn = NULL;
 byte* SellItemFunction = NULL;
@@ -220,6 +219,7 @@ void SetAttribute(dword atr,dword val){
 		CALL SetAttrisFunc
 	}
 }
+
 //not working yet
 void login(wchar_t* Email,wchar_t* PW,wchar_t* Charr){
 	wchar_t* mail = Email;
@@ -236,6 +236,7 @@ void login(wchar_t* Email,wchar_t* PW,wchar_t* Charr){
 		CALL LoginFunc
 	}
 }
+
 void _declspec(naked) CustomMsgHandler(){
 	_asm {
 		MOV EAX,DWORD PTR DS:[EBP+0x8]
