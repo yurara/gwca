@@ -4,7 +4,7 @@
 ; # +-+-+-+-+-+-+- #
 
 #include-once
-#include <NomadMemory.au3>
+
 ; The SkillLog structure for use with the Skill Log feature
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping;long TargetId"
 Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
@@ -330,6 +330,35 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 	$cbType = $oldCbType
 EndFunc
 
+Func _GWCAMemWrite($iv_Address, $ah_Handle, $v_Data, $sv_Type = 'dword')
+	If Not IsArray($ah_Handle) Then
+		SetError(1)
+        Return 0
+	EndIf
+
+	Local $v_Buffer = DllStructCreate($sv_Type)
+
+	If @Error Then
+		SetError(@Error + 1)
+		Return 0
+	Else
+		DllStructSetData($v_Buffer, 1, $v_Data)
+		If @Error Then
+			SetError(6)
+			Return 0
+		EndIf
+	EndIf
+
+	DllCall($ah_Handle[0], 'int', 'WriteProcessMemory', 'int', $ah_Handle[1], 'int', $iv_Address, 'ptr', DllStructGetPtr($v_Buffer), 'int', DllStructGetSize($v_Buffer), 'int', '')
+
+	If Not @Error Then
+		Return 1
+	Else
+		SetError(7)
+        Return 0
+	EndIf
+EndFunc
+
 Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 	$MemPtrCreated = False
 
@@ -347,10 +376,10 @@ Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 		$MemPtr = $MemPtr[1]
 	EndIf
 
-	_MemoryWrite($MemPtr, $hprocess, $Message, "wchar[" & $StringLen + 1 & "]")
+	_GWCAMemWrite($MemPtr, $hprocess, $Message, "wchar[" & $StringLen + 1 & "]")
 
 	Cmd($CA_SendChat, $ChatNr, $MemPtr)
 
 	If $MemPtrCreated = True Then Cmd($CA_FreeMem, $MemPtr)
-EndFunc   ;==>SendChat
+EndFunc
 ; END OF FILE
