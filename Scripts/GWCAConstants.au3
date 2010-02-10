@@ -330,6 +330,49 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 	$cbType = $oldCbType
 EndFunc
 
+Func _GWCAMemOpen($iv_Pid, $iv_DesiredAccess = 0x1F0FFF, $iv_InheritHandle = 1)
+	If Not ProcessExists($iv_Pid) Then
+		SetError(1)
+        Return 0
+	EndIf
+
+	Local $ah_Handle[2] = [DllOpen('kernel32.dll')]
+
+	If @Error Then
+        SetError(2)
+        Return 0
+    EndIf
+
+	Local $av_OpenProcess = DllCall($ah_Handle[0], 'int', 'OpenProcess', 'int', $iv_DesiredAccess, 'int', $iv_InheritHandle, 'int', $iv_Pid)
+
+	If @Error Then
+        DllClose($ah_Handle[0])
+        SetError(3)
+        Return 0
+    EndIf
+
+	$ah_Handle[1] = $av_OpenProcess[0]
+	Return $ah_Handle
+EndFunc
+
+Func _GWCAMemClose($ah_Handle)
+	If Not IsArray($ah_Handle) Then
+		SetError(1)
+        Return 0
+	EndIf
+
+	DllCall($ah_Handle[0], 'int', 'CloseHandle', 'int', $ah_Handle[1])
+	If Not @Error Then
+		DllClose($ah_Handle[0])
+		Return 1
+	Else
+		DllClose($ah_Handle[0])
+		SetError(2)
+        Return 0
+	EndIf
+EndFunc
+
+
 Func _GWCAMemWrite($iv_Address, $ah_Handle, $v_Data, $sv_Type = 'dword')
 	If Not IsArray($ah_Handle) Then
 		SetError(1)
@@ -360,6 +403,11 @@ Func _GWCAMemWrite($iv_Address, $ah_Handle, $v_Data, $sv_Type = 'dword')
 EndFunc
 
 Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
+	If Not IsArray($hprocess) Then
+		$hprocess = _GWCAMemOpen($hprocess)
+		If Not IsArray($hprocess) Then Return
+	EndIf
+
 	$MemPtrCreated = False
 
 	$StringInString = StringInStr($Message, "/")
