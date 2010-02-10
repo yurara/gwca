@@ -108,6 +108,7 @@ While 1
 	For $i = 1 To $aSkillQueue[0] Step 1 ;Queue handling and cleaning up
 		If $i > $aSkillQueue[0] Then ExitLoop
 		$aSkillInfo = SplitSkillInfo($aSkillQueue[$i])
+		If Not IsArray($aSkillInfo) Then ContinueLoop
 
 		If TimerDiff($aSkillInfo[5]) >= ($aSkillInfo[2] * 1000) Then DeleteSkillFromQueue($aSkillQueue, $i)
 		If TimerDiff($aPrioritySkill[5]) >= ($aPrioritySkill[2] * 1000) Then

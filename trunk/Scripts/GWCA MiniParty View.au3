@@ -515,11 +515,6 @@ Func _IsInRect($pX, $pY, $iX, $iY, $iWidth, $iHeight)
 	Return False
 EndFunc
 
-Func OnAutoItExit()
-	_GDIPlus_GraphicsDispose($hGraphic)
-	_GDIPlus_Shutdown()
-EndFunc
-
 Func EventHandler()
 	Switch @GUI_CtrlId
 	Case $GUI_EVENT_CLOSE
