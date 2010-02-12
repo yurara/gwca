@@ -328,14 +328,16 @@ void DismissBuff(long BuffId){
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
-		if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+		aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+		if(aDistance > aTemp && aTemp != 0){
 			lLowest = i;
-			aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+			aDistance = aTemp;
 		}
 	}
 	}
@@ -348,16 +350,18 @@ long GetNearestAgentToAgent(long agentId){
 long GetNearestEnemyToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[agentId]->TeamId != Agents[i]->TeamId){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -371,16 +375,18 @@ long GetNearestEnemyToAgent(long agentId){
 long GetNearestEnemyToAgentByAllegiance(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance == 0x300){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -394,16 +400,18 @@ long GetNearestEnemyToAgentByAllegiance(long agentId){
 long GetNearestAliveEnemyToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->Allegiance == 0x300 && Agents[i]->HP != 0 && Agents[i]->Effects == 0x0010){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+		if(Agents[i]->Allegiance == 0x300 && Agents[i]->HP != 0 && ~(Agents[i]->Effects & 0x0010)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -417,16 +425,18 @@ long GetNearestAliveEnemyToAgent(long agentId){
 long GetNearestItemToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x400){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -440,16 +450,18 @@ long GetNearestItemToAgent(long agentId){
 long GetNearestSignpostToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x200){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -463,16 +475,18 @@ long GetNearestSignpostToAgent(long agentId){
 long GetNearestNpcToAgentByAllegiance(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance == 0x600){
-			if(aDistance > GetPseudoDistFromAgentToAgent(agentId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(agentId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -514,7 +528,8 @@ long GetFirstAgentByPlayerNumber(word playerNum){
 }
 
 long GetNearestAgentByPlayerNumber(word playerNum){
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
@@ -522,9 +537,10 @@ long GetNearestAgentByPlayerNumber(word playerNum){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Type == 0x200 || Agents[i]->Type == 0x400){continue;}
 		if(Agents[i]->PlayerNumber == playerNum){
-			if(aDistance > GetPseudoDistFromAgentToAgent(myId, i)){
+			aTemp = GetPseudoDistFromAgentToAgent(myId, i);
+			if(aDistance > aTemp && aTemp != 0){
 				lLowest = i;
-				aDistance = GetPseudoDistFromAgentToAgent(myId, i);
+				aDistance = aTemp;
 			}
 		}
 	}
@@ -550,15 +566,17 @@ long GetFirstAgentByPlayerNumberByTeam(word playerNum, byte teamId){
 }
 
 long GetNearestAgentToCoords(float x, float y){
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(aDistance > (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2))){
+		aTemp = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+		if(aDistance > aTemp && aTemp != 0){
 			lLowest = i;
-			aDistance = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+			aDistance = aTemp;
 		}
 	}
 	}
@@ -569,16 +587,18 @@ long GetNearestAgentToCoords(float x, float y){
 }
 
 long GetNearestNPCToCoords(float x, float y){
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	
 	long lLowest = 0;
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance != 0x600){continue;}
-		if(aDistance > (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2))){
+		aTemp = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+		if(aDistance > aTemp && aTemp != 0){
 			lLowest = i;
-			aDistance = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+			aDistance = aTemp;
 		}
 	}
 	}
@@ -589,16 +609,18 @@ long GetNearestNPCToCoords(float x, float y){
 }
 
 long GetNearestMapOverlayToCoords(float x, float y){
-	float aDistance = 50000;
+	float aDistance = 2500000000;
+	float aTemp = 0;
 	MapOverlay* MOArray = MySectionA->MapOverlayPointer();
 	
 	long lLowest = 0;
 	__try {
 	for(int i = 0;i < MySectionA->MapOverlaySize();i++){
 		if(&MOArray[i] == NULL){continue;}
-		if(aDistance > (pow((MOArray[i].Y - y), 2) + pow((MOArray[i].X - x), 2))){
+		aTemp = (pow((MOArray[i].Y - y), 2) + pow((MOArray[i].X - x), 2));
+		if(aDistance > aTemp && aTemp != 0){
 			lLowest = i;
-			aDistance = (pow((MOArray[i].Y - y), 2) + pow((MOArray[i].X - x), 2));
+			aDistance = aTemp;
 		}
 	}
 	}
@@ -628,7 +650,7 @@ long GetNumberOfAliveEnemyAgents(){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->HP == 0 && Agents[i]->Effects == 0x0010){continue;}
+		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
 		if(Agents[i]->Allegiance == 0x300){lCount++;}
 	}
 	}
