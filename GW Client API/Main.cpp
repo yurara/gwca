@@ -417,7 +417,7 @@ void _declspec(naked) CustomMsgHandler(){
 			Dialog(MsgWParam);
 			break;
 		case 0x421: //Change target : No return
-			if(Agents[MsgWParam]==NULL){break;}
+			if(Agents[MsgWParam]==NULL && MsgWParam != 0){break;}
 			_asm MOV ECX,MsgWParam
 			_asm MOV EDX,0
 			_asm CALL ChangeTargetFunction
