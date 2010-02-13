@@ -120,6 +120,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetTitleLucky || 0x449 || No parameters, returns integer of current lucky title. ||
 || CA_GetTitlyUnlucky || 0x44A || No parameters, returns integer of current unlucky title. ||
 || CA_GetTitleWisdom || 0x44B || No parameters, returns integer of current wisdom title. ||
+|| CA_GetTitleGamer || 0x44C || No parameters, returns integer of current gamer title. ||
+|| CA_GetExperience || 0x44D || No parameters, returns integer of your current experience points. ||
 
 ----
 
