@@ -611,6 +611,12 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x44B: //Get current Wisdom Title (credits to ddarek): Return int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleWisdom(), 0);
 			break;
+		case 0x44C: //Get current Gamer Title : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->TitleGamer(), 0);
+			break;
+		case 0x44D: //Get current amount of Experience points : Return int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->Experience(), 0);
+			break;
 
 		//Agent Related Commands
 		case 0x450: //Check for agent existency : Return int/bool

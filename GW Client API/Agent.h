@@ -199,6 +199,12 @@ public:
     long TitleTrackKurzick(){ //total points transfered to Kurzick's - credits to ddarek
 		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0xCC);
 	}
+	long TitleGamer(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x7A4, 0x39C);
+	}
+	long Experience(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x6DC);
+	}
 	dword MerchantItems(){
 		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x2C, 0x24);
 	}
