@@ -143,7 +143,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetHpPips || 0x45C || Parameter = id of agent, returns integer of how many pips the target has. ||
 || CA_GetEffects || 0x45D || Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc. ||
 || CA_GetHex || 0x45E || Parameter = id of agent, returns integer. If 0, target is not hexed. If 1, target is hexed without degen and if 2, target is hexed with degen. ||
-|| CA_GetModelAnimation || 0x45F || Obsolete. ||
+|| CA_GetModelAnimation || 0x45F || Parameter = id of agent, returns integer. The model animation number depends on profession and sex, but can be used to determine emotes, etc. ||
 || CA_GetEnergy || 0x460 || Obsolete, as it only works for yourself. Just use CA_GetMyMaxEnergy. ||
 || CA_GetAgentPtr || 0x461 || Parameter = id of agent, returns pointer to the agent structure of target in GW memory. ||
 || CA_GetType || 0x462 || Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up. ||
