@@ -206,7 +206,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_BuyIdKit || 0x51B || No parameters. Requires an open dialog with the Merchant of the outpost! ||
 || CA_BuySuperiorIdKit || 0x51C || No parameters. Requires an open dialog with the Merchant of the outpost! ||
 || CA_PrepareMoveItem || 0x51D || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. ||
-|| CA_MoveItem || 0x51E || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. ||
+|| CA_MoveItem || 0x51E || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. See the declaration of the bag id's in GWCAConstants.au3 ||
 || CA_GetItemInfo || 0x51F || Parameter = item slot. Returns integer with item rarity and integer with quantity. ||
 || CA_UseItem || 0x520 || Parameter = bag index, parameter 2 = item slot. Uses the item specified. ||
 || CA_UseItemById || 0x521 || Parameter = item id. Uses the item specified. ||
