@@ -1168,7 +1168,7 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByModelId(MsgWParam, 1), MyItemManager->GetItemPositionByModelId(MsgWParam, 2));
 			break;
 		case 0x52B: //Get item position by rarity : Return int/long & int/long
-			if(MsgWParam=NULL){break;}
+			if(MsgWParam==NULL){break;}
 			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPositionByRarity(MsgWParam, 1), MyItemManager->GetItemPositionByRarity(MsgWParam, 2));
 			break;
 		case 0x52C: //Get item model id by item id : Return int/long
