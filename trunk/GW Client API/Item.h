@@ -48,6 +48,12 @@ public:
 		return pBag->slots;
 	}
 
+	long GetBagItems(int iBag){
+		Bag* pBag = GetBagPtr(iBag);
+		if(!pBag){ return 0; }
+		return pBag->numOfItems;
+	}
+
 	long GetItemId(int iBag, int iSlot){
 		Item* pItem = GetItemPtr(iBag, iSlot);
 		if(!pItem){ return 0; }

@@ -1030,7 +1030,7 @@ void _declspec(naked) CustomMsgHandler(){
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->MoneySelf(), MySectionA->MoneyStorage());
 			break;
 		case 0x511: //Get bag size : Return int/long
-			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetBagSize(MsgWParam), 0);
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetBagSize(MsgWParam), MyItemManager->GetBagItems(MsgWParam));
 			break;
 		case 0x512: //Select bag to work with : No return
 			CurrentBag = MsgWParam;
