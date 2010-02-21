@@ -193,7 +193,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 
 || *Command* || *Id* || *Description* ||
 || CA_GetGold || 0x510 || No parameters. Returns integer with gold on your character and integer with gold in your storage. ||
-|| CA_GetBagSize || 0x511 || Parameter = bag index (1 = backpack to 5 = equip pack). Returns integer with number of slots in the bag. ||
+|| CA_GetBagSize || 0x511 || Parameter = bag index (see $BAG_ declarations in GWCAConstants.au3). Returns the number of slots and the number of items currently in the bag. ||
 || CA_SetBag || 0x512 || Parameter = bag index. Sets the current bag to work with. ||
 || CA_GetItemId || 0x513 || Parameter = item slot. Returns item id and item model id. ||
 || CA_GetIdKit || 0x514 || No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory. ||
