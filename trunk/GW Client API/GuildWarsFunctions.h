@@ -66,6 +66,7 @@ long GetNearestMapOverlayToCoords(float x, float y);
 long GetNumberOfAgentsByPlayerNumber(long playerNumber);
 long GetNumberOfAliveEnemyAgents();
 long GetNextItem(unsigned long startId);
+long GetNearestItemByModelId(long modelId);
 int IsAttackedMelee(long agentId);
 
 #endif

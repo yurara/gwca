@@ -23,7 +23,8 @@ struct ItemExtra {
 
 struct Item {
 	long id;
-	byte unknown1[8];
+	long agentId; //non-zero if on the ground
+	byte unknown1[4];
 	Bag* bag;
 	byte unknown2[8];
 	wchar_t* customized;
@@ -231,6 +232,7 @@ public:
 	}
 
 	Item* GetItemPtr(long itemId){
+		/*
 		for(int i = 1;i < 16;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
@@ -242,6 +244,24 @@ public:
 				if(!pCurrentItem){ continue; }
 				if(pCurrentItem->id == itemId){ return pCurrentItem; }
 			}
+		}
+		return NULL;
+		*/
+		if(itemId > MySectionA->ItemArraySize()){ return NULL; }
+
+		Item** aItems = MySectionA->ItemArray();
+
+		return aItems[itemId];
+	}
+
+	Item* GetItemPtrByAgentId(long agentId){
+		Item** aItems = MySectionA->ItemArray();
+		Item* pCurrentItem = NULL;
+
+		for(int i = 1;i < MySectionA->ItemArraySize();i++){
+			pCurrentItem = aItems[i];
+			if(!pCurrentItem){ continue; }
+			if(pCurrentItem->agentId == agentId){ return pCurrentItem; }
 		}
 		return NULL;
 	}

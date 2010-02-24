@@ -235,6 +235,12 @@ public:
 	long* ActiveQuestPtr(){
 		return (ReadPtrChain<long*>(BasePointer(), 0x18, 0x2C) + 0x4C4);
 	}
+	long ItemArraySize(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x40, 0xC0);
+	}
+	Item** ItemArray(){
+		return ReadPtrChain<Item**>(BasePointer(), 0x18, 0x40, 0xB8);
+	}
 };
 
 #endif
