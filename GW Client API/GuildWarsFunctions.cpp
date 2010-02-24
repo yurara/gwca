@@ -681,6 +681,30 @@ long GetNextItem(unsigned long startId){
 	return lReturn;
 }
 
+long GetNearestItemByModelId(long modelId){
+	float aDistance = 2500000000;
+	float aTemp = 0;
+	Item** aItems = MySectionA->ItemArray();
+	
+	long lLowest = 0;
+	__try {
+	for(unsigned int i = 1;i < MySectionA->ItemArraySize();i++){
+		if(aItems[i] == NULL){continue;}
+		if(aItems[i]->modelId == modelId){
+			aTemp = GetPseudoDistFromAgentToAgent(myId, aItems[i]->agentId);
+			if(aDistance > aTemp && aTemp != 0){
+				lLowest = aItems[i]->agentId;
+				aDistance = aTemp;
+			}
+		}
+	}
+	}
+	__except(1) {
+		return false;
+	}
+	return lLowest;
+}
+
 int IsAttackedMelee(long agentId){
 	if(Agents[agentId] == NULL){return -10;}
 

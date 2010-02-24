@@ -1209,6 +1209,32 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgWParam < 1 || MsgWParam > MySectionA->MerchantItemsSize()){break;}
 			BuyItem(*(long*)(MySectionA->MerchantItems() + ((MsgWParam - 1) * 4)), 1, MsgLParam);
 			break;
+		case 0x534: //Get item id and model id by agent id : Return int/long & int/long
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(!MyItemManager->GetItemPtrByAgentId(MsgWParam)){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtrByAgentId(MsgWParam)->id, MyItemManager->GetItemPtrByAgentId(MsgWParam)->modelId);
+			break;
+		case 0x535: //Get item rarity and quantity by agent id : Return byte & byte
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(!MyItemManager->GetItemPtrByAgentId(MsgWParam)){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtrByAgentId(MsgWParam)->extraItemInfo->rarity, MyItemManager->GetItemPtrByAgentId(MsgWParam)->quantity);
+			break;
+		case 0x536: //Get item last modifier and customized by agent id : Return byte & wchar_t*
+			if(MsgWParam == -1){MsgWParam = *(long*)CurrentTarget;}
+			if(MsgWParam == -2){MsgWParam = myId;}
+			if(!MyItemManager->GetItemPtrByAgentId(MsgWParam)){break;}
+			PostMessage((HWND)MsgLParam, 0x500, MyItemManager->GetItemPtrByAgentId(MsgWParam)->extraItemInfo->lastModifier,
+				(LPARAM)MyItemManager->GetItemPtrByAgentId(MsgWParam)->customized);
+			break;
+		case 0x537: //Get nearest item by model id : Return int/long
+			if(MsgWParam == 0){break;}
+			MsgInt = GetNearestItemByModelId(MsgWParam);
+			MsgFloat = GetDistanceFromAgentToAgent(myId, MsgInt);
+			memcpy(&MsgInt2, &MsgFloat, sizeof(float));
+			PostMessage((HWND)MsgLParam, 0x500, MsgInt, MsgInt2);
+			break;
 
 		//Title related commands
 		case 0x550: //Get current Sunspear Title: Return int/long
