@@ -2457,4 +2457,23 @@
 3133|Weight of Dhuum (2)
 3134|Spirit Form (underworld)
 3135|Spiritual Healing (2)
-3136|Ghostly Fury (2) 
+3136|Ghostly Fury (2)
+3137|Reindeer Form
+3138|Reindeer Form
+3139|Reindeer Form
+3140|Staggering Blow (PvP)
+3141|Lightning Reflexes (PvP)
+3142|Fierce Blow (PvP)
+3143|Renewing Smash (PvP)
+3144|Heal as One (PvP)
+3145|Glass Arrows (PvP)
+3146|Protective Was Kaolai (PvP)
+3147|Keen Arrow (PvP)
+3148|Anthem of Envy (PvP)
+3149|Mending Refrain (PvP)
+3150|Natural Resistance
+3153|Pain (attack) (Signet of Spirits)
+3154|Pain (attack) (Signet of Spirits)
+3155|Pain (attack) (Signet of Spirits)
+3156|Soldier's Stance (PvP)
+3157|Destructive Was Glaive (PvP) 
