@@ -574,7 +574,7 @@ long GetNearestAgentToCoords(float x, float y){
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
 		aTemp = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
-		if(aDistance > aTemp && aTemp != 0){
+		if(aDistance > aTemp){
 			lLowest = i;
 			aDistance = aTemp;
 		}
@@ -596,7 +596,7 @@ long GetNearestNPCToCoords(float x, float y){
 		if(Agents[i] == NULL){continue;}
 		if(Agents[i]->Allegiance != 0x600){continue;}
 		aTemp = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
-		if(aDistance > aTemp && aTemp != 0){
+		if(aDistance > aTemp){
 			lLowest = i;
 			aDistance = aTemp;
 		}
@@ -618,7 +618,7 @@ long GetNearestMapOverlayToCoords(float x, float y){
 	for(int i = 0;i < MySectionA->MapOverlaySize();i++){
 		if(&MOArray[i] == NULL){continue;}
 		aTemp = (pow((MOArray[i].Y - y), 2) + pow((MOArray[i].X - x), 2));
-		if(aDistance > aTemp && aTemp != 0){
+		if(aDistance > aTemp){
 			lLowest = i;
 			aDistance = aTemp;
 		}
