@@ -77,7 +77,7 @@ public:
 	}
 
 	long FindIdKit(){	
-		for(int i = 1;i < 16;i++){
+		for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -93,7 +93,7 @@ public:
 	}
 
 	long FindSalvageKit(){
-		for(int i = 1;i < 16;i++){
+		for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -109,7 +109,7 @@ public:
 	}
 
 	long GetItemByModelId(long model){
-		for(int i = 1;i < 16;i++){
+		for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -125,7 +125,7 @@ public:
 	}
 
 	long GetItemPositionByItemId(long itemId, long mode){
-		for(int i = 1;i < 16;i++){
+		for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -144,7 +144,7 @@ public:
 	}
 
 	long GetItemPositionByModelId(long modelId, long mode){
-			for(int i = 1;i < 16;i++){
+			for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -163,7 +163,7 @@ public:
 	}
 
 	long FindEmptySlot(long startingBag, long mode){
-		for(int i = startingBag;i < 16;i++){
+		for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
@@ -197,7 +197,7 @@ public:
 	}
 
 	long GetItemPositionByRarity(byte rarity, long mode){
-		for(int i = 1;i < 16;i++){
+		for(int i = 1;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
