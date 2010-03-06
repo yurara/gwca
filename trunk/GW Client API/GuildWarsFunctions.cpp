@@ -688,7 +688,7 @@ long GetNearestItemByModelId(long modelId){
 	
 	long lLowest = 0;
 	__try {
-	for(unsigned int i = 1;i < MySectionA->ItemArraySize();i++){
+	for(int i = 1;i < MySectionA->ItemArraySize();i++){
 		if(aItems[i] == NULL){continue;}
 		if(aItems[i]->modelId == modelId){
 			aTemp = GetPseudoDistFromAgentToAgent(myId, aItems[i]->agentId);

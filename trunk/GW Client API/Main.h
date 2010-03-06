@@ -19,6 +19,8 @@ extern byte* EmailLocation;
 extern byte* DeadLocation;
 extern byte* BasePointerLocation;
 extern byte* MapIdLocation;
+extern byte* RegionLocation;
+extern byte* LanguageLocation;
 
 struct Bag;
 struct Item;

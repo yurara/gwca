@@ -56,7 +56,7 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 
 Global Enum	$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
 			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode, _
-			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize, $CA_AllocMem, $CA_FreeMem
+			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize, $CA_AllocMem, $CA_FreeMem, $CA_GetRegionAndLanguage
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
@@ -191,14 +191,14 @@ Func GetNearestMapOverlayToCoords($x, $y)
 	Return $cbVar[1]
 EndFunc
 
-Func TravelTo($iMapId)
+Func TravelTo($iMapId, $iDis = 0)
 	$tMap = TimerInit()
 	Cmd($CA_InitMapLoad)
-	Cmd($CA_ZoneMap, $iMapId)
+	Cmd($CA_ZoneMap, $iMapId, $iDis)
 	Do
 		Sleep(200)
 		$aLoad = CmdCB($CA_GetMapLoading)
-		If TimerDiff($tMap) > 15000 AND $aLoad[0] <> 2 Then Cmd($CA_ZoneMap, $iMapId)
+		If TimerDiff($tMap) > 15000 AND $aLoad[0] <> 2 Then Cmd($CA_ZoneMap, $iMapId, $iDis)
 		$aLoaded = CmdCB($CA_MapIsLoaded)
 	Until $aLoad[0] = 0 AND $aLoaded[0] = 1
 EndFunc

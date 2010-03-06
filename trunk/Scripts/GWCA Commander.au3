@@ -46,7 +46,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_SkipCinematic|$CA_GetPartyInfo|$CA_ClearPacketQueue|$CA_SetHeroMode|"& _
 					"$CA_QuestCheck|$CA_QuestCoords|$CA_QuestActive|$CA_QuestAbandon|$CA_SalvageItem|$CA_GetSalvageKit|$CA_SetAttribute|$CA_SetTeamSize|$CA_BuyItem|"& _
 					"$CA_DismissBuff|$CA_PlayerHasBuff|$CA_Hero1HasBuff|$CA_Hero2HasBuff|$CA_Hero3HasBuff|$CA_SendChat|$CA_AllocMem|$CA_FreeMem|"& _
-					"$CA_GetTitleGamer|$CA_GetExperience|$CA_GetItemIdByAgent|$CA_GetItemInfoByAgent|$CA_GetItemLastModifierByAgent|$CA_GetNearestItemByModelId")
+					"$CA_GetTitleGamer|$CA_GetExperience|$CA_GetItemIdByAgent|$CA_GetItemInfoByAgent|$CA_GetItemLastModifierByAgent|$CA_GetNearestItemByModelId|"& _
+					"$CA_GetRegionAndLanguage")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
