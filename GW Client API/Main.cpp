@@ -48,6 +48,8 @@ byte* TargetLogReturn = NULL;
 byte* VirtualHeroFlagFunction = NULL;
 byte* SetAttrisFunc = NULL;
 byte* LoginFunc = NULL;
+byte* RegionLocation = NULL;
+byte* LanguageLocation = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -356,7 +358,9 @@ void _declspec(naked) CustomMsgHandler(){
 			ChangeWeaponSet(MsgWParam-1);
 			break;
 		case 0x414: //Zone map : No return
-			if(MsgLParam!=NULL)
+			if(MsgLParam==-1)
+				MoveMap(MsgWParam, MySectionA->Region(), 0, MySectionA->Language());
+			else if(MsgLParam!=NULL)
 				MoveMap(MsgWParam, 2, MsgLParam);
 			else
 				MoveMap(MsgWParam);
@@ -1401,6 +1405,9 @@ void _declspec(naked) CustomMsgHandler(){
 			if(MsgLParam == 0){break;}
 			free((byte*)MsgLParam);
 			break;
+		case 0x596: //Get region and language numbers : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, MySectionA->Region(), MySectionA->Language());
+			break;
 	}
 	
 	_asm {
@@ -1862,6 +1869,10 @@ void FindOffsets(){
 
 	byte LoginCode[] = { 0x81, 0xEC, 0x88, 0x00, 0x00, 0x00, 0x56, 0x57 };
 
+	byte RegionLocationCode[] = { 0x83, 0xF9, 0xFD, 0x74, 0x06 };
+
+	byte LanguageLocationCode[] = { 0xC3, 0x8B, 0x75, 0xFC, 0x8B, 0x04, 0xB5 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1966,6 +1977,12 @@ void FindOffsets(){
 		if(!memcmp(start, LoginCode, sizeof(LoginCode))){
 			LoginFunc = start - 0x3;
 		}
+		if(!memcmp(start, RegionLocationCode, sizeof(RegionLocationCode))){
+			RegionLocation = (byte*)(*(dword*)(start+7));
+		}
+		if(!memcmp(start, LanguageLocationCode, sizeof(LanguageLocationCode))){
+			LanguageLocation = (byte*)(*(dword*)(start+7));
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -1996,7 +2013,9 @@ void FindOffsets(){
 			LoadFinished &&
 			TargetLogStart &&
 			SetAttrisFunc &&
-			LoginFunc){
+			LoginFunc &&
+			RegionLocation &&
+			LanguageLocation){
 			return;
 		}
 		start++;
@@ -2198,6 +2217,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("LoginFunc");
 				return false;
 			}
+			if(!RegionLocation){
+				InjectErr("RegionLocation");
+				return false;
+			}
+			if(!LanguageLocation){
+				InjectErr("LanguageLocation");
+				return false;
+			}
+
 			/*
 			AllocConsole();
 			SetConsoleTitleA("GWCA Console");
@@ -2239,6 +2267,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("TargetLogStart=0x%06X\n", TargetLogStart);
 			printf("TargetLogReturn=0x%06X\n", TargetLogReturn);
 			printf("LoginFunc=0x%06X\n", LoginFunc);
+			printf("RegionLocation=0x%06X\n", RegionLocation);
+			printf("LanguageLocation=0x%06X\n", LanguageLocation);
 			*/
 			break;
 

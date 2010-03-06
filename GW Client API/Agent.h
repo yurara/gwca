@@ -241,6 +241,12 @@ public:
 	Item** ItemArray(){
 		return ReadPtrChain<Item**>(BasePointer(), 0x18, 0x40, 0xB8);
 	}
+	long Region(){
+		return *(long*)(RegionLocation);
+	}
+	long Language(){
+		return *(long*)(LanguageLocation + 0xC);
+	}
 };
 
 #endif
