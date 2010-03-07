@@ -59,7 +59,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_Move || 0x411 || Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command. ||
 || CA_UseSkill || 0x412 || Parameter = skill slot, parameter 2 = target id. Works on all skills including attack skills. Remember that some skills that target yourself may require that specified (if so, use -2 as target id). Current target = -1. ||
 || CA_ChangeWeaponSet || 0x413 || Parameter = weapon slot, changes weapon set. ||
-|| CA_ZoneMap || 0x414 || Parameter = zone id, optional parameter 2 = district number (if -1, will use current region+language), zones to the outpost/city specified and if district number is provided also attempts to enter that district. ||
+|| CA_ZoneMap || 0x414 || Parameter = zone id, optional parameter 2 = district number (use 0 for active district), zones to the outpost/city specified and if district number is provided also attempts to enter that district. Always uses current region and language. ||
 || CA_DropGold || 0x415 || Parameter = amount of gold, drops the gold on the ground. ||
 || CA_GoNpc || 0x416 || Parameter = id of NPC, goes to specified NPC. ||
 || CA_GoPlayer || 0x417 || Parameter = id of player, goes to specified player (for use in outposts/cities). ||
@@ -280,3 +280,6 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_AllocMem || 0x594 || Parameter = size. Returns pointer to memory. Example script: [http://pastebin.com/f52bae4a0] - credits to Gabba for the function. ||
 || CA_FreeMem || 0x595 || Parameter = 0, parameter 2 = pointer to memory. Frees allocated memory. ||
 || CA_GetRegionAndLanguage || 0x596 || No parameters. Returns your current region and language. ||
+|| CA_TraderRequest || 0x597 || Parameter = item index. The item index is the number on the list at the trader. For the Rune trader experiment around. Use this to setup CA_TraderBuy. ||
+|| CA_TraderCheck || 0x598 || No parameters. Returns the trader item id and it's cost that is currently active. Loop this until the item id or cost is non-zero to verify that the info has been received before calling CA_TraderBuy. ||
+|| CA_TraderBuy || 0x599 || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequest and waiting until item id and cost has been received before it works! ||
