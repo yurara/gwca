@@ -50,6 +50,10 @@ byte* SetAttrisFunc = NULL;
 byte* LoginFunc = NULL;
 byte* RegionLocation = NULL;
 byte* LanguageLocation = NULL;
+byte* RequestQuoteFunction = NULL;
+byte* TraderCostStart = NULL;
+byte* TraderCostReturn = NULL;
+byte* TraderBuyFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -74,6 +78,9 @@ bool FinishedLoading = false;
 long* AgentTargets = new long[2560];
 
 long PartyTeamSize = 8;
+
+long TraderCostId = 0;
+long TraderCostValue = 0;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -207,6 +214,24 @@ void _declspec(naked) TargetLogHook(){
 		JMP TargetLogReturn
 	}
 }
+
+void _declspec(naked) TraderCostHook(){
+	_asm {
+		PUSHAD
+
+		MOV TraderCostId,ECX
+		MOV TraderCostValue,EDX
+	}
+
+	_asm {
+		POPAD
+
+		MOV EBP,ESP
+		SUB ESP,8
+		JMP TraderCostReturn
+	}
+}
+
 void SetAttribute(dword atr,dword val){
 	dword Attribute = atr;
 	dword Value = val;
@@ -360,10 +385,8 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x414: //Zone map : No return
 			if(MsgLParam==-1)
 				MoveMap(MsgWParam, MySectionA->Region(), 0, MySectionA->Language());
-			else if(MsgLParam!=NULL)
-				MoveMap(MsgWParam, 2, MsgLParam);
 			else
-				MoveMap(MsgWParam);
+				MoveMap(MsgWParam, MySectionA->Region(), MsgLParam, MySectionA->Language());
 			break;
 		case 0x415: //Drop gold : No return
 			DropGold(MsgWParam);
@@ -1408,6 +1431,17 @@ void _declspec(naked) CustomMsgHandler(){
 		case 0x596: //Get region and language numbers : Return int/long & int/long
 			PostMessage((HWND)MsgLParam, 0x500, MySectionA->Region(), MySectionA->Language());
 			break;
+		case 0x597: //Request quote from trader : No return
+			if(!MySectionA->MerchantItems() || !MySectionA->MerchantItemsSize()){break;}
+			if(MsgWParam > MySectionA->MerchantItemsSize()){break;}
+			RequestQuote(*(long*)(MySectionA->MerchantItems() + ((MsgWParam - 1) * 4)));
+			break;
+		case 0x598: //Check TraderCostId and TraderCostValue : Return int/long & int/long
+			PostMessage((HWND)MsgLParam, 0x500, TraderCostId, TraderCostValue);
+			break;
+		case 0x599: //Buy item from trader : Return int/boolean
+			PostMessage((HWND)MsgLParam, 0x500, TraderBuy(), 0);
+			break;
 	}
 	
 	_asm {
@@ -1455,6 +1489,54 @@ void BuyItem(long id, long quantity, long value){
 		CALL BuyItemFunction
 	}
 }
+
+void RequestQuote(long id){
+	long* item = &id;
+
+	TraderCostId = 0;
+	TraderCostValue = 0;
+
+	_asm {
+		PUSH item
+		PUSH 1
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		MOV ECX,0xC
+		MOV EDX,0
+		CALL RequestQuoteFunction
+	}
+}
+
+bool TraderBuy(){
+	if(!TraderCostId || !TraderCostValue){ return false; }
+
+	long* info = new long[4];
+	info[0] = TraderCostId;
+	info[1] = TraderCostValue;
+	info[2] = 0;
+	info[3] = 1;
+
+	_asm {
+		PUSH 0
+		PUSH info
+		PUSH 1
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		MOV ECX,0xC
+		MOV EDX,TraderCostValue
+		CALL TraderBuyFunction
+	}
+
+	TraderCostId = 0;
+	TraderCostValue = 0;
+
+	return true;
+}
+
 
 void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
 	PartyInfo* PtInfo = new PartyInfo;
@@ -1873,6 +1955,12 @@ void FindOffsets(){
 
 	byte LanguageLocationCode[] = { 0xC3, 0x8B, 0x75, 0xFC, 0x8B, 0x04, 0xB5 };
 
+	byte RequestQuoteCode[] = { 0x81, 0xEC, 0x9C, 0x00, 0x00, 0x00, 0x53, 0x56, 0x8B };
+
+	byte TraderCostCode[] = { 0x89, 0x55, 0xFC, 0x6A, 0x00, 0x8D, 0x55, 0xF8, 0xB9, 0xB8 };
+
+	byte TraderBuyCode[] = { 0x8B, 0x45, 0x18, 0x8B, 0x55, 0x10, 0x85 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -1983,6 +2071,16 @@ void FindOffsets(){
 		if(!memcmp(start, LanguageLocationCode, sizeof(LanguageLocationCode))){
 			LanguageLocation = (byte*)(*(dword*)(start+7));
 		}
+		if(!memcmp(start, RequestQuoteCode, sizeof(RequestQuoteCode))){
+			RequestQuoteFunction = start - 3;
+		}
+		if(!memcmp(start, TraderCostCode, sizeof(TraderCostCode))){
+			TraderCostStart = start - 8;
+			TraderCostReturn = TraderCostStart + 5;
+		}
+		if(!memcmp(start, TraderBuyCode, sizeof(TraderBuyCode))){
+			TraderBuyFunction = start - 0x48;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2015,7 +2113,10 @@ void FindOffsets(){
 			SetAttrisFunc &&
 			LoginFunc &&
 			RegionLocation &&
-			LanguageLocation){
+			LanguageLocation &&
+			RequestQuoteFunction &&
+			TraderCostStart &&
+			TraderBuyFunction){
 			return;
 		}
 		start++;
@@ -2225,6 +2326,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("LanguageLocation");
 				return false;
 			}
+			if(!RequestQuoteFunction){
+				InjectErr("RequestQuoteFunction");
+				return false;
+			}
+			if(!TraderCostStart){
+				InjectErr("TraderCostStart");
+				return false;
+			}else{
+				DWORD dwOldProtection;
+				VirtualProtect(TraderCostStart, 5, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(TraderCostStart, 0x90, 5);
+				VirtualProtect(TraderCostStart, 5, dwOldProtection, NULL);
+				WriteJMP(TraderCostStart, (byte*)TraderCostHook);
+			}
+			if(!TraderBuyFunction){
+				InjectErr("TraderBuyFunction");
+				return false;
+			}
 
 			/*
 			AllocConsole();
@@ -2269,6 +2388,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("LoginFunc=0x%06X\n", LoginFunc);
 			printf("RegionLocation=0x%06X\n", RegionLocation);
 			printf("LanguageLocation=0x%06X\n", LanguageLocation);
+			printf("RequestQuoteFunction=0x%06X\n", RequestQuoteFunction);
+			printf("TraderCostStart=0x%06X\n", TraderCostStart);
+			printf("TraderCostReturn=0x%06X\n", TraderCostReturn);
+			printf("TraderBuyFunction=0x%06X\n", TraderBuyFunction);
 			*/
 			break;
 

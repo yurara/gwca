@@ -56,7 +56,8 @@ Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRec
 
 Global Enum	$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
 			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode, _
-			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize, $CA_AllocMem, $CA_FreeMem, $CA_GetRegionAndLanguage
+			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize, $CA_AllocMem, $CA_FreeMem, $CA_GetRegionAndLanguage, _
+			$CA_TraderRequest, $CA_TraderCheck, $CA_TraderBuy
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
@@ -148,7 +149,7 @@ Func CmdCBEx($uMsg, $wParam = 0, $msTimeout = 60)
 	$tEscape = TimerInit()
 	Do
 		Sleep(0)
-	Until TimerDiff($tEscape) > $msTimeout OR $cbVar[0] <> ""
+	Until TimerDiff($tEscape) > $msTimeout OR String($cbVar[0]) <> ""
 EndFunc
 
 Func MoveEx($x, $y, $random = 50)
@@ -430,6 +431,6 @@ Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 
 	Cmd($CA_SendChat, $ChatNr, $MemPtr)
 
-	If $MemPtrCreated = True Then Cmd($CA_FreeMem, $MemPtr)
+	If $MemPtrCreated = True Then Cmd($CA_FreeMem, 0, $MemPtr)
 EndFunc
 ; END OF FILE
