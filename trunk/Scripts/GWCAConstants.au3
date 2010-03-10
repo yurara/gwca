@@ -5,6 +5,9 @@
 
 #include-once
 
+#include <NamedPipes.au3>
+#include <WinAPI.au3>
+
 ; The SkillLog structure for use with the Skill Log feature
 Global $tagSKILLLOGSTRUCT = "long AgentId;long MyId;long SkillId;float Activation;byte TeamId;ushort Allegiance;float Distance;long Ping;long TargetId"
 Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
@@ -18,46 +21,60 @@ Global $tagPARTYINFO = "hwnd Receiver;long TeamSize;long TeamId;" & _
 	"long Agent8Id;float Agent8X;float Agent8Y;float Agent8HP;long Agent8Effects;byte Agent8Hex;dword Agent8Name;byte Agent8Primary;byte Agent8Secondary;long Agent8Target;word Agent8Skill;word Agent8Weapon;"
 
 ; The constants
-Global Enum $CA_GetCurrentTarget = 0x401, $CA_GetMyId, $CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, _
-			$CA_StoreVar, $CA_SetLogAndHwnd, $CA_GetAgentAndTargetPtr, $CA_GetSkillbarSkillId, $CA_GetMyMaxHP, $CA_GetMyMaxEnergy, $CA_GetBuildNumber, _
-			$CA_ChangeMaxZoom, $CA_GetLastDialogId, $CA_SetEngineHook, _
-			$CA_Attack = 0x410, $CA_Move, $CA_UseSkill, _
-			$CA_ChangeWeaponSet, $CA_ZoneMap, $CA_DropGold, $CA_GoNpc, $CA_GoPlayer, $CA_GoSignpost, $CA_UseAttackSkill, _
-			$CA_EnterChallenge, $CA_OpenChest, $CA_SetEventSkillMode, $CA_UseSkillbarSkill, $CA_PickupItem, _
-			$CA_UseSkillbarAttackSkill, $CA_Dialog, $CA_ChangeTarget, $CA_StatusBot, $CA_TargetNearestFoe, $CA_TargetNearestAlly, _
-			$CA_TargetNearestItem, $CA_StatusDelay, $CA_TargetCalledTarget, $CA_UseHero1Skill, $CA_UseHero2Skill, $CA_UseHero3Skill, $CA_StatusMiss, _
-			$CA_CancelAction, $CA_StatusTab, $CA_GetNamePtr, $CA_CommandHero1, $CA_CommandHero2, $CA_CommandHero3, $CA_CommandAll, $CA_ChangeDistrict, _
-			$CA_Resign, $CA_ReturnToOutpost, $CA_GoAgent, $CA_DonateFaction, $CA_SetSkillbarSkill, $CA_ChangeSecondProfession, $CA_TargetNextPartyMember, _
-			$CA_TargetNextFoe, $CA_SkipCinematic, $CA_DismissBuff, $CA_SendChat, _
-			$CA_GetMapLoading = 0x440, $CA_GetMapId, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead, $CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction, _
-			$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, $CA_GetTitleGamer, $CA_GetExperience, _
-			$CA_GetAgentExist = 0x450, $CA_GetProfessions, $CA_GetPlayerNumber, _
-			$CA_GetHP, $CA_GetRotation, _
-			$CA_GetSkill, $CA_GetCoords, $CA_GetWeaponSpeeds, $CA_GetSpiritRange, $CA_GetTeamId, $CA_GetCombatMode, _
-			$CA_GetModelMode, $CA_GetHpPips, $CA_GetEffects, $CA_GetHex, $CA_GetModelAnimation, $CA_GetEnergy, $CA_GetAgentPtr, _
-			$CA_GetType, $CA_GetLevel, $CA_GetNameProperties, $CA_GetMaxId, $CA_GetMyNearestAgent, _
-			$CA_GetMyDistanceToAgent, $CA_GetNearestAgentToAgent, $CA_GetDistanceFromAgentToAgent, $CA_GetNearestAgentToAgentEx, _
-			$CA_GetModelState, $CA_GetIsAttacking, $CA_GetIsKnockedDown, $CA_GetIsMoving, $CA_GetIsDead, $CA_GetIsCasting, _
-			$CA_GetFirstAgentByPlayerNumber, $CA_GetAllegiance, $CA_GetNearestEnemyToAgentEx, $CA_GetIsAttackedMelee, $CA_GetNearestItemToAgentEx, _
-			$CA_GetNearestAgentByPlayerNumber, $CA_GetSpeed, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent, _
-			$CA_GetWeaponType, $CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, $CA_GetVars, _
-			$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem, _
-			$CA_GetTarget, $CA_SetAttribute, $CA_PlayerHasBuff, $CA_Hero1HasBuff, $CA_Hero2HasBuff, $CA_Hero3HasBuff, _
-			$CA_GetGold = 0x510, $CA_GetBagSize, $CA_SetBag, $CA_GetItemId, _
-			$CA_GetIdKit, $CA_IdentifyItem, $CA_IdentifyItemById, $CA_DepositGold, $CA_WithdrawGold, $CA_SellItem, $CA_SellItemById, _
-			$CA_BuyIdKit, $CA_BuySuperiorIdKit, $CA_PrepareMoveItem, $CA_MoveItem, $CA_GetItemInfo, _
-			$CA_UseItem, $CA_UseItemById, $CA_DropItem, $CA_DropItemById, _
-			$CA_AcceptAllItems, $CA_GetItemLastModifier, $CA_FindItemByModelId, $CA_FindEmptySlot, $CA_FindGoldItem, _
-			$CA_GetItemPositionByItemId, $CA_GetItemPositionByModelId, $CA_GetItemPositionByRarity, $CA_GetItemModelIdById, $CA_GetItemInfoById, _
-			$CA_GetItemLastModifierById, $CA_EquipItem, $CA_EquipItemById, $CA_SalvageItem, $CA_GetSalvageKit, $CA_BuyItem, _
-			$CA_GetItemIdByAgent, $CA_GetItemInfoByAgent, $CA_GetItemLastModifierByAgent, $CA_GetNearestItemByModelId, _
-			$CA_GetTitleSunspear = 0x550, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor, _
-			$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick
-
-Global Enum	$CA_AddHero = 0x580, $CA_KickHero, $CA_SwitchMode, $CA_AddNpc, $CA_KickNpc, $CA_TravelGH, $CA_LeaveGH, $CA_InitMapLoad, $CA_MapIsLoaded, _
-			$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo, $CA_ClearPacketQueue, $CA_SetHeroMode, _
-			$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_QuestAbandon, $CA_SetTeamSize, $CA_AllocMem, $CA_FreeMem, $CA_GetRegionAndLanguage, _
-			$CA_TraderRequest, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderRequestSell, $CA_TraderRequestSellById, $CA_TraderSell
+Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
+	$CA_Error = 0x050, _
+	$CA_CommandsBegin = 0x101, _
+	$CA_Attack, $CA_Dialog, $CA_CancelAction, $CA_ClearPacketQueue, $CA_QuestAbandon, $CA_DonateFaction, $CA_SetLogAndHwnd,  _
+	$CA_Move, $CA_GoNpc, $CA_GoPlayer, $CA_GoSignpost, $CA_GoAgent,  _
+	$CA_UseSkill, $CA_SetEventSkillMode, $CA_SetSkillbarSkill, $CA_SetAttribute, $CA_ChangeSecondProfession,  _
+	$CA_ChangeWeaponSet, $CA_EquipItem, $CA_EquipItemById, $CA_UseItem, $CA_UseItemById,  _
+	$CA_DropGold, $CA_DepositGold, $CA_WithdrawGold, _
+	$CA_ChangeTarget, $CA_TargetNearestFoe, $CA_TargetNearestAlly, $CA_TargetNextPartyMember, $CA_TargetNextFoe,  _
+	$CA_TargetNearestItem, $CA_TargetCalledTarget, _
+	$CA_UseHero1Skill, $CA_UseHero2Skill, $CA_UseHero3Skill, _
+	$CA_CommandHero1, $CA_CommandHero2, $CA_CommandHero3, $CA_CommandAll, $CA_SetHeroMode,  _
+	$CA_AddHero, $CA_KickHero, $CA_AddNpc, $CA_KickNpc,  _
+	$CA_ChangeDistrict, $CA_ZoneMap, $CA_SwitchMode, $CA_InitMapLoad, $CA_SkipCinematic,  _
+	$CA_DismissBuff, $CA_SendChat, $CA_SetTeamSize, $CA_FreeMem,  _
+	$CA_Resign, $CA_ReturnToOutpost, $CA_EnterChallenge, $CA_TravelGH, $CA_LeaveGH,  _
+	$CA_SetBag, $CA_PrepareMoveItem, $CA_MoveItem,  _
+	$CA_IdentifyItem, $CA_IdentifyItemById, $CA_SalvageItem,  _
+	$CA_SellItem, $CA_SellItemById, $CA_BuyIdKit, $CA_BuySuperiorIdKit, _
+	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, _
+	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, _
+	$CA_CommandsEnd, _
+	$CA_RequestsBegin = 0x301,  _
+	$CA_GetCurrentTarget,  _
+	$CA_GetMyId, $CA_GetMyMaxHP, $CA_GetMyMaxEnergy, $CA_GetMyNearestAgent, $CA_GetMyDistanceToAgent,  _
+	$CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, $CA_GetSkillbarSkillId,  _
+	$CA_GetTarget, $CA_GetAgentAndTargetPtr,  _
+	$CA_GetBuildNumber, $CA_ChangeMaxZoom, $CA_GetLastDialogId, $CA_SetEngineHook,  _
+	$CA_GetGold, $CA_GetBagSize, $CA_GetItemId,  _
+	$CA_GetIdKit, $CA_GetSalvageKit,  _
+	$CA_GetItemInfo, $CA_GetItemLastModifier, $CA_GetItemLastModifierById,  _
+	$CA_FindItemByModelId, $CA_FindEmptySlot, $CA_FindGoldItem,  _
+	$CA_GetItemPositionByItemId, $CA_GetItemPositionByModelId, $CA_GetItemPositionByRarity,  _
+	$CA_GetItemModelIdById, $CA_GetItemInfoById,  _
+	$CA_GetItemIdByAgent, $CA_GetItemInfoByAgent, $CA_GetItemLastModifierByAgent, $CA_GetNearestItemByModelId,  _
+	$CA_GetMapLoading, $CA_GetMapId, $CA_MapIsLoaded, $CA_GetRegionAndLanguage, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead,  _
+	$CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction,  _
+	$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, $CA_GetTitleGamer, $CA_GetExperience, _
+	$CA_GetTitleSunspear, $CA_GetTitleLightbringer, $CA_GetTitleVanguard, $CA_GetTitleNorn, $CA_GetTitleAsura, $CA_GetTitleDeldrimor,  _
+	$CA_GetTitleNorthMastery, $CA_GetTitleDrunkard, $CA_GetTitleSweet, $CA_GetTitleParty, $CA_GetTitleCommander, $CA_GetTitleLuxon, $CA_GetTitleKurzick,  _
+	$CA_GetMapOverlayCoords, $CA_GetMapOverlayInfo, $CA_GetNearestMapOverlayToCoords, $CA_GetPartyInfo,  _
+	$CA_GetAgentExist, $CA_GetProfessions, $CA_GetPlayerNumber, $CA_GetName, $CA_GetHP, $CA_GetRotation,  _
+	$CA_GetSkill, $CA_GetCoords, $CA_GetWeaponSpeeds, $CA_GetSpiritRange, $CA_GetTeamId, $CA_GetCombatMode,  _
+	$CA_GetModelMode, $CA_GetHpPips, $CA_GetEffects, $CA_GetHex, $CA_GetModelAnimation, $CA_GetEnergy, $CA_GetAgentPtr,  _
+	$CA_GetType, $CA_GetLevel, $CA_GetNameProperties, $CA_GetMaxId, $CA_GetSpeed, $CA_GetAllegiance, $CA_GetWeaponType,  _
+	$CA_GetModelState, $CA_GetIsAttacking, $CA_GetIsKnockedDown, $CA_GetIsMoving, $CA_GetIsDead, $CA_GetIsCasting, $CA_GetIsAttackedMelee, _
+	$CA_PlayerHasBuff, $CA_Hero1HasBuff, $CA_Hero2HasBuff, $CA_Hero3HasBuff,  _
+	$CA_GetFirstAgentByPlayerNumber, $CA_GetNearestAgentToAgent, $CA_GetDistanceFromAgentToAgent,  _
+	$CA_GetNearestAgentToAgentEx, $CA_GetNearestEnemyToAgentEx, $CA_GetNearestItemToAgentEx,  _
+	$CA_GetNearestAgentByPlayerNumber, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent,  _
+	$CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, _
+	$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem,  _
+	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderSell, _
+	$CA_RequestsEnd
 
 
 Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
@@ -71,6 +88,12 @@ Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers
 
 Global Enum $HEROMODE_Fight, $HEROMODE_Guard, $HEROMODE_Avoid
 
+Global Enum $IS_NUMERIC = 0x00, _
+			$IS_TEXT = 0x01, _
+			$IS_COMMAND = 0x02, _
+			$IS_REQUEST = 0x04, _
+			$IS_RESPONSE = 0x08
+
 Global Const $FLAG_RESET = 0x7F800000
 
 ; VARIABLES
@@ -80,7 +103,6 @@ Opt("WinTitleMatchMode", -1) ;Make sure that Guild Wars receives the messages (1
 Global $cbType = "int" ;What to read the callback values as
 Global $cbVar[2] ;Array for callback wParam and lParam
 Global $sGW = "Guild Wars -" ;Name of window
-Global $cGUI = 0 ;Init GUI hwnd var
 Global $bGWCA_INTERNAL = False ;Is set to True when inside a Cmd() or CmdCB() call
 
 ; FUNCTIONS
@@ -103,53 +125,67 @@ Func _FloatToInt($fFloat)
 	Return DllStructGetData($tInt, 1)
 EndFunc
 
-Func WndCallback($hwnd, $msg, $wparam, $lparam)
-	Switch($cbType)
+Func Cmd($uMsg, $wparam = 0, $lparam = 0)
+	Local $hPipe
+	Local $iRead = 0
+	Local $OutBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes sending buffer
+	Local $InBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes incoming buffer
+	$bGWCA_INTERNAL = True
+	DllStructSetData($OutBuffer,"header",$uMsg)
+	DllStructSetData($OutBuffer,"type",BitOR($IS_COMMAND, $IS_NUMERIC))
+	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
+	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
+	If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
+		Return
+	EndIf
+	$hPipe = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
+	_WinAPI_WriteFile($hPipe,DllStructGetPtr($OutBuffer),12,$iRead)
+	_WinAPI_CloseHandle($hPipe)
+
+	$bGWCA_INTERNAL = False
+EndFunc
+
+Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
+	Local $hPipe
+	Local $sPipe = "\\.\pipe\GWCA_"&WinGetProcess($sGW)
+	Local $iRead = 0
+	Local $OutBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes sending buffer
+	Local $InBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes incoming buffer
+	$bGWCA_INTERNAL = True
+	$cbVar[0] = ""
+	$cbVar[1] = ""
+	DllStructSetData($OutBuffer,"header",$uMsg)
+	DllStructSetData($OutBuffer,"type",BitOR($IS_REQUEST, $IS_NUMERIC))
+	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
+	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
+
+	If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
+		Return $cbVar
+	EndIf
+	$hPipe = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
+	_WinAPI_WriteFile($hPipe,DllStructGetPtr($OutBuffer),12,$iRead)
+	_WinAPI_ReadFile($hPipe,DllStructGetPtr($InBuffer),12,$iRead)
+	_WinAPI_CloseHandle($hPipe)
+
+	Switch $cbType
 		Case "float"
-			$wparam = _IntToFloat($wparam)
-			$lparam = _IntToFloat($lparam)
+			$cbVar[0] = DllStructGetData(DllStructCreate("float", DllStructGetPtr($InBuffer, "wparam")), 1)
+			$cbVar[1] = DllStructGetData(DllStructCreate("float", DllStructGetPtr($InBuffer, "lparam")), 1)
 		Case "int"
-			$wparam = Number($wparam)
-			$lparam = Number($lparam)
-		Case "hex" ;Do nothing
+			$cbVar[0] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "wparam")), 1)
+			$cbVar[1] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "lparam")), 1)
+		Case "hex"
+			$cbVar[0] = "0x"&Hex(DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "wparam")), 1))
+			$cbVar[1] = "0x"&Hex(DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "lparam")), 1))
+		Case Else
+			$cbVar[0] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "wparam")), 1)
+			$cbVar[1] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "lparam")), 1)
 	EndSwitch
 
-	$cbVar[0] = $wparam
-	$cbVar[1] = $lparam
-EndFunc
 
-Func Cmd($uMsg, $wparam = 0, $lparam = 0)
-	$bGWCA_INTERNAL = True
-	$cbVar[0] = ""
-	$cbVar[1] = ""
-	DllCall("user32.dll", "lparam", "PostMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
 	$bGWCA_INTERNAL = False
-EndFunc
 
-Func CmdEx($uMsg, $wparam = 0, $lparam = 0)
-	$bGWCA_INTERNAL = True
-	$cbVar[0] = ""
-	$cbVar[1] = ""
-	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
-	$bGWCA_INTERNAL = False
-EndFunc
-
-Func CmdCB($uMsg, $wparam = 0)
-	$bGWCA_INTERNAL = True
-	$cbVar[0] = ""
-	$cbVar[1] = ""
-	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $cGUI)
-	If $cbVar[0] = "" AND $cbVar[1] = "" Then SetError(-1)
-	$bGWCA_INTERNAL = False
 	Return $cbVar
-EndFunc
-
-Func CmdCBEx($uMsg, $wParam = 0, $msTimeout = 60)
-	CmdCB($uMsg, $wParam)
-	$tEscape = TimerInit()
-	Do
-		Sleep(0)
-	Until TimerDiff($tEscape) > $msTimeout OR String($cbVar[0]) <> ""
 EndFunc
 
 Func MoveEx($x, $y, $random = 50)
@@ -160,8 +196,8 @@ Func GetNearestAgentToCoords($x, $y)
 	$oldCbType = $cbType
 
 	$cbType = "int"
-	CmdEx($CA_GetNearestAgentToCoords, _FloatToInt($x), _FloatToInt($y))
-	CmdCB($CA_GetVars)
+	CmdCB($CA_GetNearestAgentToCoords, _FloatToInt($x), _FloatToInt($y))
+	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
@@ -172,8 +208,8 @@ Func GetNearestNPCToCoords($x, $y)
 	$oldCbType = $cbType
 
 	$cbType = "int"
-	CmdEx($CA_GetNearestNpcToCoords, _FloatToInt($x), _FloatToInt($y))
-	CmdCB($CA_GetVars)
+	CmdCB($CA_GetNearestNpcToCoords, _FloatToInt($x), _FloatToInt($y))
+	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
@@ -184,8 +220,8 @@ Func GetNearestMapOverlayToCoords($x, $y)
 	$oldCbType = $cbType
 
 	$cbType = "int"
-	CmdEx($CA_GetNearestMapOverlayToCoords, _FloatToInt($x), _FloatToInt($y))
-	CmdCB($CA_GetVars)
+	CmdCB($CA_GetNearestMapOverlayToCoords, _FloatToInt($x), _FloatToInt($y))
+	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
@@ -320,7 +356,7 @@ Func UseSkillEx($iSkillSlot, $iTarget = 0)
 
 	$tDeadlock = TimerInit()
 	$cbType = "int"
-	Cmd($CA_USESKILLBARSKILL, $iSkillSlot, $iTarget)
+	Cmd($CA_USESKILL, $iSkillSlot, $iTarget)
 	Do
 		Sleep(250)
 		CmdCB($CA_GETDEAD)
@@ -434,3 +470,4 @@ Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 	If $MemPtrCreated = True Then Cmd($CA_FreeMem, 0, $MemPtr)
 EndFunc
 ; END OF FILE
+

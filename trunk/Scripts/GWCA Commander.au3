@@ -66,8 +66,6 @@ GUISetBkColor(0x000000, $myGUI)
 
 GUISetState(True, $myGUI)
 
-GUIRegisterMsg(0x500, "HeheTest")
-
 While 1
 	Switch(GUIGetMsg())
 		Case $GUI_EVENT_CLOSE
@@ -91,7 +89,7 @@ While 1
 				$sendL = _FloatToInt($sendL)
 			EndIf
 
-			CmdGW($sendCmd, $sendW, $sendL)
+			Cmd($sendCmd, $sendW, $sendL)
 
 		Case $btnSendReceive
 			$sendCmd = GUICtrlRead($inputCmd)
@@ -106,31 +104,9 @@ While 1
 			GUICtrlSetData($labelWparam, "")
 			GUICtrlSetData($labelLparam, "")
 
-			CmdGW($sendCmd, $sendW, $myGUI)
+			$cbType = GUICtrlRead($inputType)
+			CmdCB($sendCmd, $sendW, 0)
+			GUICtrlSetData($labelWparam, $cbVar[0])
+			GUICtrlSetData($labelLparam, $cbVar[1])
 	EndSwitch
 WEnd
-
-Func HeheTest($hwnd, $msg, $wparam, $lparam)
-	Switch(GUICtrlRead($inputType))
-		Case "float"
-			$wparam = _IntToFloat($wparam)
-			$lparam = _IntToFloat($lparam)
-			ConsoleWrite("Float - 0x"&Hex($msg)&" - "&$wparam&" - "&$lparam&@LF)
-		Case "int"
-			$wparam = Number($wparam)
-			$lparam = Number($lparam)
-			ConsoleWrite("Int - 0x"&Hex($msg)&" - "&($wparam)&" - "&($lparam)&@LF)
-		Case "hex"
-			ConsoleWrite("Hex - 0x"&Hex($msg)&" - "&$wparam&" - "&$lparam&@LF)
-		Case "degree"
-			$wparam = _IntToFloat($wparam)
-			$lparam = _IntToFloat($lparam)
-			ConsoleWrite("Degrees - 0x"&Hex($msg)&" - "&$wparam&" - "&$lparam&@LF)
-	EndSwitch
-	GUICtrlSetData($labelWparam, $wparam)
-	GUICtrlSetData($labelLparam, $lparam)
-EndFunc
-
-Func CmdGW($uMsg, $wparam, $lparam)
-	DllCall("user32.dll", "lparam", "SendMessage", "hwnd", WinGetHandle($sGW), "int", $uMsg, "wparam", $wparam, "lparam", $lparam)
-EndFunc
