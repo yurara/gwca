@@ -33,36 +33,24 @@ There are a few mandatory things you will need to do in each and everyone of you
 
  * Include the `GWCAConstants.au3` file, which contains the basic functions and declarations of variables that GWCA uses. Necessary for all GWCA scripts.
 
- * Create a GUI for communication between the script and Guild Wars. Necessary for almost all GWCA scripts. If you want to receive information with GWCA you _have_ to create one.
-
- * Register the necessary callbacks. Kind of necessary too.
-
 Also very important to note is the difference between the Cmd() and CmdCB() functions. When you just want to execute a command and not receive a return value, you use Cmd(). When the command you use gets a value back though, you have to use CmdCB().
-Keep in mind that maximum amount of parameters with Cmd() is 2 and with CmdCB() it's 1.
+Keep in mind that maximum amount of parameters with Cmd() and CmdCB() is 2.
 
 So basically, if you were to make a standard script that just accessed the standard GWCA functionalities you would start out with:
 
 {{{
 #include "GWCAConstants.au3"
 
-$cGUI = GUICreate("GWCA")
-
-GUIRegisterMsg(0x500, "WndCallback")
-
 ;Insert your own code now
 }}}
 
-And that's basically it! Now there are also the SkillLogCallback and the SkillCancelCallback, but I don't think they are for first-time users, so if you want to learn more about them I suggest taking a look at `GWCA Interrupt Bot.au3` and studying it's mechanics thoroughly.
+And that's basically it! Now, you need to know something about what CmdCB() returns. When you use a command with a return then a global array called $cbVar is filled with the value(s). Return value 1 is in $cbVar[0] and return value 2 is in $cbVar[2]. You may also put a variable in front of CmdCB() like `$myVar = CmdCB($CA_GetCoords, -2)` - just remember that $myVar will be an array aswell!
 
 Now, lets add some commands to our script!
 
 
 {{{
 #include "GWCAConstants.au3"
-
-$cGUI = GUICreate("GWCA")
-
-GUIRegisterMsg(0x500, "WndCallback")
 
 $cbType = "float" ;Change return type to float value
 $myCoords = CmdCB($CA_GETCOORDS, -2) ;Get your own coordinates
