@@ -1,7 +1,5 @@
 /*	Classes used for communication with the client.
 	
-	Mod depending on rev 217
-	
 	Created by Cronos
 	Credits:
 		GWCA Project for the base to build on
@@ -77,7 +75,7 @@ enum GWCA_COMMANDS{
 	CA_FindItemByModelId, CA_FindEmptySlot, CA_FindGoldItem, 
 	CA_GetItemPositionByItemId, CA_GetItemPositionByModelId, CA_GetItemPositionByRarity, 
 	CA_GetItemModelIdById, CA_GetItemInfoById, 
-	CA_GetItemIdByAgent, CA_GetItemInfoByAgent, CA_GetItemLastModifierByAgent, CA_GetNearestItemByModelId, 
+	CA_GetItemIdByAgent, CA_GetItemInfoByAgent, CA_GetItemLastModifierByAgent, CA_GetNearestItemByModelId,
 	CA_GetMapLoading, CA_GetMapId, CA_MapIsLoaded, CA_GetRegionAndLanguage, CA_GetPing, CA_GetLoggedIn, CA_GetDead, 
 	CA_GetBalthFaction, CA_GetKurzFaction, CA_GetLuxonFaction, 
 	CA_GetTitleTreasure, CA_GetTitleLucky, CA_GetTitleUnlucky, CA_GetTitleWisdom, CA_GetTitleGamer, CA_GetExperience,
@@ -96,6 +94,7 @@ enum GWCA_COMMANDS{
 	CA_GetNearestSignpostToAgent, CA_GetNearestNpcToAgentByAllegiance, CA_GetNearestAgentToCoords,
 	CA_GetNearestNpcToCoords, CA_GetLoginNumber, CA_GetNumberOfAgentsByPlayerNumber, CA_GetNumberOfAliveEnemyAgents, CA_GetNextItem, 
 	CA_QuestCheck, CA_QuestCoords, CA_QuestActive, CA_AllocMem, CA_TraderCheck, CA_TraderBuy, CA_TraderSell,
+	CA_GetItemExtraId, CA_GetItemExtraIdById,
 	CA_RequestsEnd
 };
 
