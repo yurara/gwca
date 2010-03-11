@@ -31,256 +31,257 @@ The commands follow a distinct identifier pattern because they are a custom enum
 
 *General commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_GetCurrentTarget || 0x401 || No parameters, returns an integer with the id of your current target. ||
-|| CA_GetMyId || 0x402 || No parameters, returns an integer with the id of your own agent. ||
-|| CA_Casting || 0x403 || No parameters, returns a boolean which tells whether or not you're using a skill. ||
-|| CA_SkillRecharge || 0x404 || Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged. ||
-|| CA_SkillAdrenaline || 0x405 || Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has. ||
-|| CA_StoreVar || 0x406 || Obsolete, so don't use it. ||
-|| CA_SetLogAndHwnd || 0x407 || Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window. ||
-|| CA_GetAgentAndTargetPtr || 0x408 || No parameters, used for debugging purposes. ||
-|| CA_GetSkillbarSkillId || 0x409 || Parameter = skillslot, obsolete. ||
-|| CA_GetMyMaxHP || 0x40A || No parameters, returns an integer with your max hp and an integer with your current hp. ||
-|| CA_GetMyMaxEnergy || 0x40B || No parameters, returns an integer with your max energy and an integer with your current energy. ||
-|| CA_GetBuildNumber || 0x40C || No parameters, returns an integer with the current build number of the GW client you're running. ||
-|| CA_ChangeMaxZoom || 0x40D || Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400. ||
-|| CA_GetLastDialogId || 0x40E || No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_Dialog. ||
-|| CA_SetEngineHook || 0x40F || Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this! ||
+|| *Command* || *Description* ||
+|| CA_GetCurrentTarget || No parameters, returns an integer with the id of your current target. ||
+|| CA_GetMyId || No parameters, returns an integer with the id of your own agent. ||
+|| CA_Casting || No parameters, returns a boolean which tells whether or not you're using a skill. ||
+|| CA_SkillRecharge || Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged. ||
+|| CA_SkillAdrenaline || Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has. ||
+|| CA_StoreVar ||  Obsolete, so don't use it. ||
+|| CA_SetLogAndHwnd || Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window. ||
+|| CA_GetAgentAndTargetPtr || No parameters, used for debugging purposes. ||
+|| CA_GetSkillbarSkillId || Parameter = skillslot, obsolete. ||
+|| CA_GetMyMaxHP || No parameters, returns an integer with your max hp and an integer with your current hp. ||
+|| CA_GetMyMaxEnergy || No parameters, returns an integer with your max energy and an integer with your current energy. ||
+|| CA_GetBuildNumber || No parameters, returns an integer with the current build number of the GW client you're running. ||
+|| CA_ChangeMaxZoom || Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400. ||
+|| CA_GetLastDialogId || No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_Dialog. ||
+|| CA_SetEngineHook || Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this! ||
 
 ----
 
 *Action-related commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_Attack || 0x410 || Parameter = id of target, attacks the specified target with weapon. ||
-|| CA_Move || 0x411 || Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command. ||
-|| CA_UseSkill || 0x412 || Parameter = skill slot, parameter 2 = target id. Works on all skills including attack skills. Remember that some skills that target yourself may require that specified (if so, use -2 as target id). Current target = -1. ||
-|| CA_ChangeWeaponSet || 0x413 || Parameter = weapon slot, changes weapon set. ||
-|| CA_ZoneMap || 0x414 || Parameter = zone id, optional parameter 2 = district number (use 0 for active district), zones to the outpost/city specified and if district number is provided also attempts to enter that district. Always uses current region and language. ||
-|| CA_DropGold || 0x415 || Parameter = amount of gold, drops the gold on the ground. ||
-|| CA_GoNpc || 0x416 || Parameter = id of NPC, goes to specified NPC. ||
-|| CA_GoPlayer || 0x417 || Parameter = id of player, goes to specified player (for use in outposts/cities). ||
-|| CA_GoSignpost || 0x418 || Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name). ||
-|| CA_UseAttackSkill || 0x419 || Obsolete, please refer to CA_UseSkill. ||
-|| CA_EnterChallenge || 0x41A || No parameters, enters the challenge if you're in a Challenge Mission outpost. ||
-|| CA_OpenChest || 0x41B || No parameters, opens the nearest chest if you're within 'close range'. ||
-|| CA_SetEventSkillMode || 0x41C || Obsolete, don't use it. ||
-|| CA_UseSkillbarSkill || 0x41D || Obsolete, please refer to CA_UseSkill. ||
-|| CA_PickupItem || 0x41E || Parameter = id of item, picks up the specified item. ||
-|| CA_UseSkillbarAttackSkill || 0x41F || Obsolete, please refer to CA_UseSkill. ||
-|| CA_Dialog || 0x420 || Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId ||
-|| CA_ChangeTarget || 0x421 || Parameter = id of target, changes target. ||
-|| CA_StatusBot || 0x422 || Kinda obsolete. ||
-|| CA_TargetNearestFoe || 0x423 || No parameters, targets the nearest foe. ||
-|| CA_TargetNearestAlly || 0x424 || No parameters, targets the nearest ally. ||
-|| CA_TargetNearestItem || 0x425 || No parameters, targets the nearest item/signpost/chest. ||
-|| CA_StatusDelay || 0x426 || Kinda obsolete aswell. ||
-|| CA_TargetCalledTarget || 0x427 || No parameters, targets the currently called target of the party. ||
-|| CA_UseHero1Skill || 0x428 || Parameter = skillslot, parameter 2 = id of target. ||
-|| CA_UseHero2Skill || 0x429 || Parameter = skillslot, parameter 2 = id of target. ||
-|| CA_UseHero3Skill || 0x42A || Parameter = skillslot, parameter 2 = id of target. ||
-|| CA_StatusMiss || 0x42B || Kinda obsolete, yay. ||
-|| CA_CancelAction || 0x42C || No parameters, cancels your current action. Just like pressing ESC. ||
-|| CA_StatusTab || 0x42D || Yay for obsolete. ||
-|| CA_GetNamePtr || 0x42E || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
-|| CA_CommandHero1 || 0x42F || Parameters = X and Y floats packed of course. To unflag, set X and Y to $FLAG_RESET like this: Cmd($CA_CommandHero1, $FLAG_RESET, $FLAG_RESET)||
-|| CA_CommandHero2 || 0x430 || Same as CA_COMMANDHERO1. ||
-|| CA_CommandHero3 || 0x431 || Same as CA_COMMANDHERO1. ||
-|| CA_CommandAll || 0x432 || Same as CA_COMMANDHERO1. ||
-|| CA_ChangeDistrict || 0x433 || Parameter = region (0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
-|| CA_Resign || 0x434 || No parameters. ||
-|| CA_ReturnToOutpost || 0x435 || No parameters. "Presses" the Return To Outpost button after resigning. ||
-|| CA_GoAgent || 0x436 || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
-|| CA_DonateFaction || 0x437 || Parameter = 0 for Kurzick, 1 for Luxon. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
-|| CA_SetSkillbarSkill || 0x438 || Parameter = skill slot, parameter 2 = skill id. ||
-|| CA_ChangeSecondProfession || 0x439 || Parameter = profession number. Follows this enumeration 0-10 = { None,W,R,Mo,N,Me,E,A,Rt,P,D }. ||
-|| CA_TargetNextPartyMember || 0x43A || No parameters. Functions like the GW Control: Targetting - Party Member: Next ||
-|| CA_TargetNextFoe || 0x43B || No parameters. Functions like the GW Control: Targetting - Next Foe ||
-|| CA_SkipCinematic || 0x43C || No parameters. Skips the current cinematic/cutscene. ||
-|| CA_DismissBuff || 0x43D || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
-|| CA_SendChat || 0x43E || Parameter = channel (0=all to 4=ally ), parameter 2 = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
+|| *Command* || *Description* ||
+|| CA_Attack || Parameter = id of target, attacks the specified target with weapon. ||
+|| CA_Move || Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command. ||
+|| CA_UseSkill || Parameter = skill slot, parameter 2 = target id. Works on all skills including attack skills. Remember that some skills that target yourself may require that specified (if so, use -2 as target id). Current target = -1. ||
+|| CA_ChangeWeaponSet || Parameter = weapon slot, changes weapon set. ||
+|| CA_ZoneMap || Parameter = zone id, optional parameter 2 = district number (use 0 for active district), zones to the outpost/city specified and if district number is provided also attempts to enter that district. Always uses current region and language. ||
+|| CA_DropGold || Parameter = amount of gold, drops the gold on the ground. ||
+|| CA_GoNpc || Parameter = id of NPC, goes to specified NPC. ||
+|| CA_GoPlayer || Parameter = id of player, goes to specified player (for use in outposts/cities). ||
+|| CA_GoSignpost || Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name). ||
+|| CA_UseAttackSkill || Obsolete, please refer to CA_UseSkill. ||
+|| CA_EnterChallenge || No parameters, enters the challenge if you're in a Challenge Mission outpost. ||
+|| CA_OpenChest || No parameters, opens the nearest chest if you're within 'close range'. ||
+|| CA_SetEventSkillMode || Obsolete, don't use it. ||
+|| CA_UseSkillbarSkill || Obsolete, please refer to CA_UseSkill. ||
+|| CA_PickupItem || Parameter = id of item, picks up the specified item. ||
+|| CA_UseSkillbarAttackSkill || Obsolete, please refer to CA_UseSkill. ||
+|| CA_Dialog || Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId ||
+|| CA_ChangeTarget || Parameter = id of target, changes target. ||
+|| CA_StatusBot || Kinda obsolete. ||
+|| CA_TargetNearestFoe || No parameters, targets the nearest foe. ||
+|| CA_TargetNearestAlly || No parameters, targets the nearest ally. ||
+|| CA_TargetNearestItem || No parameters, targets the nearest item/signpost/chest. ||
+|| CA_StatusDelay || Kinda obsolete aswell. ||
+|| CA_TargetCalledTarget || No parameters, targets the currently called target of the party. ||
+|| CA_UseHero1Skill || Parameter = skillslot, parameter 2 = id of target. ||
+|| CA_UseHero2Skill || Parameter = skillslot, parameter 2 = id of target. ||
+|| CA_UseHero3Skill || Parameter = skillslot, parameter 2 = id of target. ||
+|| CA_StatusMiss || Kinda obsolete, yay. ||
+|| CA_CancelAction || No parameters, cancels your current action. Just like pressing ESC. ||
+|| CA_StatusTab || Yay for obsolete. ||
+|| CA_GetNamePtr || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
+|| CA_CommandHero1 || Parameters = X and Y floats packed of course. To unflag, set X and Y to $FLAG_RESET like this: Cmd($CA_CommandHero1, $FLAG_RESET, $FLAG_RESET)||
+|| CA_CommandHero2 || Same as CA_COMMANDHERO1. ||
+|| CA_CommandHero3 || Same as CA_COMMANDHERO1. ||
+|| CA_CommandAll || Same as CA_COMMANDHERO1. ||
+|| CA_ChangeDistrict || Parameter = region (0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
+|| CA_Resign || No parameters. ||
+|| CA_ReturnToOutpost || No parameters. "Presses" the Return To Outpost button after resigning. ||
+|| CA_GoAgent || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
+|| CA_DonateFaction || Parameter = 0 for Kurzick, 1 for Luxon. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
+|| CA_SetSkillbarSkill || Parameter = skill slot, parameter 2 = skill id. ||
+|| CA_ChangeSecondProfession || Parameter = profession number. Follows this enumeration 0-10 = { None,W,R,Mo,N,Me,E,A,Rt,P,D }. ||
+|| CA_TargetNextPartyMember || No parameters. Functions like the GW Control: Targetting - Party Member: Next ||
+|| CA_TargetNextFoe || No parameters. Functions like the GW Control: Targetting - Next Foe ||
+|| CA_SkipCinematic || No parameters. Skips the current cinematic/cutscene. ||
+|| CA_DismissBuff || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
+|| CA_SendChat || Parameter = channel (0=all to 4=ally ), parameter 2 = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
 
 ----
 
 *Specific memory commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_GetMapLoading || 0x440 || No parameters, returns an integer which is 0, 1 or 2. ||
-|| CA_GetMapId || 0x441 || No parameters, returns the id of the current map/zone. ||
-|| CA_GetPing || 0x442 || No parameters, returns the current ping displayed on the Performance Monitor in GW. ||
-|| CA_GetLoggedIn || 0x443 || No parameters, returns boolean. ||
-|| CA_GetDead || 0x444 || No parameters, returns boolean, but kinda obsolete though. ||
-|| CA_GetBalthFaction || 0x445 || No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction. ||
-|| CA_GetKurzFaction || 0x446 || No parameters, returns integer of current kurzick faction and integer of maximum kurzick faction. ||
-|| CA_GetLuxonFaction || 0x447 || No parameters, returns integer of current luxon faction and integer of maximum luxon faction. ||
-|| CA_GetTitleTreasure || 0x448 || No parameters, returns integer of current treasure title. ||
-|| CA_GetTitleLucky || 0x449 || No parameters, returns integer of current lucky title. ||
-|| CA_GetTitlyUnlucky || 0x44A || No parameters, returns integer of current unlucky title. ||
-|| CA_GetTitleWisdom || 0x44B || No parameters, returns integer of current wisdom title. ||
-|| CA_GetTitleGamer || 0x44C || No parameters, returns integer of current gamer title. ||
-|| CA_GetExperience || 0x44D || No parameters, returns integer of your current experience points. ||
+|| *Command* || *Description* ||
+|| CA_GetMapLoading || No parameters, returns an integer which is 0, 1 or 2. ||
+|| CA_GetMapId || No parameters, returns the id of the current map/zone. ||
+|| CA_GetPing || No parameters, returns the current ping displayed on the Performance Monitor in GW. ||
+|| CA_GetLoggedIn || No parameters, returns boolean. ||
+|| CA_GetDead || No parameters, returns boolean, but kinda obsolete though. ||
+|| CA_GetBalthFaction || No parameters, returns integer of current balthazar faction and integer of maximum balthazar faction. ||
+|| CA_GetKurzFaction || No parameters, returns integer of current kurzick faction and integer of maximum kurzick faction. ||
+|| CA_GetLuxonFaction || No parameters, returns integer of current luxon faction and integer of maximum luxon faction. ||
+|| CA_GetTitleTreasure || No parameters, returns integer of current treasure title. ||
+|| CA_GetTitleLucky || No parameters, returns integer of current lucky title. ||
+|| CA_GetTitlyUnlucky || No parameters, returns integer of current unlucky title. ||
+|| CA_GetTitleWisdom || No parameters, returns integer of current wisdom title. ||
+|| CA_GetTitleGamer || No parameters, returns integer of current gamer title. ||
+|| CA_GetExperience || No parameters, returns integer of your current experience points. ||
 
 ----
 
 *Agent info commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_GetAgentExist || 0x450 || Parameter = id of agent/target, returns boolean. ||
-|| CA_GetProfessions || 0x451 || Parameter = id of agent, returns integer of primary and integer of secondary profession. ||
-|| CA_GetPlayerNumber || 0x452 || Parameter = id of agent, returns integer of player number or, if the agent is an NPC/monster, the 'Model number'. ||
-|| CA_GetHP || 0x453 || Parameter = id of agent, returns float between 0 and 1 with the health in percent. ||
-|| CA_GetRotation || 0x454 || Parameter = id of agent, returns float of rotation in degrees. ||
-|| CA_GetSkill || 0x455 || Parameter = id of agent, returns integer of current skill being used by agent. ||
-|| CA_GetCoords || 0x456 || Parameter = id of agent, returns float of X and float of Y coordinate, packed of course. ||
-|| CA_GetWeaponSpeeds || 0x457 || Parameter = id of agent, returns floats of the weapon speeds (figure them out yourself if you really need them). ||
-|| CA_GetSpiritRange || 0x458 || Obsolete and unfunctional. ||
-|| CA_GetTeamId || 0x459 || Parameter = id of agent, returns integer of team id. 1 = blue, 2 = red, 3 = yellow and so on. ||
-|| CA_GetCombatMode || 0x45A || Obsolete, don't use it. ||
-|| CA_GetModelMode || 0x45B || Also obsolete. ||
-|| CA_GetHpPips || 0x45C || Parameter = id of agent, returns integer of how many pips the target has. ||
-|| CA_GetEffects || 0x45D || Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc. ||
-|| CA_GetHex || 0x45E || Parameter = id of agent, returns integer. If 0, target is not hexed. If 1, target is hexed without degen and if 2, target is hexed with degen. ||
-|| CA_GetModelAnimation || 0x45F || Parameter = id of agent, returns integer. The model animation number depends on profession and sex, but can be used to determine emotes, etc. ||
-|| CA_GetEnergy || 0x460 || Obsolete, as it only works for yourself. Just use CA_GetMyMaxEnergy. ||
-|| CA_GetAgentPtr || 0x461 || Parameter = id of agent, returns pointer to the agent structure of target in GW memory. ||
-|| CA_GetType || 0x462 || Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up. ||
-|| CA_GetLevel || 0x463 || Parameter = id of agent, returns integer with the level. ||
-|| CA_GetNameProperties || 0x464 || Obsolete. ||
-|| CA_GetMaxId || 0x465 || No parameters, returns integer with the size of the agent array divided by 4 (because the agent array consists of Agent pointers (pointer = 4 bytes)). ||
-|| CA_GetMyNearestAgent || 0x466 || No parameters, returns id of your nearest agent. ||
-|| CA_GetMyDistanceToAgent || 0x467 || Parameter = id of agent, returns float with distance. ||
-|| CA_GetNearestAgentToAgent || 0x468 || Parameter = id of agent, returns id of the nearest agent to the specified agent. ||
-|| CA_GetDistanceFromAgentToAgent || 0x469 || Obsolete, so don't bother using it. ||
-|| CA_GetNearestAgentToAgentEx || 0x46A || Parameter = id of agent, same as CA_GetNearestAgentToAgent, but also returns float with distance between them. ||
-|| CA_GetModelState || 0x46B || Kinda obsolete. ||
-|| CA_GetIsAttacking || 0x46C || Parameter = id of agent, returns boolean. ||
-|| CA_GetIsKnockedDown || 0x46D || Parameter = id of agent, returns boolean. ||
-|| CA_GetIsMoving || 0x46E || Same as the other 'IS' commands. ||
-|| CA_GetIsDead || 0x46F || Same as the other 'IS' commands. ||
-|| CA_GetIsCasting || 0x470 || Obsolete when there's CA_GetSkill, but whatever. ||
-|| CA_GetFirstAgentByPlayerNumber || 0x471 || Parameter = player/model number, returns the first (id-wise) agent with that number. ||
-|| CA_GetAllegiance || 0x472 || Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet. ||
-|| CA_GetNearestEnemyToAgentEx || 0x473 || Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance. ||
-|| CA_GetIsAttackedMelee || 0x474 || Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function. ||
-|| CA_GetNearestItemToAgentEx || 0x475 || Parameter = id of agent, returns id of item and distance as float. ||
-|| CA_GetNearestAgentByPlayerNumber || 0x476 || Same as CA_GetFirstAgentByPlayerNumberexcept it returns the nearest agent to you. ||
-|| CA_GetSpeed || 0x477 || Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units). ||
-|| CA_GetNearestEnemyToAgentByAllegiance || 0x478 || Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies. ||
-|| CA_GetNearestAliveEnemyToAgent || 0x479 || Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies. ||
-|| CA_GetWeaponType || 0x47A || Parameter = id of agent, returns integer with weapon type. 1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand. ||
-|| CA_GetNearestSignpostToAgent || 0x47B || Parameter = id of agent, returns id of the nearest signpost/chest. ||
-|| CA_GetNearestNpcToAgentByAllegiance || 0x47C || Parameter = id of agent, returns id of the nearest NPC. ||
-|| CA_GetNearestAgentToCoords || 0x47D || Don't use this command, instead, use the wrapper function GetNearestAgentToCoords() declared in 'GWCAConstants.au3'. ||
-|| CA_GetVars || 0x47E || Don't use this command. It's used for commands like CA_GETNEARESTAGENTTOCOORDS though. ||
-|| CA_GetNearestNpcToCoords || 0x47F || Exactly the same as CA_GETNEARESTAGENTTOCOORDS, so don't use it, use GetNearestNpcToCoords() declared in 'GWCAConstants.au3' instead. ||
-|| CA_GetLoginNumber || 0x480 || Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0. ||
-|| CA_GetNumberOfAgentsByPlayerNumber || 0x481 || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
-|| CA_GetNumberOfAliveEnemyAgents || 0x482 || No parameters. Returns the number of alive and visible enemy agents in total. ||
-|| CA_GetNextItem || 0x483 || Parameter = starting id. Returns the agent id of the next item. For looping through all items, use this command with the returned agent id as parameter after taking care of that item. ||
-|| CA_GetTarget || 0x484 || Parameter = agent id. Returns the currently logged target of the specified agent. ||
-|| CA_SetAttribute. || 0x485 || Parameter = Attribute id, Value. [http://wiki.guildwars.com/wiki/Template_format] ||
-|| CA_PlayerHasBuff || 0x486 || Parameter = Skill Id. Returns boolean. ||
-|| CA_Hero1HasBuff || 0x487 || Parameter = Skill Id. Returns boolean. ||
-|| CA_Hero2HasBuff || 0x488 || Parameter = Skill Id. Returns boolean. ||
-|| CA_Hero3HasBuff || 0x489 || Parameter = Skill Id. Returns boolean. ||
+|| *Command* || *Description* ||
+|| CA_GetAgentExist || Parameter = id of agent/target, returns boolean. ||
+|| CA_GetProfessions || Parameter = id of agent, returns integer of primary and integer of secondary profession. ||
+|| CA_GetPlayerNumber || Parameter = id of agent, returns integer of player number or, if the agent is an NPC/monster, the 'Model number'. ||
+|| CA_GetHP || Parameter = id of agent, returns float between 0 and 1 with the health in percent. ||
+|| CA_GetRotation || Parameter = id of agent, returns float of rotation in degrees. ||
+|| CA_GetSkill || Parameter = id of agent, returns integer of current skill being used by agent. ||
+|| CA_GetCoords || Parameter = id of agent, returns float of X and float of Y coordinate, packed of course. ||
+|| CA_GetWeaponSpeeds || Parameter = id of agent, returns floats of the weapon speeds (figure them out yourself if you really need them). ||
+|| CA_GetSpiritRange || Obsolete and unfunctional. ||
+|| CA_GetTeamId || Parameter = id of agent, returns integer of team id. 1 = blue, 2 = red, 3 = yellow and so on. ||
+|| CA_GetCombatMode || Obsolete, don't use it. ||
+|| CA_GetModelMode || Also obsolete. ||
+|| CA_GetHpPips || Parameter = id of agent, returns integer of how many pips the target has. ||
+|| CA_GetEffects || Parameter = id of agent, returns bitmap with the information that displays the different effects that you see on the health bar of the target, like enchanted, poisoned, deep wound etc. ||
+|| CA_GetHex || Parameter = id of agent, returns integer. If 0, target is not hexed. If 1, target is hexed without degen and if 2, target is hexed with degen. ||
+|| CA_GetModelAnimation || Parameter = id of agent, returns integer. The model animation number depends on profession and sex, but can be used to determine emotes, etc. ||
+|| CA_GetEnergy || Obsolete, as it only works for yourself. Just use CA_GetMyMaxEnergy. ||
+|| CA_GetAgentPtr || Parameter = id of agent, returns pointer to the agent structure of target in GW memory. ||
+|| CA_GetType || Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up. ||
+|| CA_GetLevel || Parameter = id of agent, returns integer with the level. ||
+|| CA_GetNameProperties || Obsolete. ||
+|| CA_GetMaxId || No parameters, returns integer with the size of the agent array divided by 4 (because the agent array consists of Agent pointers (pointer = 4 bytes)). ||
+|| CA_GetMyNearestAgent || No parameters, returns id of your nearest agent. ||
+|| CA_GetMyDistanceToAgent || Parameter = id of agent, returns float with distance. ||
+|| CA_GetNearestAgentToAgent || Parameter = id of agent, returns id of the nearest agent to the specified agent. ||
+|| CA_GetDistanceFromAgentToAgent || Obsolete, so don't bother using it. ||
+|| CA_GetNearestAgentToAgentEx || Parameter = id of agent, same as CA_GetNearestAgentToAgent, but also returns float with distance between them. ||
+|| CA_GetModelState || Kinda obsolete. ||
+|| CA_GetIsAttacking || Parameter = id of agent, returns boolean. ||
+|| CA_GetIsKnockedDown || Parameter = id of agent, returns boolean. ||
+|| CA_GetIsMoving || Same as the other 'IS' commands. ||
+|| CA_GetIsDead || Same as the other 'IS' commands. ||
+|| CA_GetIsCasting || Obsolete when there's CA_GetSkill, but whatever. ||
+|| CA_GetFirstAgentByPlayerNumber || Parameter = player/model number, returns the first (id-wise) agent with that number. ||
+|| CA_GetAllegiance || Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet. ||
+|| CA_GetNearestEnemyToAgentEx || Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance. ||
+|| CA_GetIsAttackedMelee || Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function. ||
+|| CA_GetNearestItemToAgentEx || Parameter = id of agent, returns id of item and distance as float. ||
+|| CA_GetNearestAgentByPlayerNumber || Same as CA_GetFirstAgentByPlayerNumberexcept it returns the nearest agent to you. ||
+|| CA_GetSpeed || Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units). ||
+|| CA_GetNearestEnemyToAgentByAllegiance || Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies. ||
+|| CA_GetNearestAliveEnemyToAgent || Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies. ||
+|| CA_GetWeaponType || Parameter = id of agent, returns integer with weapon type. 1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand. ||
+|| CA_GetNearestSignpostToAgent || Parameter = id of agent, returns id of the nearest signpost/chest. ||
+|| CA_GetNearestNpcToAgentByAllegiance || Parameter = id of agent, returns id of the nearest NPC. ||
+|| CA_GetNearestAgentToCoords || Parameters = x and y coordinates packed. Returns the nearest agent to the specified coords. ||
+|| CA_GetNearestNpcToCoords || Parameters = x and y coordinates packed. Returns the nearest NPC to the specified coords. ||
+|| CA_GetLoginNumber || Parameter = id of agent. Returns the unique login number in instance of player. If used on non-player it will return 0. ||
+|| CA_GetNumberOfAgentsByPlayerNumber || Parameter = player/model number. Returns the number of alive agents within compass range with specified id. ||
+|| CA_GetNumberOfAliveEnemyAgents || No parameters. Returns the number of alive and visible enemy agents in total. ||
+|| CA_GetNextItem || Parameter = starting id. Returns the agent id of the next item. For looping through all items, use this command with the returned agent id as parameter after taking care of that item. ||
+|| CA_GetTarget || Parameter = agent id. Returns the currently logged target of the specified agent. ||
+|| CA_SetAttribute. || Parameter = Attribute id, Value. [http://wiki.guildwars.com/wiki/Template_format] ||
+|| CA_PlayerHasBuff || Parameter = Skill Id. Returns boolean. ||
+|| CA_Hero1HasBuff || Parameter = Skill Id. Returns boolean. ||
+|| CA_Hero2HasBuff || Parameter = Skill Id. Returns boolean. ||
+|| CA_Hero3HasBuff || Parameter = Skill Id. Returns boolean. ||
 
 ----
 
 *Item related commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_GetGold || 0x510 || No parameters. Returns integer with gold on your character and integer with gold in your storage. ||
-|| CA_GetBagSize || 0x511 || Parameter = bag index (see $BAG_ declarations in GWCAConstants.au3). Returns the number of slots and the number of items currently in the bag. ||
-|| CA_SetBag || 0x512 || Parameter = bag index. Sets the current bag to work with. ||
-|| CA_GetItemId || 0x513 || Parameter = item slot. Returns item id and item model id. ||
-|| CA_GetIdKit || 0x514 || No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory. ||
-|| CA_IdentifyItem || 0x515 || Parameter = bag index, parameter 2 = item slot. ||
-|| CA_IdentifyItemById || 0x516 || Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IdentifyItem. ||
-|| CA_DepositGold || 0x517 || Parameter = amount of gold to deposit in storage. Specify -1 if you want to deposit the maximum amount. Can be used anywhere in the outpost. ||
-|| CA_WithdrawGold || 0x518 || Parameter = amount of gold to withdraw from storage. Specify -1 if you want to withdraw the maximum amount. Can be used anywhere in the outpost. ||
-|| CA_SellItem || 0x519 || Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost! ||
-|| CA_SellItemById || 0x51A || Parameter = item id. Requires an open dialog with the Merchant of the outpost! ||
-|| CA_BuyIdKit || 0x51B || No parameters. Requires an open dialog with the Merchant of the outpost! ||
-|| CA_BuySuperiorIdKit || 0x51C || No parameters. Requires an open dialog with the Merchant of the outpost! ||
-|| CA_PrepareMoveItem || 0x51D || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. ||
-|| CA_MoveItem || 0x51E || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. See the declaration of the bag id's in GWCAConstants.au3 ||
-|| CA_GetItemInfo || 0x51F || Parameter = item slot. Returns integer with item rarity and integer with quantity. ||
-|| CA_UseItem || 0x520 || Parameter = bag index, parameter 2 = item slot. Uses the item specified. ||
-|| CA_UseItemById || 0x521 || Parameter = item id. Uses the item specified. ||
-|| CA_DropItem || 0x522 || Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all. ||
-|| CA_DropItemById || 0x523 || Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all. ||
-|| CA_AcceptAllItems || 0x524 || No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them! ||
-|| CA_GetItemLastModifier || 0x525 || Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized. ||
-|| CA_FindItemByModelId || 0x526 || Parameter = item model id. Searches for the first occurence of the specified model id and returns integer with the item id or 0 if item wasn't found. ||
-|| CA_FindEmptySlot || 0x527 || Parameter = bag index to start searching from. Returns integer with bag index and integer with item slot. This function also searches the storage. If any of the returns = 0, then no empty slots were found. ||
-|| CA_FindGoldItem || 0x528 || Optional parameter = bag index of last bag to search in. Searches from the backpack until (and including) the bag index supplied. If not set the function will search all bags including storage. The return is integer with item id of the gold item found and integer with the item's model id. If return value is 0 then no gold items were found. ||
-|| CA_GetItemPositionByItemId || 0x529 || Parameter = item id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
-|| CA_GetItemPositionByModelId || 0x52A || Parameter = item model id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
-|| CA_GetItemPositionByRarity || 0x52B || Parameter = rarity (use constants declared in GWCAConstants.au3). Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
-|| CA_GetItemModelIdById || 0x52C || Parameter = item id. Returns the model id of the specified item. ||
-|| CA_GetItemInfoById ||0x52D || Parameter = item id. Returns the rarity and quantity of the specified item. ||
-|| CA_GetItemLastModifierById || 0x52E || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
-|| CA_EquipItem || 0x52F || Parameter = bag index, parameter 2 = item slot. Equips the specified item. ||
-|| CA_EquipItemById || 0x530 || Parameter = item id. Equips the specified item. ||
-|| CA_SalvageItem || 0x531 || Parameter = item id OR locate item by index with bag index,item slot. Searches for a salvage kit and uses it on the specified item. Currently disabled cause it doesnt work! ||
-|| CA_GetSalvageKit || 0x532 || No parameters. Searches for a salvage kit and returns the item id if it finds one. ||
-|| CA_BuyItem || 0x533 || Parameter = merchant item index (in the order you see at your merchant's window, starting from 1), parameter 2 = gold cost of the item. Buys the specified item if you used the right gold cost. ||
-|| CA_GetItemIdByAgent || 0x534 || Parameter = agent id (or -1/-2). Returns item id and model id of the specified agent, if it's an item. ||
-|| CA_GetItemInfoByAgent || 0x535 || Parameter = agent id (or -1/-2). Returns item rarity and quantity of the specified agent, if it's an item. ||
-|| CA_GetItemLastModifierByAgent || 0x536 || Parameter = agent id (or -1/-2). Returns the last modifier (see CA_GetItemLastModifier) and customized wchar_t* of the specified agent, if it's an item. ||
-|| CA_GetNearestItemByModelId || 0x537 || Parameter = item model id. Finds the nearest item with the specified model id and returns the agent id and the distance between you and the item as a float. ||
+|| *Command* || *Description* ||
+|| CA_GetGold || No parameters. Returns integer with gold on your character and integer with gold in your storage. ||
+|| CA_GetBagSize || Parameter = bag index (see $BAG_ declarations in GWCAConstants.au3). Returns the number of slots and the number of items currently in the bag. ||
+|| CA_SetBag || Parameter = bag index. Sets the current bag to work with. ||
+|| CA_GetItemId || Parameter = item slot. Returns item id and item model id. ||
+|| CA_GetIdKit || No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory. ||
+|| CA_IdentifyItem || Parameter = bag index, parameter 2 = item slot. ||
+|| CA_IdentifyItemById || Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IdentifyItem. ||
+|| CA_DepositGold || Parameter = amount of gold to deposit in storage. Specify -1 if you want to deposit the maximum amount. Can be used anywhere in the outpost. ||
+|| CA_WithdrawGold || Parameter = amount of gold to withdraw from storage. Specify -1 if you want to withdraw the maximum amount. Can be used anywhere in the outpost. ||
+|| CA_SellItem || Parameter = bag index, parameter 2 = item slot. Requires an open dialog with the Merchant of the outpost! ||
+|| CA_SellItemById || Parameter = item id. Requires an open dialog with the Merchant of the outpost! ||
+|| CA_BuyIdKit || No parameters. Requires an open dialog with the Merchant of the outpost! ||
+|| CA_BuySuperiorIdKit || No parameters. Requires an open dialog with the Merchant of the outpost! ||
+|| CA_PrepareMoveItem || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. ||
+|| CA_MoveItem || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. See the declaration of the bag id's in GWCAConstants.au3 ||
+|| CA_GetItemInfo || Parameter = item slot. Returns integer with item rarity and integer with quantity. ||
+|| CA_UseItem || Parameter = bag index, parameter 2 = item slot. Uses the item specified. ||
+|| CA_UseItemById || Parameter = item id. Uses the item specified. ||
+|| CA_DropItem || Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all. ||
+|| CA_DropItemById || Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all. ||
+|| CA_AcceptAllItems || No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them! ||
+|| CA_GetItemLastModifier || Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized. ||
+|| CA_FindItemByModelId || Parameter = item model id. Searches for the first occurence of the specified model id and returns integer with the item id or 0 if item wasn't found. ||
+|| CA_FindEmptySlot || Parameter = bag index to start searching from. Returns integer with bag index and integer with item slot. This function also searches the storage. If any of the returns = 0, then no empty slots were found. ||
+|| CA_FindGoldItem || Optional parameter = bag index of last bag to search in. Searches from the backpack until (and including) the bag index supplied. If not set the function will search all bags including storage. The return is integer with item id of the gold item found and integer with the item's model id. If return value is 0 then no gold items were found. ||
+|| CA_GetItemPositionByItemId || Parameter = item id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
+|| CA_GetItemPositionByModelId || Parameter = item model id. Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
+|| CA_GetItemPositionByRarity || Parameter = rarity (use constants declared in GWCAConstants.au3). Returns the position of the item; bag and slot-wise. If any of the returns are 0, the item was not found. ||
+|| CA_GetItemModelIdById || Parameter = item id. Returns the model id of the specified item. ||
+|| CA_GetItemInfoById ||Parameter = item id. Returns the rarity and quantity of the specified item. ||
+|| CA_GetItemLastModifierById || Parameter = item id. Returns the last modifier (see CA_GetItemLastModifier) and customized text of the specified item. ||
+|| CA_EquipItem || Parameter = bag index, parameter 2 = item slot. Equips the specified item. ||
+|| CA_EquipItemById || Parameter = item id. Equips the specified item. ||
+|| CA_SalvageItem || Parameter = item id OR locate item by index with bag index,item slot. Searches for a salvage kit and uses it on the specified item. Currently disabled cause it doesnt work! ||
+|| CA_GetSalvageKit || No parameters. Searches for a salvage kit and returns the item id if it finds one. ||
+|| CA_BuyItem || Parameter = merchant item index (in the order you see at your merchant's window, starting from 1), parameter 2 = gold cost of the item. Buys the specified item if you used the right gold cost. ||
+|| CA_GetItemIdByAgent || Parameter = agent id (or -1/-2). Returns item id and model id of the specified agent, if it's an item. ||
+|| CA_GetItemInfoByAgent || Parameter = agent id (or -1/-2). Returns item rarity and quantity of the specified agent, if it's an item. ||
+|| CA_GetItemLastModifierByAgent || Parameter = agent id (or -1/-2). Returns the last modifier (see CA_GetItemLastModifier) and customized wchar_t* of the specified agent, if it's an item. ||
+|| CA_GetNearestItemByModelId || Parameter = item model id. Finds the nearest item with the specified model id and returns the agent id and the distance between you and the item as a float. ||
+|| CA_GetItemExtraId || Parameter = item slot. Returns the extra id of the item - used to determine dye color etc. ||
+|| CA_GetItemExtraIdById || Parameter = item id. Returns the extra id of the item - used to determine dye color etc. ||
 
 ----
 
 *Title related commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_GetTitleSunspear || 0x550 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleLightbringer || 0x551 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleVanguard || 0x552 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleNorn || 0x553 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleAsura || 0x554 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleDeldrimor || 0x555 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleNorthMastery || 0x556 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleDrunkard || 0x557 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleSweet || 0x558 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleParty || 0x559 || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleCommander || 0x55A || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleLuxon || 0x55B || No parameters. Returns integer with title progress. ||
-|| CA_GetTitleKurzick || 0x55C || No parameters. Returns integer with title progress. ||
+|| *Command* || *Description* ||
+|| CA_GetTitleSunspear || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleLightbringer || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleVanguard || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleNorn || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleAsura || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleDeldrimor || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleNorthMastery || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleDrunkard || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleSweet || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleParty || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleCommander || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleLuxon || No parameters. Returns integer with title progress. ||
+|| CA_GetTitleKurzick || No parameters. Returns integer with title progress. ||
 
 ----
 
 *More general commands:*
 
-|| *Command* || *Id* || *Description* ||
-|| CA_AddHero || 0x580 || Parameter = hero id. Adds hero to the party. ||
-|| CA_KickHero || 0x581 || Parameter = hero id. Kicks hero from the party. ||
-|| CA_SwitchMode || 0x582 || Parameter = boolean to set HM or NM. HM = 1, NM = 0. ||
-|| CA_AddNpc || 0x583 || Parameter = henchman id according to Party Search list. Adds henchman to the party. ||
-|| CA_KickNpc || 0x584 || Parameter = henchman id. Kicks henchman from the party. ||
-|| CA_TravelGH || 0x585 || No parameters. Travels to your Guild Hall. ||
-|| CA_LeaveGH || 0x586 || No parameters. Leaves your Guild Hall. ||
-|| CA_InitMapLoad || 0x587 || No parameters. Inits the CA_MapIsLoaded command. ||
-|| CA_MapIsLoaded || 0x588 || No parameters. Returns boolean. Use CA_InitMapLoad before !!! ||
-|| CA_GetMapOverlayCoords || 0x589 || Parameter = map overlay id (get this with GetNearestMapOverlayToCoords() function). Returns the x,y coords of the specified map overlay. ||
-|| CA_GetMapOverlayInfo || 0x58A || Parameter = map overlay id. Returns the option variable (usually color) and the icon model id of the specified map overlay. ||
-|| CA_GetNearestMapOverlayToCoords || 0x58B || INTERNAL COMMAND! Do not use this. Please use the function GetNearestMapOverlayToCoords() defined in GWCAConstants.au3 ||
-|| CA_GetPartyInfo || 0x58C || Parameter = team id, parameter 2 = script hwnd. Advanced command. Uses a team size of 8 by default. Change this with CA_SetTeamSize. See the definition of $tagPARTYINFO in GWCAConstants.au3 and the example script `GWCA MiniParty View.au3`. ||
-|| CA_ClearPacketQueue || 0x58D || No parameters. Advanced command to clean up packet queue if GW surprises you with a load screen (to avoid crashing). If used with CmdCB() it returns the number of packets removed from the queue. ||
-|| CA_SetHeroMode || 0x58E || Parameter = hero index (1,2,3), parameter 2 = hero mode (see $HEROMODE_ variables). Changes the mode of the specified hero to the specified state. 0 = fight, 1 = guard, 2 = avoid. ||
-|| CA_QuestCheck || 0x58F || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the quest id and the current log state. ||
-|| CA_QuestCoords || 0x590 || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the X,Y coordinates of the marker. ||
-|| CA_QuestActive || 0x591 || No parameters. Returns the quest id of the currently active quest. ||
-|| CA_QuestAbandon || 0x592 || Parameter = quest id (or -1 for active quest). Abandons the specified quest. ||
-|| CA_SetTeamSize || 0x593 || Parameter = team size. For use with CA_GetPartyInfo. Set the team size to be evaluated using the CA_GetPartyInfo command. ||
-|| CA_AllocMem || 0x594 || Parameter = size. Returns pointer to memory. Example script: [http://pastebin.com/f52bae4a0] - credits to Gabba for the function. ||
-|| CA_FreeMem || 0x595 || Parameter = 0, parameter 2 = pointer to memory. Frees allocated memory. ||
-|| CA_GetRegionAndLanguage || 0x596 || No parameters. Returns your current region and language. ||
-|| CA_TraderRequest || 0x597 || Parameter = item index. The item index is the number on the list at the trader. For the Rune trader experiment around. Use this to setup CA_TraderBuy. ||
-|| CA_TraderCheck || 0x598 || No parameters. Returns the trader item id and it's cost that is currently active. Loop this until the item id or cost is non-zero to verify that the info has been received before calling CA_TraderBuy. ||
-|| CA_TraderBuy || 0x599 || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequest and waiting until item id and cost has been received before it works! ||
-|| CA_TraderRequestSell || 0x59A || Parameter = bag index, parameter 2 = item slot. Sends a Request Quote on the specified item (remember to use the right trader for the item). Wait using CA_TraderCheck until the info is received. ||
-|| CA_TraderRequestSellById || 0x59B || Parameter = item id. Same as CA_TraderRequestSell, but instead, simply takes an item id as input. ||
-|| CA_TraderSell || 0x59C || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequestSell(ById) and waiting until item id and cost has been received before it works! ||
+|| *Command* || *Description* ||
+|| CA_AddHero || Parameter = hero id. Adds hero to the party. ||
+|| CA_KickHero || Parameter = hero id. Kicks hero from the party. ||
+|| CA_SwitchMode || Parameter = boolean to set HM or NM. HM = 1, NM = 0. ||
+|| CA_AddNpc || Parameter = henchman id according to Party Search list. Adds henchman to the party. ||
+|| CA_KickNpc || Parameter = henchman id. Kicks henchman from the party. ||
+|| CA_TravelGH || No parameters. Travels to your Guild Hall. ||
+|| CA_LeaveGH || No parameters. Leaves your Guild Hall. ||
+|| CA_InitMapLoad || No parameters. Inits the CA_MapIsLoaded command. ||
+|| CA_MapIsLoaded || No parameters. Returns boolean. Use CA_InitMapLoad before !!! ||
+|| CA_GetMapOverlayCoords || Parameter = map overlay id (get this with CA_GetNearestMapOverlayToCoords). Returns the x,y coords of the specified map overlay. ||
+|| CA_GetMapOverlayInfo || Parameter = map overlay id. Returns the option variable (usually color) and the icon model id of the specified map overlay. ||
+|| CA_GetNearestMapOverlayToCoords || Parameters = x and y coordinates packed. Returns the nearest Map Overlay to the specified coords. ||
+|| CA_GetPartyInfo || Parameter = team id, parameter 2 = script hwnd. Advanced command. Uses a team size of 8 by default. Change this with CA_SetTeamSize. See the definition of $tagPARTYINFO in GWCAConstants.au3 and the example script `GWCA MiniParty View.au3`. ||
+|| CA_ClearPacketQueue || No parameters. Advanced command to clean up packet queue if GW surprises you with a load screen (to avoid crashing). If used with CmdCB() it returns the number of packets removed from the queue. ||
+|| CA_SetHeroMode || Parameter = hero index (1,2,3), parameter 2 = hero mode (see $HEROMODE_ variables). Changes the mode of the specified hero to the specified state. 0 = fight, 1 = guard, 2 = avoid. ||
+|| CA_QuestCheck || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the quest id and the current log state. ||
+|| CA_QuestCoords || Parameter = quest id (or -1 for active quest). If the quest is in your Quest Log, it returns the X,Y coordinates of the marker. ||
+|| CA_QuestActive || No parameters. Returns the quest id of the currently active quest. ||
+|| CA_QuestAbandon || Parameter = quest id (or -1 for active quest). Abandons the specified quest. ||
+|| CA_SetTeamSize || Parameter = team size. For use with CA_GetPartyInfo. Set the team size to be evaluated using the CA_GetPartyInfo command. ||
+|| CA_AllocMem || Parameter = size. Returns pointer to memory. Example script: [http://pastebin.com/f52bae4a0] - credits to Gabba for the function. ||
+|| CA_FreeMem || Parameter = 0, parameter 2 = pointer to memory. Frees allocated memory. ||
+|| CA_GetRegionAndLanguage || No parameters. Returns your current region and language. ||
+|| CA_TraderRequest || Parameter = item index. The item index is the number on the list at the trader. For the Rune trader experiment around. Use this to setup CA_TraderBuy. ||
+|| CA_TraderCheck || No parameters. Returns the trader item id and it's cost that is currently active. Loop this until the item id or cost is non-zero to verify that the info has been received before calling CA_TraderBuy. ||
+|| CA_TraderBuy || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequest and waiting until item id and cost has been received before it works! ||
+|| CA_TraderRequestSell || Parameter = bag index, parameter 2 = item slot. Sends a Request Quote on the specified item (remember to use the right trader for the item). Wait using CA_TraderCheck until the info is received. ||
+|| CA_TraderRequestSellById || Parameter = item id. Same as CA_TraderRequestSell, but instead, simply takes an item id as input. ||
+|| CA_TraderSell || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequestSell(ById) and waiting until item id and cost has been received before it works! ||
