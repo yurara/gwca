@@ -42,8 +42,8 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_SellItem, $CA_SellItemById, $CA_BuyIdKit, $CA_BuySuperiorIdKit, _
 	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, _
-	$CA_CommandsEnd, _
-	$CA_RequestsBegin = 0x301,  _
+	$CA_CommandsEnd
+Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
 	$CA_GetMyId, $CA_GetMyMaxHP, $CA_GetMyMaxEnergy, $CA_GetMyNearestAgent, $CA_GetMyDistanceToAgent,  _
 	$CA_Casting, $CA_SkillRecharge, $CA_SkillAdrenaline, $CA_GetSkillbarSkillId,  _
@@ -55,7 +55,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_FindItemByModelId, $CA_FindEmptySlot, $CA_FindGoldItem,  _
 	$CA_GetItemPositionByItemId, $CA_GetItemPositionByModelId, $CA_GetItemPositionByRarity,  _
 	$CA_GetItemModelIdById, $CA_GetItemInfoById,  _
-	$CA_GetItemIdByAgent, $CA_GetItemInfoByAgent, $CA_GetItemLastModifierByAgent, $CA_GetNearestItemByModelId,  _
+	$CA_GetItemIdByAgent, $CA_GetItemInfoByAgent, $CA_GetItemLastModifierByAgent, $CA_GetNearestItemByModelId, _
 	$CA_GetMapLoading, $CA_GetMapId, $CA_MapIsLoaded, $CA_GetRegionAndLanguage, $CA_GetPing, $CA_GetLoggedIn, $CA_GetDead,  _
 	$CA_GetBalthFaction, $CA_GetKurzFaction, $CA_GetLuxonFaction,  _
 	$CA_GetTitleTreasure, $CA_GetTitleLucky, $CA_GetTitleUnlucky, $CA_GetTitleWisdom, $CA_GetTitleGamer, $CA_GetExperience, _
@@ -74,6 +74,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, _
 	$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem,  _
 	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderSell, _
+	$CA_GetItemExtraId, $CA_GetItemExtraIdById, _
 	$CA_RequestsEnd
 
 
@@ -87,6 +88,8 @@ Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers
 			$HERO_Livia = 21, $HERO_Kahmu, $HERO_Gwen, $HERO_Xandra, $HERO_Vekk, $HERO_Ogden
 
 Global Enum $HEROMODE_Fight, $HEROMODE_Guard, $HEROMODE_Avoid
+
+Global Enum $DYE_BLUE = 2, $DYE_GREEN, $DYE_PURPLE, $DYE_RED, $DYE_YELLOW, $DYE_BROWN, $DYE_ORANGE, $DYE_SILVER, $DYE_BLACK, $DYE_GRAY, $DYE_WHITE
 
 Global Enum $IS_NUMERIC = 0x00, _
 			$IS_TEXT = 0x01, _
@@ -197,11 +200,10 @@ Func GetNearestAgentToCoords($x, $y)
 
 	$cbType = "int"
 	CmdCB($CA_GetNearestAgentToCoords, _FloatToInt($x), _FloatToInt($y))
-	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[1]
+	Return $cbVar[0]
 EndFunc
 
 Func GetNearestNPCToCoords($x, $y)
@@ -209,11 +211,10 @@ Func GetNearestNPCToCoords($x, $y)
 
 	$cbType = "int"
 	CmdCB($CA_GetNearestNpcToCoords, _FloatToInt($x), _FloatToInt($y))
-	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[1]
+	Return $cbVar[0]
 EndFunc
 
 Func GetNearestMapOverlayToCoords($x, $y)
@@ -221,11 +222,10 @@ Func GetNearestMapOverlayToCoords($x, $y)
 
 	$cbType = "int"
 	CmdCB($CA_GetNearestMapOverlayToCoords, _FloatToInt($x), _FloatToInt($y))
-	;CmdCB($CA_GetVars)
 
 	$cbType = $oldCbType
 
-	Return $cbVar[1]
+	Return $cbVar[0]
 EndFunc
 
 Func TravelTo($iMapId, $iDis = 0)

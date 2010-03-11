@@ -28,13 +28,15 @@ struct Item {
 	Bag* bag;
 	byte unknown2[8];
 	wchar_t* customized;
-	byte unknown3[16];
-	long modelId;
+	byte unknown3[6];
+	short extraId;
 	byte unknown4[8];
+	long modelId;
+	byte unknown5[8];
 	ItemExtra* extraItemInfo;
-	byte unknown5[15];
+	byte unknown6[15];
 	byte quantity;
-	byte unknown6[2];
+	byte unknown7[2];
 	byte slot;
 };
 

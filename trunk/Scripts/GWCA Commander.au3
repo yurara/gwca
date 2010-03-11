@@ -47,7 +47,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_QuestCheck|$CA_QuestCoords|$CA_QuestActive|$CA_QuestAbandon|$CA_SalvageItem|$CA_GetSalvageKit|$CA_SetAttribute|$CA_SetTeamSize|$CA_BuyItem|"& _
 					"$CA_DismissBuff|$CA_PlayerHasBuff|$CA_Hero1HasBuff|$CA_Hero2HasBuff|$CA_Hero3HasBuff|$CA_SendChat|$CA_AllocMem|$CA_FreeMem|"& _
 					"$CA_GetTitleGamer|$CA_GetExperience|$CA_GetItemIdByAgent|$CA_GetItemInfoByAgent|$CA_GetItemLastModifierByAgent|$CA_GetNearestItemByModelId|")
-GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell")
+GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell|"& _
+					"$CA_GetItemExtraId|$CA_GetItemExtraIdById")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
@@ -101,11 +102,19 @@ While 1
 
 			$sendW = Number(GUICtrlRead($inputWparam))
 
+			$sendL = Number(GUICtrlRead($inputLparam))
+
 			GUICtrlSetData($labelWparam, "")
 			GUICtrlSetData($labelLparam, "")
 
+			If $sendCmd = $CA_GETNEARESTNPCTOCOORDS OR $sendCmd = $CA_GETNEARESTAGENTTOCOORDS OR $sendCmd = $CA_GETNEARESTMAPOVERLAYTOCOORDS Then
+				$sendW = _FloatToInt($sendW)
+				$sendL = _FloatToInt($sendL)
+			EndIf
+
 			$cbType = GUICtrlRead($inputType)
-			CmdCB($sendCmd, $sendW, 0)
+			CmdCB($sendCmd, $sendW, $sendL)
+			ConsoleWrite($cbVar[0]&" - "&$cbVar[1]&@CRLF)
 			GUICtrlSetData($labelWparam, $cbVar[0])
 			GUICtrlSetData($labelLparam, $cbVar[1])
 	EndSwitch
