@@ -247,6 +247,9 @@ public:
 	long Language(){
 		return *(long*)(LanguageLocation + 0xC);
 	}
+	long Connection(){
+		return *(long*)(ConnectionLocation);
+	}
 };
 
 #endif

@@ -53,7 +53,6 @@ _AntiAlias($hBackbuffer, 4)
 _GDIPlus_GraphicsClear($hBackbuffer, 0xFF333333)
 
 GUIRegisterMsg(0x4A, "PartyCallback") ;Notice that the MsgId (WM_COPYDATA) is the same as SkillLogCallback
-GUIRegisterMsg(0x500, "WndCallback")
 
 GUISetOnEvent($GUI_EVENT_CLOSE, "EventHandler")
 GUISetOnEvent($GUI_EVENT_PRIMARYDOWN, "EventHandler")
@@ -403,7 +402,7 @@ Func GetPartyInfo($iParty)
 	EndIf
 
 	$tDeadlock = TimerInit()
-	CmdCB($CA_GetPartyInfo, $iParty) ;Get party info
+	Cmd($CA_GetPartyInfo, $iParty, $cGUI) ;Get party info
 	Do
 		Sleep(10)
 	Until $bGotInfo = True OR TimerDiff($tDeadlock) > 1000

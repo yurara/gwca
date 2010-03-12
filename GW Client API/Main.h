@@ -21,6 +21,7 @@ extern byte* BasePointerLocation;
 extern byte* MapIdLocation;
 extern byte* RegionLocation;
 extern byte* LanguageLocation;
+extern byte* ConnectionLocation;
 
 struct Bag;
 struct Item;

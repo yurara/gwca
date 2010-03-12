@@ -36,7 +36,6 @@ Global $aTabSpecialSkill[2] = ["None", "None"] ;Array of the special skill
 Global $aTabDelay[2] = ["", ""] ;Yeye
 Global $aTabNormalSkills[16] = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4] ;Yup!
 
-GUIRegisterMsg(0x500, "WndCallback")
 GUIRegisterMsg(0x4A, "SkillLogCallback")
 GUIRegisterMsg(0x501, "SkillCancelCallback")
 
@@ -440,12 +439,7 @@ Func UpdateSkillsets()
 EndFunc
 
 Func GetSkillMode()
-	Switch(GUICtrlRead($checkSkillmode))
-		Case 1
-			Return $CA_USESKILLBARATTACKSKILL
-		Case Else
-			Return $CA_USESKILLBARSKILL
-	EndSwitch
+	Return $CA_UseSkill
 EndFunc
 
 Func LockOnOff()
@@ -474,12 +468,12 @@ Func LockOnOff()
 				Else
 					$lock = $cbVar[0]
 					GUICtrlSetData($itemLock, "Lock on")
-					Cmd($CA_STATUSBOT, 0, 1)
+					;Cmd($CA_STATUSBOT, 0, 1)
 				EndIf
 			Case Else
 				$lock = 0
 				GUICtrlSetData($itemLock, "Lock off")
-				Cmd($CA_STATUSBOT, 0, 2)
+				;Cmd($CA_STATUSBOT, 0, 2)
 		EndSwitch
 	Else
 		HotKeySet(@HotKeyPressed)
@@ -492,7 +486,7 @@ Func BotOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		$bEnabled = Not $bEnabled
 		If $bEnabled Then
-			Cmd($CA_STATUSBOT, 1, 0)
+			;Cmd($CA_STATUSBOT, 1, 0)
 			GUICtrlSetData($btnOnOff, "Disable bot") ;Disable most of the GUI and update button text
 			GUICtrlSetState($editSkills, $GUI_DISABLE)
 			GUICtrlSetState($editSpecial, $GUI_DISABLE)
@@ -532,7 +526,7 @@ Func BotOnOff()
 
 		Else
 			Cmd($CA_SETLOGANDHWND, 0, 0) ;Turn her off :\
-			Cmd($CA_STATUSBOT, 2, 0)
+			;Cmd($CA_STATUSBOT, 2, 0)
 			GUICtrlSetData($btnOnOff, "Enable bot") ;Enable the GUI and update button text
 			GUICtrlSetState($editSkills, $GUI_ENABLE)
 			GUICtrlSetState($editSpecial, $GUI_ENABLE)
@@ -565,10 +559,10 @@ EndFunc
 Func DelayOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		If GUICtrlRead($checkDelay) = 1 Then
-			Cmd($CA_STATUSDELAY, 0)
+			;Cmd($CA_STATUSDELAY, 0)
 			GUICtrlSetState($checkDelay, $GUI_UNCHECKED)
 		Else
-			Cmd($CA_STATUSDELAY, 1)
+			;Cmd($CA_STATUSDELAY, 1)
 			GUICtrlSetState($checkDelay, $GUI_CHECKED)
 		EndIf
 	Else
@@ -582,11 +576,11 @@ Func MissOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		If $miss Then
 			$miss = Not $miss
-			Cmd($CA_STATUSMISS, 0)
+			;Cmd($CA_STATUSMISS, 0)
 			GUICtrlSetData($itemMiss, "Miss off")
 		Else
 			$miss = Not $miss
-			Cmd($CA_STATUSMISS, 1)
+			;Cmd($CA_STATUSMISS, 1)
 			GUICtrlSetData($itemMiss, "Miss on")
 		EndIf
 	Else
@@ -729,7 +723,7 @@ Func SwapTab()
 
 		GUICtrlSetData($itemTab, "Swap ("&$iTab&")")
 		LoadTab($iTab)
-		Cmd($CA_STATUSTAB, $iTab)
+		;Cmd($CA_STATUSTAB, $iTab)
 	Else
 		HotKeySet(@HotKeyPressed)
 		Send(@HotKeyPressed)

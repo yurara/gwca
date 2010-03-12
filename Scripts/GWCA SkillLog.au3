@@ -10,7 +10,6 @@
 Global $cGUI = GUICreate("GWCA - Skill log", 320, 220) ;GUI for communication
 Global $bLog = True
 
-GUIRegisterMsg(0x500, "WndCallback")
 GUIRegisterMsg(0x4A, "SkillLogCallback")
 GUIRegisterMsg(0x501, "SkillCancelCallback")
 
