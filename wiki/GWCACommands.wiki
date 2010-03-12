@@ -120,6 +120,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetTitleWisdom || No parameters, returns integer of current wisdom title. ||
 || CA_GetTitleGamer || No parameters, returns integer of current gamer title. ||
 || CA_GetExperience || No parameters, returns integer of your current experience points. ||
+|| CA_GetConnection || No parameters, returns integer of your connection status. 2 = logged into character, 1/0 = not logged into character. ||
 
 ----
 
