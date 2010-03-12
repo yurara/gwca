@@ -74,7 +74,7 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, _
 	$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem,  _
 	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderSell, _
-	$CA_GetItemExtraId, $CA_GetItemExtraIdById, _
+	$CA_GetItemExtraId, $CA_GetItemExtraIdById, $CA_GetConnection, _
 	$CA_RequestsEnd
 
 
@@ -106,6 +106,7 @@ Opt("WinTitleMatchMode", -1) ;Make sure that Guild Wars receives the messages (1
 Global $cbType = "int" ;What to read the callback values as
 Global $cbVar[2] ;Array for callback wParam and lParam
 Global $sGW = "Guild Wars -" ;Name of window
+Global $hGWCA_STREAM = 0 ;Handle to the stream
 Global $bGWCA_INTERNAL = False ;Is set to True when inside a Cmd() or CmdCB() call
 
 ; FUNCTIONS
@@ -138,12 +139,15 @@ Func Cmd($uMsg, $wparam = 0, $lparam = 0)
 	DllStructSetData($OutBuffer,"type",BitOR($IS_COMMAND, $IS_NUMERIC))
 	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
 	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
-	If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
-		Return
+
+	If Not $hGWCA_STREAM Then
+		If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
+			Return
+		EndIf
+		$hGWCA_STREAM = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
 	EndIf
-	$hPipe = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
-	_WinAPI_WriteFile($hPipe,DllStructGetPtr($OutBuffer),12,$iRead)
-	_WinAPI_CloseHandle($hPipe)
+
+	_WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead)
 
 	$bGWCA_INTERNAL = False
 EndFunc
@@ -162,13 +166,15 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
 	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
 
-	If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
-		Return $cbVar
+	If Not $hGWCA_STREAM Then
+		If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
+			Return
+		EndIf
+		$hGWCA_STREAM = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
 	EndIf
-	$hPipe = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
-	_WinAPI_WriteFile($hPipe,DllStructGetPtr($OutBuffer),12,$iRead)
-	_WinAPI_ReadFile($hPipe,DllStructGetPtr($InBuffer),12,$iRead)
-	_WinAPI_CloseHandle($hPipe)
+
+	_WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead)
+	_WinAPI_ReadFile($hGWCA_STREAM,DllStructGetPtr($InBuffer),12,$iRead)
 
 	Switch $cbType
 		Case "float"
@@ -189,6 +195,11 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 	$bGWCA_INTERNAL = False
 
 	Return $cbVar
+EndFunc
+
+Func _GWCA_CloseStream()
+	_WinAPI_CloseHandle($hGWCA_STREAM)
+	$hGWCA_STREAM = 0
 EndFunc
 
 Func MoveEx($x, $y, $random = 50)

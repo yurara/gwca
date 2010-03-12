@@ -48,7 +48,7 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_DismissBuff|$CA_PlayerHasBuff|$CA_Hero1HasBuff|$CA_Hero2HasBuff|$CA_Hero3HasBuff|$CA_SendChat|$CA_AllocMem|$CA_FreeMem|"& _
 					"$CA_GetTitleGamer|$CA_GetExperience|$CA_GetItemIdByAgent|$CA_GetItemInfoByAgent|$CA_GetItemLastModifierByAgent|$CA_GetNearestItemByModelId|")
 GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell|"& _
-					"$CA_GetItemExtraId|$CA_GetItemExtraIdById")
+					"$CA_GetItemExtraId|$CA_GetItemExtraIdById|$CA_GetConnection")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
