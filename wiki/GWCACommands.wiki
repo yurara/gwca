@@ -100,6 +100,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_SkipCinematic || No parameters. Skips the current cinematic/cutscene. ||
 || CA_DismissBuff || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
 || CA_SendChat || Parameter = channel (0=all to 4=ally ), parameter 2 = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
+|| CA_OpenStorage || No parameters. Experimental function which visually opens your storage. Note: only works after opening your storage once! Else GW will crash! ||
 
 ----
 
@@ -232,6 +233,10 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetNearestItemByModelId || Parameter = item model id. Finds the nearest item with the specified model id and returns the agent id and the distance between you and the item as a float. ||
 || CA_GetItemExtraId || Parameter = item slot. Returns the extra id of the item - used to determine dye color etc. ||
 || CA_GetItemExtraIdById || Parameter = item id. Returns the extra id of the item - used to determine dye color etc. ||
+|| CA_GetItemExtraIdByAgent || Parameter = agent id (or -1/-2). Returns the extra id of the item - used to determine dye color etc. ||
+|| CA_GetItemReq || Parameter = item slot. Returns the attribute requirement of the item. ||
+|| CA_GetItemReqById || Parameter = item id. Returns the attribute requirement of the item. ||
+|| CA_GetItemReqByAgent || Parameter = agent id (or -1/-2). Returns the attribute requirement of the item. ||
 
 ----
 
