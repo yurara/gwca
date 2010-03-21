@@ -58,6 +58,7 @@ byte* TraderCostStart = NULL;
 byte* TraderCostReturn = NULL;
 byte* TraderFunction = NULL;
 byte* ConnectionLocation = NULL;
+byte* StorageFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -266,7 +267,6 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 {
 	Param_t OutWParam;
 	Param_t OutLParam;
-	int MsgLoop = 0;
 
 	//printf("New Message: Header(%X)\n", header);
 	//printf("WParam: %i, %f, %u\n", InWParam.i_Param, InWParam.f_Param, InWParam.d_Param);
@@ -557,6 +557,9 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_SendChat: // Send Chat : No return
 		if(InLParam.d_Param == 0){break;}
 		SendChat((char)(InWParam.i_Param + 33),(wchar_t*)InLParam.d_Param);
+		break;
+	case CA_OpenStorage: //Open the storage : No return
+		OpenStorage();
 		break;
 
 		//SectionA related commands
@@ -1290,10 +1293,37 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraId;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
-	case CA_GetItemExtraIdById: //Get current bag item extra id by item id : Return int/short
+	case CA_GetItemExtraIdById: //Get item extra id by item id : Return int/short
 		if(!MyItemManager->GetItemPtr(InWParam.i_Param)) {SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtr(InWParam.i_Param)->extraId;
 		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetItemExtraIdByAgent: //Get item extra id by agent id : Return int/short
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraId;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetItemReq: //Get current bag item req and attribute by indexes : Return byte & byte
+		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param))  {SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemReq->requirement;
+		OutLParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemReq->attribute;
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_GetItemReqById : //Get item req and attribute by item id : Return byte & byte
+		if(!MyItemManager->GetItemPtr(InWParam.i_Param)) {SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetItemPtr(InWParam.i_Param)->extraItemReq->requirement;
+		OutLParam.i_Param = MyItemManager->GetItemPtr(InWParam.i_Param)->extraItemReq->attribute;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetItemReqByAgent : //Get item req and attribute by agent id : Return byte & byte
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemReq->requirement;
+		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemReq->attribute;
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 
 		//Title related commands
@@ -1426,10 +1456,10 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(InWParam.i_Param == NULL) {SendError(header); break;}
 		OutWParam.d_Param = 0;
 		OutLParam.d_Param = 0;
-		for(MsgLoop = 0;MsgLoop < MySectionA->QuestLogSize();MsgLoop++){
-			if(MySectionA->QuestLogPointer()[MsgLoop].Id == InWParam.i_Param){
+		for(int i = 0;i < MySectionA->QuestLogSize();i++){
+			if(MySectionA->QuestLogPointer()[i].Id == InWParam.i_Param){
 				OutWParam.i_Param = InWParam.i_Param;
-				OutLParam.i_Param = MySectionA->QuestLogPointer()[MsgLoop].LogState;
+				OutLParam.i_Param = MySectionA->QuestLogPointer()[i].LogState;
 				break;
 			}
 		}
@@ -1440,10 +1470,10 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(InWParam.i_Param == NULL) {SendError(header); break;}
 		OutWParam.f_Param = 0.0f;
 		OutLParam.f_Param = 0.0f;
-		for(MsgLoop = 0;MsgLoop < MySectionA->QuestLogSize();MsgLoop++){
-			if(MySectionA->QuestLogPointer()[MsgLoop].Id == InWParam.i_Param){
-				OutWParam.f_Param = MySectionA->QuestLogPointer()[MsgLoop].X;
-				OutLParam.f_Param = MySectionA->QuestLogPointer()[MsgLoop].Y;
+		for(int i = 0;i < MySectionA->QuestLogSize();i++){
+			if(MySectionA->QuestLogPointer()[i].Id == InWParam.i_Param){
+				OutWParam.f_Param = MySectionA->QuestLogPointer()[i].X;
+				OutLParam.f_Param = MySectionA->QuestLogPointer()[i].Y;
 				break;
 			}
 		}
@@ -1647,6 +1677,18 @@ bool TraderSell(){
 	TraderCostValue = 0;
 	
 	return true;
+}
+
+void OpenStorage(){
+	long* info = new long[2];
+	info[0] = 0;
+	info[1] = 1;
+
+	_asm {
+		MOV ECX,7
+		MOV EDX,info
+		CALL StorageFunction
+	}
 }
 
 void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize){
@@ -2074,6 +2116,8 @@ void FindOffsets(){
 
 	byte ConnectionLocationCode[] = { 0x85, 0xC0, 0x74, 0x1A, 0xB9, 0x0A };
 
+	byte StorageFunctionCode[] = { 0x8B, 0xF1, 0x6A, 0x00, 0xBA, 0x0E };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -2199,6 +2243,9 @@ void FindOffsets(){
 		if(!memcmp(start, ConnectionLocationCode, sizeof(ConnectionLocationCode))){
 			ConnectionLocation = (byte*)(*(dword*)(start-10));
 		}
+		if(!memcmp(start, StorageFunctionCode, sizeof(StorageFunctionCode))){
+			StorageFunction = start - 6;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2235,7 +2282,8 @@ void FindOffsets(){
 			RequestQuoteFunction &&
 			TraderCostStart &&
 			TraderFunction &&
-			ConnectionLocation){
+			ConnectionLocation &&
+			StorageFunction){
 			return;
 		}
 		start++;
@@ -2473,6 +2521,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("ConnectionLocation");
 				return false;
 			}
+			if(!StorageFunction){
+				InjectErr("StorageFunction");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2524,6 +2576,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("TraderCostReturn=0x%06X\n", TraderCostReturn);
 			printf("TraderFunction=0x%06X\n", TraderFunction);
 			printf("ConnectionLocation=0x%06X\n", ConnectionLocation);
+			printf("StorageFunction=0x%06X\n", StorageFunction);
 			*/
 			break;
 
