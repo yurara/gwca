@@ -21,12 +21,18 @@ struct ItemExtra {
 	byte lastModifier;
 };
 
+struct ItemExtraReq {
+	byte requirement;
+	byte attribute; //Skill Template Format
+};
+
 struct Item {
 	long id;
 	long agentId; //non-zero if on the ground
 	byte unknown1[4];
 	Bag* bag;
-	byte unknown2[8];
+	ItemExtraReq* extraItemReq;
+	byte unknown2[4];
 	wchar_t* customized;
 	byte unknown3[6];
 	short extraId;

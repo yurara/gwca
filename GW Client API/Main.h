@@ -61,6 +61,7 @@ void RequestQuote(long id);
 void RequestQuoteSell(long id);
 bool TraderBuy();
 bool TraderSell();
+void OpenStorage();
 void SendPartyInfo(HWND hwndReceiver, long teamId, long teamSize = 8);
 void WriteWhisper(const wchar_t* chatMsg, const wchar_t* chatName);
 void TargetNearestFoe();
