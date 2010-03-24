@@ -452,42 +452,42 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		TargetCalledTarget();
 		break;
 	case CA_UseHero1Skill: //Use hero 1 skill : No return
-		if(InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
-		if(InWParam.i_Param == -1){
-			InWParam.i_Param = *(long*)CurrentTarget;
+		if(InLParam.i_Param == -1){
+			InLParam.i_Param = *(long*)CurrentTarget;
 		}
-		else if(InWParam.i_Param == -2){
-			InWParam.i_Param = myId;
+		else if(InLParam.i_Param == -2){
+			InLParam.i_Param = myId;
 		}
 
-		if(Agents[InWParam.i_Param] == NULL) {SendError(header); break;}
+		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero2Skill: //Use hero 2 skill : No return
-		if(InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
-		if(InWParam.i_Param == -1){
-			InWParam.i_Param = *(long*)CurrentTarget;
+		if(InLParam.i_Param == -1){
+			InLParam.i_Param = *(long*)CurrentTarget;
 		}
-		else if(InWParam.i_Param == -2){
-			InWParam.i_Param = myId;
+		else if(InLParam.i_Param == -2){
+			InLParam.i_Param = myId;
 		}
 
-		if(Agents[InWParam.i_Param] == NULL) {SendError(header); break;}
+		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x28), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero3Skill: //Use hero 3 skill : No return
-		if(InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
-		if(InWParam.i_Param == -1){
-			InWParam.i_Param = *(long*)CurrentTarget;
+		if(InLParam.i_Param == -1){
+			InLParam.i_Param = *(long*)CurrentTarget;
 		}
-		else if(InWParam.i_Param == -2){
-			InWParam.i_Param = myId;
+		else if(InLParam.i_Param == -2){
+			InLParam.i_Param = myId;
 		}
 
-		if(Agents[InWParam.i_Param] == NULL) {SendError(header); break;}
+		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4C), InWParam.i_Param-1, InLParam.i_Param);
 	case CA_CancelAction: //Cancel movement : No return
 		CancelAction();
@@ -1030,7 +1030,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_SetAttribute: //Set Attribute (Attribute,Value)
 		if(InWParam.i_Param < 0 || InWParam.i_Param > 12){SendError(header); break;}
-		SetAttribute(InWParam.i_Param,InLParam.i_Param);
+		SetAttribute(InWParam.i_Param, InLParam.i_Param);
 		break;
 	case CA_PlayerHasBuff: //Player has buff : Return bool
 		if(InWParam.i_Param < 0 || InWParam.i_Param > 3500){SendError(header); break;}
@@ -1090,7 +1090,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_DepositGold: //Deposit gold in storage : No return
 		OutWParam.i_Param = MySectionA->MoneySelf();
 		OutLParam.i_Param = MySectionA->MoneyStorage();
-		if(OutWParam.i_Param == -1){
+		if(InWParam.i_Param == -1){
 			if((OutLParam.i_Param + OutWParam.i_Param) > 1000000){ OutWParam.i_Param = 1000000 - OutLParam.i_Param; }
 			OutLParam.i_Param += OutWParam.i_Param;
 			OutWParam.i_Param = MySectionA->MoneySelf() - OutWParam.i_Param;
@@ -1112,8 +1112,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 				OutWParam.i_Param = 100000;
 			}
 		}else{
-			OutLParam.i_Param -= OutWParam.i_Param;
-			OutWParam.i_Param += OutWParam.i_Param;
+			OutLParam.i_Param -= InWParam.i_Param;
+			OutWParam.i_Param += InWParam.i_Param;
 		}
 		ChangeGold(OutWParam.i_Param, OutLParam.i_Param);
 		break;
@@ -1183,7 +1183,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_FindItemByModelId: //Find item by item model id : Return int/long
 		if(InWParam.i_Param==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MyItemManager->GetItemByModelId(InWParam.i_Param);
+		OutWParam.i_Param = MyItemManager->GetItemByModelId(InWParam.i_Param, InLParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_FindEmptySlot: //Find next empty inventory/storage slot : Return int/long & int/long
@@ -1193,26 +1193,26 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_FindGoldItem: //Find next gold item in inventory/storage : Return int/long & int/long
 		if(InWParam.i_Param == NULL) {InWParam.i_Param = 16;}
-		OutLParam.i_Param = MyItemManager->FindNextGoldItem(InWParam.i_Param);
+		OutLParam.i_Param = MyItemManager->FindNextGoldItem(InWParam.i_Param, InLParam.i_Param);
 		OutWParam.i_Param = MyItemManager->GetItemPtr(OutLParam.i_Param)->id;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemPositionByItemId: //Get item position by item id : Return int/long & int/long
 		if(InWParam.i_Param == NULL) {SendError(header); break;}
-		OutWParam.i_Param = MyItemManager->GetItemPositionByItemId(InWParam.i_Param, 1);
-		OutLParam.i_Param = MyItemManager->GetItemPositionByItemId(InWParam.i_Param, 2);
+		OutWParam.i_Param = MyItemManager->GetItemPositionByItemId(InWParam.i_Param, 1, InLParam.i_Param);
+		OutLParam.i_Param = MyItemManager->GetItemPositionByItemId(InWParam.i_Param, 2, InLParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemPositionByModelId: //Get item position by model id : Return int/long & int/long
 		if(InWParam.i_Param==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MyItemManager->GetItemPositionByModelId(InWParam.i_Param, 1);
-		OutLParam.i_Param = MyItemManager->GetItemPositionByModelId(InWParam.i_Param, 2);
+		OutWParam.i_Param = MyItemManager->GetItemPositionByModelId(InWParam.i_Param, 1, InLParam.i_Param);
+		OutLParam.i_Param = MyItemManager->GetItemPositionByModelId(InWParam.i_Param, 2, InLParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemPositionByRarity: //Get item position by rarity : Return int/long & int/long
 		if(InWParam.i_Param==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MyItemManager->GetItemPositionByRarity(InWParam.i_Param, 1);
-		OutLParam.i_Param = MyItemManager->GetItemPositionByRarity(InWParam.i_Param, 2);
+		OutWParam.i_Param = MyItemManager->GetItemPositionByRarity(InWParam.i_Param, 1, InLParam.i_Param);
+		OutLParam.i_Param = MyItemManager->GetItemPositionByRarity(InWParam.i_Param, 2, InLParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemModelIdById: //Get item model id by item id : Return int/long
@@ -1240,15 +1240,17 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_EquipItemById: //Equip item by item id : No return
 		EquipItem(InWParam.i_Param);
 		break;
-	case CA_SalvageItem: //Salvage Item : No return
-		//currently not working
-		/*if(InWParam.i_Param==NULL){SendError(CA_SalvageItem); break;}
+	case CA_SalvageItem: //Salvage Item by indexes : No return
+		/*
+		if(InWParam.i_Param==NULL){SendError(header); break;}
+		if(MyItemManager->FindSalvageKit()==NULL){SendError(header); break;}
 		if(InLParam.i_Param==NULL){
-			SalvageItem(InWParam.i_Param, MyItemManager->FindSalvageKit());
+			SalvageItem(MyItemManager->FindSalvageKit(), InWParam.i_Param);
 		}else{
-			SalvageItem(MyItemManager->GetItemId(InWParam.i_Param, InLParam.i_Param), MyItemManager->FindSalvageKit());
-		}*/
+			SalvageItem(MyItemManager->FindSalvageKit(), MyItemManager->GetItemId(InWParam.i_Param, InLParam.i_Param));
+		}
 		break;
+		*/
 	case CA_BuyItem: //Buy item by index and cost : No return
 		if(!MySectionA->MerchantItems()){break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > (int)MySectionA->MerchantItemsSize()){SendError(header); break;}

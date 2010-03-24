@@ -208,13 +208,14 @@ void IdentifyItem(long idKit, long itemId){
 
 void SalvageItem(long kit,long itemId){
 	NEWPAK(6f,10);
-	newPak->Set<long>(4,myId);
-	newPak->Set<long>(8,kit);
-	newPak->Set<long>(12,itemId);
+	newPak->Set<long>(4, MySectionA->SalvageSessionId());
+	newPak->Set<long>(8, kit);
+	newPak->Set<long>(12, itemId);
+	SendPacket(newPak);
 }
 
 void MoveItem(long itemId, long bagId, long slot){
-	NEWPAK(6a, 10);
+	NEWPAK(6a,10);
 	newPak->Set<long>(4, itemId);
 	newPak->Set<long>(8, bagId);
 	newPak->Set<long>(12, slot);

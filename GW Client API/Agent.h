@@ -250,6 +250,9 @@ public:
 	long Connection(){
 		return *(long*)(ConnectionLocation);
 	}
+	long SalvageSessionId(){
+		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x62C);
+	}
 };
 
 #endif
