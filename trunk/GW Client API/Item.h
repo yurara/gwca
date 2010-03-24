@@ -90,6 +90,7 @@ public:
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -106,6 +107,7 @@ public:
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -116,12 +118,13 @@ public:
 		return 0;
 	}
 
-	long GetItemByModelId(long model){
-		for(int i = 1;i < 17;i++){
+	long GetItemByModelId(long model, long startingBag = 1){
+		for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -132,12 +135,13 @@ public:
 		return 0;
 	}
 
-	long GetItemPositionByItemId(long itemId, long mode){
-		for(int i = 1;i < 17;i++){
+	long GetItemPositionByItemId(long itemId, long mode, long startingBag = 1){
+		for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -148,15 +152,17 @@ public:
 				}
 			}
 		}
+
 		return 0;
 	}
 
-	long GetItemPositionByModelId(long modelId, long mode){
-			for(int i = 1;i < 17;i++){
+	long GetItemPositionByModelId(long modelId, long mode, long startingBag = 1){
+			for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -176,6 +182,7 @@ public:
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -188,12 +195,13 @@ public:
 		return 0;
 	}
 
-	long FindNextGoldItem(long lastBag){
-		for(int i = 1;i < lastBag+1;i++){
+	long FindNextGoldItem(long lastBag, long startingBag = 1){
+		for(int i = startingBag;i < lastBag+1;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];
@@ -204,12 +212,13 @@ public:
 		return 0;
 	}
 
-	long GetItemPositionByRarity(byte rarity, long mode){
-		for(int i = 1;i < 17;i++){
+	long GetItemPositionByRarity(byte rarity, long mode, long startingBag = 1){
+		for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);
 			if(!pBag){ continue; }
 
 			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
 			Item* pCurrentItem;
 			for(int j = 0;j < pBag->slots;j++){
 				pCurrentItem = pItems[j];

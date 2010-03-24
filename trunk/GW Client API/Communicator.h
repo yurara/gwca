@@ -56,7 +56,7 @@ enum GWCA_COMMANDS{
 	CA_DismissBuff, CA_SendChat, CA_SetTeamSize, CA_FreeMem, 
 	CA_Resign, CA_ReturnToOutpost, CA_EnterChallenge, CA_TravelGH, CA_LeaveGH, 
 	CA_SetBag, CA_PrepareMoveItem, CA_MoveItem, 
-	CA_IdentifyItem, CA_IdentifyItemById, CA_SalvageItem, 
+	CA_IdentifyItem, CA_IdentifyItemById, CA_SalvageItem,
 	CA_SellItem, CA_SellItemById, CA_BuyIdKit, CA_BuySuperiorIdKit,
 	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, 
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
