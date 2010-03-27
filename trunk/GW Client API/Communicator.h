@@ -10,8 +10,7 @@
 #define COMMUNICATOR_H
 
 #include <Windows.h>
-#include <atlbase.h>
-#include <list>
+#include <queue>
 
 #define BUFSIZE 1024
 #define TEXTBUFFERLENGTH 504
@@ -56,7 +55,7 @@ enum GWCA_COMMANDS{
 	CA_DismissBuff, CA_SendChat, CA_SetTeamSize, CA_FreeMem, 
 	CA_Resign, CA_ReturnToOutpost, CA_EnterChallenge, CA_TravelGH, CA_LeaveGH, 
 	CA_SetBag, CA_PrepareMoveItem, CA_MoveItem, 
-	CA_IdentifyItem, CA_IdentifyItemById, CA_SalvageItem,
+	CA_IdentifyItem, CA_IdentifyItemById, CA_SalvageItem, 
 	CA_SellItem, CA_SellItemById, CA_BuyIdKit, CA_BuySuperiorIdKit,
 	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, 
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
@@ -117,107 +116,106 @@ typedef struct
 } PIPEINST, *LPPIPEINST;
 typedef void (*HandleMessageFunctionPointer)(WORD, Param_t, Param_t);
 
-template <typename T>
-class SimpleQueue {
-
-	typedef T* Tptr;                                // should really be a smart_pointer<T>
-
-private:
-	SimpleQueue(const SimpleQueue &);               // Not copyable
-	SimpleQueue & operator= (const SimpleQueue &); // Not assignable
-
-	struct Node {
-		Node( Tptr val ) : value(val), next(NULL) { }
-		Node() : next(NULL) { value = NULL; }
-		Tptr value;
-		Node* next;
-	};
-
-	std::list<Node *> freeList;   // for producer only
-	Node* first;                  // for producer only
-	Node *divider, *last;         // shared -- Use explicit atomic compares only
-
-	// Allocator/Deallocator for nodes -- 
-	// only used in the producer thread
-	// OR in the destructor.
-	Node * Get(Tptr val)
-	{
-		if(!freeList.empty())
-		{
-			// Clean because of Release
-			Node * next = freeList.front();
-			freeList.pop_front();
-			next->value = val;
-			return next;
-		}
-
-		// clean by construction
-		return new Node(val);     
-	}
-
-	// Avoids costly free() while running
-	void Release(Node * node)
-	{
-		// reset the node to clean before shelving it
-		node->value = NULL;
-		node->next = NULL;
-		freeList.push_back(node);
-	}
-
-
+class AutoHandle
+{
 public:
-	SimpleQueue() {
-		first = divider = last = Get(NULL);                         // add dummy separator
+	AutoHandle()
+		: m_h(NULL)
+	{
 	}
-
-	~SimpleQueue() {
-		while( first != NULL ) {               // release the list
-			Node* tmp = first;
-			first = tmp->next;
-			delete tmp;
-		}
-
-		// Require -- Producer thread calls this or is dead
-		while(!freeList.empty())
+	AutoHandle(AutoHandle& other)
+		: m_h(NULL)
+	{
+		Attach(other.Detach());
+	}
+	AutoHandle(HANDLE h)
+		: m_h(h)
+	{
+	}
+	~AutoHandle()
+	{
+		if (m_h != NULL)
 		{
-			delete Get(NULL);
+			Close();
 		}
 	}
 
-	// Produce is called on the producer thread only:
-	void Produce( Tptr t ) {
-		last->next = Get(t);                            // add the new item
-		InterlockedExchangePointer((void**)&last, last->next);  // publish it
+	void Attach(HANDLE h)
+	{
+		m_h = h;
+	}
+	HANDLE Detach()
+	{
+		HANDLE h = m_h;
 
-		// Burn the consumed part of the queue
-		for( PVOID looper = first;                     // non-null; pointer read is atomic
-			InterlockedCompareExchangePointer(&looper, NULL, divider), looper;
-			looper = first)
+		m_h = NULL;
+
+		return h;
+	}
+	void Close()
+	{
+		if (m_h != NULL)
 		{
-			Node* tmp = first;
-			first = first->next;
-			Release(tmp);
+			CloseHandle(m_h);
 		}
 	}
+protected:
+	bool m_closeHandle;
+	HANDLE m_h;
+};
 
-	// Consume is called on the consumer thread only:
-	bool Consume( Tptr & result ) {
-
-		PVOID choice = divider;                                  // non-null; pointer read is atomic
-		InterlockedCompareExchangePointer(&choice, NULL, last);
-
-		if(choice)
+template<typename Data>
+class concurrent_queue
+{
+private:
+    std::queue<Data> the_queue;
+	mutable HANDLE the_mutex;
+public:
+	concurrent_queue()
+	{
+		the_mutex = CreateMutex(NULL, false, NULL);
+	}
+	~concurrent_queue()
+	{
+		if (the_mutex != NULL)
 		{
-			result = divider->next->value;                        // C: copy it back
-			choice = divider;
-
-			InterlockedExchangePointer((void**)&divider, divider->next);  // D: publish that we took it
-			reinterpret_cast<Node*>(choice)->next = NULL;
-			return true;                                          // and report success
+			CloseHandle(the_mutex);
 		}
-
-		return false;                                             // else report empty
 	}
+
+    void push(Data const& data)
+    {
+		WaitForSingleObject(the_mutex, INFINITE);
+        the_queue.push(data);
+		ReleaseMutex(the_mutex);
+    }
+
+    bool empty() const
+    {
+		WaitForSingleObject(the_mutex, INFINITE);
+		bool empty = the_queue.empty();
+		ReleaseMutex(the_mutex);
+        return empty;
+    }
+
+    bool try_pop(Data& popped_value)
+    {
+		WaitForSingleObject(the_mutex, INFINITE);
+        if(the_queue.empty())
+        {
+			ReleaseMutex(the_mutex);
+            return false;
+        }
+        
+        popped_value = the_queue.front();
+        the_queue.pop();
+		ReleaseMutex(the_mutex);
+        return true;
+    }
+
+private :
+	concurrent_queue(concurrent_queue& other);
+	concurrent_queue & operator= (concurrent_queue & other);
 };
 
 class GWCAServer
@@ -236,18 +234,12 @@ public:
 
 	void AddCommand(BaseMessage& command)
 	{
-		BaseMessage* pMessage = new BaseMessage(command);
-		m_CommandBuffer.Produce(pMessage);
+		m_CommandBuffer.push(command);
 	}
 	bool GetCommand()
 	{
-		BaseMessage* pMessage;
-		//BaseMessage _buffer;
-		//if (try_receive<BaseMessage>(&m_CommandBuffer, _buffer))
-		if (m_CommandBuffer.Consume(pMessage))
+		if (m_CommandBuffer.try_pop(m_CurrCommand))
 		{
-			m_CurrCommand = *pMessage;
-			delete pMessage;
 			return true;
 		}
 		return false;
@@ -255,29 +247,6 @@ public:
 	WORD GetCommandHeader() {return m_CurrCommand.header;}
 	Param_t GetCommandWParam(){return m_CurrCommand.wParam;}
 	Param_t GetCommandLParam(){return m_CurrCommand.lParam;}
-
-	//void AddRequest(BaseMessage& request)
-	//{
-	//	BaseMessage* pMessage = new BaseMessage(request);
-	//	m_RequestBuffer.Produce(pMessage);
-	//}
-	//bool GetRequest()
-	//{
-	//	BaseMessage* pMessage;
-	//	//BaseMessage _buffer;
-	//	//if (try_receive<BaseMessage>(&m_RequestBuffer, _buffer))
-	//	if (m_RequestBuffer.Consume(pMessage))
-	//	{
-	//		m_CurrRequest = *pMessage;
-	//		delete pMessage;
-	//		return true;
-	//	}
-	//	return false;
-	//}
-	//WORD GetRequestHeader() {return m_CurrRequest.header;}
-	//Param_t GetRequestWParam(){return m_CurrRequest.wParam;}
-	//Param_t GetRequestLParam(){return m_CurrRequest.lParam;}
-	//wchar_t* GetRequestStringParam(){return L"";/*m_CurrRequest.text;*/}
 
 	void SetRequestFunction(HandleMessageFunctionPointer pFunc)
 	{
@@ -290,13 +259,11 @@ public:
 		SetResponseWParam(wParam);
 		SetResponseLParam(lParam);
 		SetResponseFlag(IS_NUMERIC | IS_RESPONSE);
-		//Respond();
 	}
 
 	void ShowPipeName(){MessageBox(0, m_cPipeName, "PIPENAME", MB_OK); }
 
 private:
-	//void Respond(){send(&m_ResponseBuffer, m_CurrResponse);}
 	void SetResponseHeader( WORD header ){m_CurrResponse.header = header;}
 	void SetResponseWParam( Param_t wParam ){m_CurrResponse.wParam = wParam;}
 	void SetResponseLParam( Param_t lParam ){m_CurrResponse.lParam = lParam;}
@@ -325,7 +292,7 @@ private:
 	char m_cPipeName[30];
 	HandleMessageFunctionPointer m_HandleRequestsFunction;
 
-	SimpleQueue<BaseMessage> m_CommandBuffer;
+	concurrent_queue<BaseMessage> m_CommandBuffer;
 };
 
 extern GWCAServer* myGWCAServer;
