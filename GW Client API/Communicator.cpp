@@ -2,7 +2,7 @@
 
 GWCAServer* myGWCAServer = new GWCAServer;
 
-class CompletionPort : public CHandle
+class CompletionPort : public AutoHandle
 {
 public:
 
@@ -21,7 +21,7 @@ public:
     CompletionPort(__in bool closeHandle,
                    __in_opt HANDLE handle) :
         m_closeHandle(closeHandle),
-        CHandle(handle)
+        AutoHandle(handle)
     {
         // Do nothing
     }
@@ -116,7 +116,7 @@ bool GWCAServer::ListenConnections()
 	bool bConnected = false;
 	HANDLE hPipe = NULL;
 
-	port.Create(2);
+	port.Create(1);
 
 	while (true)
 	{
@@ -205,9 +205,6 @@ HRESULT GWCAServer::ListenConnectedPipes()
 						outMessage.lParam.i_Param = -1;
 						outMessage.type = IS_NUMERIC;
 					}
-					//send(&m_RequestBuffer, inMessage);
-					//outMessage = receive(&m_ResponseBuffer);
-					//Write(hPipe, outMessage);
 				}
 			}
 			else if(inMessage.header <= CA_RequestsBegin)
@@ -218,11 +215,9 @@ HRESULT GWCAServer::ListenConnectedPipes()
 					outMessage.wParam.i_Param = -1;
 					outMessage.lParam.i_Param = -1;
 					outMessage.type = IS_NUMERIC;
-					//Write(hPipe, outMessage);
 				}
 				else
 					AddCommand(inMessage);
-					//send(&m_CommandBuffer, inMessage);
 			}
 		}
 		else if(inMessage.type & IS_REQUEST)
@@ -232,7 +227,6 @@ HRESULT GWCAServer::ListenConnectedPipes()
 			{
 				if (inMessage.header > CA_CommandsBegin)
 					AddCommand(inMessage);
-					//send(&m_CommandBuffer, inMessage);
 				outMessage.header = 1;
 				outMessage.wParam.i_Param = -1;
 				outMessage.lParam.i_Param = -1;
@@ -269,12 +263,6 @@ HRESULT GWCAServer::ListenConnectedPipes()
 					outMessage.lParam.i_Param = -1;
 					outMessage.type = IS_NUMERIC;
 				}
-				//AddRequest(inMessage);
-				//while (!GetResponse(outMessage))
-				//{ }
-				//send(&m_RequestBuffer, inMessage);
-				//printf("[Sent] Header: %u, WParam: %u, LParam: %u\n", inMessage.header, inMessage.wParam, inMessage.lParam);
-				//outMessage = receive(&m_ResponseBuffer);
 				WriteFile((HANDLE)completitionKey,
 					&outMessage,
 					sizeof(outMessage),
