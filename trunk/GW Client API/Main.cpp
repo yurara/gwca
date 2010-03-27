@@ -198,7 +198,8 @@ void _declspec(naked) TargetLogHook(){
 	}
 
 	if(	actionType == 0x39 ||
-		actionType == 0x03){
+		actionType == 0x03 ||
+		actionType == 0x2F ){
 		AgentTargets[agentCaster] = agentTarget;
 	}
 
