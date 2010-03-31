@@ -1068,6 +1068,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		CurrentBag = InWParam.i_Param;
 		break;
 	case CA_GetItemId: //Get current bag item id and model id : Return int/long & int/long
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
 		if(!CurrentBag){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemId(CurrentBag, InWParam.i_Param);
 		OutLParam.i_Param = MyItemManager->GetItemModelId(CurrentBag, InWParam.i_Param);
@@ -1147,6 +1148,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		MoveItem(MoveItemId, MyItemManager->GetBagPtr(InWParam.i_Param)->id, (InLParam.i_Param - 1));
 		break;
 	case CA_GetItemInfo: //Get current bag item rarity and quantity : Return byte & byte
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
 		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)) {SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemInfo->rarity;
 		OutLParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->quantity;
@@ -1177,6 +1179,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		AcceptAllItems(MyItemManager->GetBagPtr(7)->id);
 		break;
 	case CA_GetItemLastModifier: //Get current bag item customized and last modifier : Return wchar_t* & byte
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
 		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param))  {SendError(header); break;}
 		OutWParam.d_Param = (dword)MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->customized;
 		OutLParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemInfo->lastModifier;
@@ -1195,6 +1198,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_FindGoldItem: //Find next gold item in inventory/storage : Return int/long & int/long
 		if(InWParam.i_Param == NULL) {InWParam.i_Param = 16;}
 		OutLParam.i_Param = MyItemManager->FindNextGoldItem(InWParam.i_Param, InLParam.i_Param);
+		if(OutLParam.i_Param == NULL) {SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtr(OutLParam.i_Param)->id;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
@@ -1292,6 +1296,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemExtraId: //Get current bag item extra id by indexes : Return int/short
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
 		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param))  {SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraId;
 		myGWCAServer->SetResponse(header, OutWParam);
@@ -1309,6 +1314,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemReq: //Get current bag item req and attribute by indexes : Return byte & byte
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
 		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param))  {SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemReq->requirement;
 		OutLParam.i_Param = MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param)->extraItemReq->attribute;
