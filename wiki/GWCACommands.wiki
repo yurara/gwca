@@ -4,22 +4,22 @@
 This page contains documentation of all of the GWCA commands and how they are interacted with.
 
 =How-to use=
-First of all, to use GWCA you must inject the .Dll into Guild Wars. This can be done by either renaming the .Dll to 'Graphics.dll' without the quotes and putting it in the Guild Wars folder, or by using a Dll Injector application (search google).
+First of all, to use GWCA you must inject the .Dll into Guild Wars. This can be done by using a Dll Injector application (search google).
 
-Communication between GWCA and your script is performed using Window Messages, and therefore, your script must have a valid Window hwnd to retrieve information.
+Communication between GWCA and your script is performed using Named Pipes to make sure speeds are always at the best.
 
-In AutoIt3, simply look at some of the scripts in the Source section to get an idea of how it is done. Remember also to 'register' the necessary custom messages for your GUI using 'GUIRegisterMsg(identifier, functionname)'.
+In AutoIt3, simply look at some of the scripts in the Scripts folder to get an idea of how it is done. Remember also to 'register' the necessary custom messages for your GUI using 'GUIRegisterMsg(identifier, functionname)'.
 
-You can register up to 3 different messages with GWCA:
+You can register up to 2 different messages with GWCA:
 
   * The SkillLogCallback and PartyCallback (0x4A): This uses the WM_COPYDATA message to send a structure from GWCA which contains information about skills being cast. See the GWCA SkillLog or Interrupt Bot. The SkillLogCallback is also the PartyCallback, which returns lots of information about your party. See GWCA MiniParty View for this.
 
   * The SkillCancelCallback (0x501): Which is commonly used with the SkillLogCallback if you wish to track which skills are cancelled/interrupted aswell.
 
-For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Source section.
+For instruction on how to use these 'Callbacks' please have a look at some of the example scripts in Scripts folder.
 
-Also note, that when using the GWCA functions in AutoIt3, remember to set the `$cbType` variable to the right type before you use a command. For example, when you use CA_GETCOORDS, remember to set `$cbType` to "float", so that the values are automatically un-packed.
-Return values are always in the `$cbVar` array. `$cbVar[0]` = first value, `$cbVar[1]` = last value.
+Also note, that when using the GWCA functions in AutoIt3, remember to set the `$cbType` variable to the right type before you use a command. For example, when you use CA_GETCOORDS, remember to set `$cbType` to "float", so that the values are automatically un-packed. If you - for some reason - wants to get a float value but `$cbType = "int"` then you may use the function `_IntToFloat()`. Use `_FloatToInt()` to do it the other way around.
+Return values are always in the `$cbVar` array. `$cbVar[0]` = first value, `$cbVar[1]` = last value, but you may also specify a variable that receives the contents of `$cbVar` - just take note that it's an array!
 
 
 And last, but still very important:
@@ -194,7 +194,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetGold || No parameters. Returns integer with gold on your character and integer with gold in your storage. ||
 || CA_GetBagSize || Parameter = bag index (see $BAG_ declarations in GWCAConstants.au3). Returns the number of slots and the number of items currently in the bag. ||
 || CA_SetBag || Parameter = bag index. Sets the current bag to work with. ||
-|| CA_GetItemId || Parameter = item slot. Returns item id and item model id. ||
+|| CA_GetItemId || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns item id and item model id. ||
 || CA_GetIdKit || No parameters. Returns item id of the first ID kit it finds. If return is non-zero then you have an ID kit in your inventory. ||
 || CA_IdentifyItem || Parameter = bag index, parameter 2 = item slot. ||
 || CA_IdentifyItemById || Parameter = item id. If you've returned the item id from one of the prior commands you can use this command instead of CA_IdentifyItem. ||
@@ -206,13 +206,13 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_BuySuperiorIdKit || No parameters. Requires an open dialog with the Merchant of the outpost! ||
 || CA_PrepareMoveItem || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. ||
 || CA_MoveItem || For internal use. Use the wrapper functions MoveItem() and MoveItemById() instead. See the declaration of the bag id's in GWCAConstants.au3 ||
-|| CA_GetItemInfo || Parameter = item slot. Returns integer with item rarity and integer with quantity. ||
+|| CA_GetItemInfo || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns integer with item rarity and integer with quantity. ||
 || CA_UseItem || Parameter = bag index, parameter 2 = item slot. Uses the item specified. ||
 || CA_UseItemById || Parameter = item id. Uses the item specified. ||
 || CA_DropItem || Parameter = bag index, parameter 2 = item slot. Drops the specified item. If the quantity is above 1 then this command will drop it all. ||
 || CA_DropItemById || Parameter = item id, parameter 2 = amount. Drops the specified item by the specified amount. Setting amount to -1 will drop it all. ||
 || CA_AcceptAllItems || No parameters. Accepts all unclaimed items (from the unclaimed items window that may appear). Doesn't check if there isn't room for all the items, this simply accepts them! ||
-|| CA_GetItemLastModifier || Parameter = item slot. Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized. ||
+|| CA_GetItemLastModifier || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns integer with the last modifier of the item and wchar_t`*` with customize text. Last modifier can be used to check which dye (model id 146) it is. If customize text = 0 then item is not customized. ||
 || CA_FindItemByModelId || Parameter = item model id. Searches for the first occurence of the specified model id and returns integer with the item id or 0 if item wasn't found. ||
 || CA_FindEmptySlot || Parameter = bag index to start searching from. Returns integer with bag index and integer with item slot. This function also searches the storage. If any of the returns = 0, then no empty slots were found. ||
 || CA_FindGoldItem || Optional parameter = bag index of last bag to search in. Searches from the backpack until (and including) the bag index supplied. If not set the function will search all bags including storage. The return is integer with item id of the gold item found and integer with the item's model id. If return value is 0 then no gold items were found. ||
@@ -231,10 +231,10 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemInfoByAgent || Parameter = agent id (or -1/-2). Returns item rarity and quantity of the specified agent, if it's an item. ||
 || CA_GetItemLastModifierByAgent || Parameter = agent id (or -1/-2). Returns the last modifier (see CA_GetItemLastModifier) and customized wchar_t* of the specified agent, if it's an item. ||
 || CA_GetNearestItemByModelId || Parameter = item model id. Finds the nearest item with the specified model id and returns the agent id and the distance between you and the item as a float. ||
-|| CA_GetItemExtraId || Parameter = item slot. Returns the extra id of the item - used to determine dye color etc. ||
+|| CA_GetItemExtraId || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns the extra id of the item - used to determine dye color etc. ||
 || CA_GetItemExtraIdById || Parameter = item id. Returns the extra id of the item - used to determine dye color etc. ||
 || CA_GetItemExtraIdByAgent || Parameter = agent id (or -1/-2). Returns the extra id of the item - used to determine dye color etc. ||
-|| CA_GetItemReq || Parameter = item slot. Returns the attribute requirement of the item. ||
+|| CA_GetItemReq || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns the attribute requirement of the item. ||
 || CA_GetItemReqById || Parameter = item id. Returns the attribute requirement of the item. ||
 || CA_GetItemReqByAgent || Parameter = agent id (or -1/-2). Returns the attribute requirement of the item. ||
 
