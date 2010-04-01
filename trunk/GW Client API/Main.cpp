@@ -340,8 +340,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_ChangeMaxZoom: //Change max zoom of GW : No return
-		if( InWParam.f_Param < 0 ||  InWParam.f_Param > 10000) {SendError(header); break;}
-		ChangeMaxZoom(InWParam.f_Param);
+		if(InWParam.i_Param < 0 ||  InWParam.i_Param > 20000) {SendError(header); break;}
+		ChangeMaxZoom((float)InWParam.i_Param);
 		break;
 	case CA_GetLastDialogId: //Get last dialog id : Return int/long
 		OutWParam.i_Param = LastDialogId;
@@ -2074,7 +2074,7 @@ void FindOffsets(){
 
 	byte ChangeTargetCode[] = { 0x33, 0xC0, 0x3B, 0xDA, 0x0F, 0x95, 0xC0, 0x33 };
 
-	byte MaxZoomStillCode[] = { 0x3B, 0x44, 0x8B, 0xCB };
+	byte MaxZoomStillCode[] = { 0xEB, 0x11, 0x68, 0x00, 0x80, 0x3B, 0x44, 0x8B, 0xCF };
 
 	byte MaxZoomMobileCode[] = { 0x50, 0xEB, 0x11, 0x68, 0x00, 0x80, 0x3B, 0x44, 0x8B, 0xCE };
 
@@ -2169,7 +2169,7 @@ void FindOffsets(){
 			ChangeTargetFunction = start-0x78;
 		}
 		if(!memcmp(start, MaxZoomStillCode, sizeof(MaxZoomStillCode))){
-			MaxZoomStill = start-2;
+			MaxZoomStill = start+3;
 		}
 		if(!memcmp(start, MaxZoomMobileCode, sizeof(MaxZoomMobileCode))){
 			MaxZoomMobile = start+4;
