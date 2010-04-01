@@ -27,8 +27,6 @@ byte* MaxZoomStill = NULL;
 byte* MaxZoomMobile = NULL;
 byte* SkillCancelStart = NULL;
 byte* SkillCancelReturn = NULL;
-byte* SellSessionStart = NULL;
-byte* SellSessionReturn = NULL;
 byte* SellItemFunction = NULL;
 byte* BuyItemFunction = NULL;
 byte* PingLocation = NULL;
@@ -59,6 +57,7 @@ byte* TraderCostReturn = NULL;
 byte* TraderFunction = NULL;
 byte* ConnectionLocation = NULL;
 byte* StorageFunction = NULL;
+byte* GetItemValueFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -74,7 +73,6 @@ long MoveItemId = NULL;
 long TmpVariable = NULL;
 long CurrentBag = 1;
 
-long SellSessionId = NULL;
 long LastDialogId = 0;
 byte EngineHookSave[32];
 
@@ -138,21 +136,6 @@ void _declspec(naked) SkillCancelHook(){
 SkillCancelSkip:
 		POPAD
 		JMP SkillCancelReturn
-	}
-}
-
-void _declspec(naked) SellSessionHook(){
-	_asm {
-		PUSH ESI
-		MOV ESI,ECX
-		PUSH EDI
-
-		MOV EDX,DWORD PTR DS:[ESI+4]
-		MOV SellSessionId,EDX
-
-		MOV EDX,2
-
-		JMP SellSessionReturn
 	}
 }
 
@@ -260,7 +243,8 @@ void login(wchar_t* Email,wchar_t* PW,wchar_t* Charr){
 
 void SendError( DWORD header ){
 	Param_t OutWParam;
-	OutWParam.i_Param = header;
+	//OutWParam.i_Param = header;
+	OutWParam.i_Param = 0;
 	myGWCAServer->SetResponse(CA_Error, OutWParam);
 }
 
@@ -1121,11 +1105,11 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_SellItem: //Sell item by indexes : No return
 		OutWParam.i_Param = MyItemManager->GetItemId(InWParam.i_Param, InLParam.i_Param);
-		if(!SellSessionId || !OutWParam.i_Param){SendError(header); break;}
+		if(!OutWParam.i_Param){SendError(header); break;}
 		SellItem(OutWParam.i_Param);
 		break;
 	case CA_SellItemById: //Sell item by item id : No return
-		if(!SellSessionId){SendError(header); break;}
+		if(!MyItemManager->GetItemPtr(InWParam.i_Param)){SendError(header); break;}
 		SellItem(InWParam.i_Param);
 		break;
 	case CA_BuyIdKit: //Buy ID kit : No return
@@ -1568,16 +1552,21 @@ void ReloadSkillbar(){
 }
 
 void SellItem(long itemId){
-	SellItemStruct* pSell = new SellItemStruct;
-	pSell->sessionId = SellSessionId;
-	pSell->itemId = itemId;
+	long itemValue = (MyItemManager->GetItemPtr(itemId)->quantity * GetItemValue(itemId));
+	long* itemIdPtr = &itemId;
 
 	_asm {
-		MOV ECX,pSell
+		PUSH 0
+		PUSH 0
+		PUSH 0
+		PUSH itemValue
+		PUSH 0
+		PUSH itemIdPtr
+		PUSH 1
+		MOV ECX,0xB
+		MOV EDX,0
 		CALL SellItemFunction
 	}
-
-	delete[] pSell;
 }
 
 void BuyItem(long id, long quantity, long value){
@@ -1596,6 +1585,20 @@ void BuyItem(long id, long quantity, long value){
 		MOV ECX,1
 		CALL BuyItemFunction
 	}
+}
+
+long GetItemValue(long itemId){
+	long lRet = 0;
+
+	_asm {
+		PUSHAD
+		MOV ECX,itemId
+		CALL GetItemValueFunction
+		MOV lRet,EAX
+		POPAD
+	}
+
+	return lRet;
 }
 
 void RequestQuote(long id){
@@ -2080,9 +2083,7 @@ void FindOffsets(){
 
 	byte SkillCancelCode[] = { 0x85, 0xC0, 0x74, 0x1D, 0x6A, 0x00, 0x6A, 0x42 };
 
-	byte SellSessionCode[] = { 0x33, 0xD2, 0x8B, 0xCF, 0xC7, 0x46, 0x0C };
-
-	byte SellItemCode[] = { 0x8B, 0x46, 0x0C, 0x8D, 0x7E, 0x0C, 0x85 };
+	byte SellItemCode[] = { 0x8B, 0x4D, 0x20, 0x85, 0xC9, 0x0F, 0x85, 0x8E };
 
 	byte BuyItemCode[] = { 0x64, 0x8B, 0x0D, 0x2C, 0x00, 0x00, 0x00, 0x89, 0x55, 0xFC,
 		0x8B };
@@ -2126,6 +2127,8 @@ void FindOffsets(){
 	byte ConnectionLocationCode[] = { 0x85, 0xC0, 0x74, 0x1A, 0xB9, 0x0A };
 
 	byte StorageFunctionCode[] = { 0x8B, 0xF1, 0x6A, 0x00, 0xBA, 0x0E };
+
+	byte GetItemValueCode[] = { 0x89, 0x45, 0xF8, 0x51, 0xDF, 0x6D, 0xF8, 0xD9 };
 
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -2178,12 +2181,8 @@ void FindOffsets(){
 			SkillCancelStart = start-0xE;
 			SkillCancelReturn = SkillCancelStart+7;
 		}
-		if(!memcmp(start, SellSessionCode, sizeof(SellSessionCode))){
-			SellSessionStart = start-0x48;
-			SellSessionReturn = SellSessionStart+9;
-		}
 		if(!memcmp(start, SellItemCode, sizeof(SellItemCode))){
-			SellItemFunction = start-8;
+			SellItemFunction = start - 0x56;
 		}
 		if(!memcmp(start, BuyItemCode, sizeof(BuyItemCode))){
 			BuyItemFunction = start-0xE;
@@ -2255,6 +2254,9 @@ void FindOffsets(){
 		if(!memcmp(start, StorageFunctionCode, sizeof(StorageFunctionCode))){
 			StorageFunction = start - 6;
 		}
+		if(!memcmp(start, GetItemValueCode, sizeof(GetItemValueCode))){
+			GetItemValueFunction = start - 0x15;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2270,7 +2272,6 @@ void FindOffsets(){
 			MaxZoomStill &&
 			MaxZoomMobile &&
 			SkillCancelStart &&
-			SellSessionStart &&
 			SellItemFunction &&
 			BuyItemFunction &&
 			PingLocation &&
@@ -2292,7 +2293,8 @@ void FindOffsets(){
 			TraderCostStart &&
 			TraderFunction &&
 			ConnectionLocation &&
-			StorageFunction){
+			StorageFunction &&
+			GetItemValueFunction){
 			return;
 		}
 		start++;
@@ -2409,16 +2411,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				VirtualProtect(SkillCancelStart, 7, dwOldProtection, NULL);
 				WriteJMP(SkillCancelStart, (byte*)SkillCancelHook);
 			}
-			if(!SellSessionStart){
-				InjectErr("SellSessionStart");
-				return false;
-			}else{
-				DWORD dwOldProtection;
-				VirtualProtect(SellSessionStart, 9, PAGE_EXECUTE_READWRITE, &dwOldProtection);
-				memset(SellSessionStart, 0x90, 9);
-				VirtualProtect(SellSessionStart, 9, dwOldProtection, NULL);
-				WriteJMP(SellSessionStart, (byte*)SellSessionHook);
-			}
 			if(!SellItemFunction){
 				InjectErr("SellItemFunction");
 				return false;
@@ -2534,6 +2526,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("StorageFunction");
 				return false;
 			}
+			if(!GetItemValueFunction){
+				InjectErr("GetItemValueFunction");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2561,7 +2557,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("MaxZoomMobile=0x%06X\n", MaxZoomMobile);
 			printf("SkillCancelStart=0x%06X\n", SkillCancelStart);
 			printf("SkillCancelReturn=0x%06X\n", SkillCancelReturn);
-			printf("SellSessionStart=0x%06X\n", SellSessionStart);
 			printf("SellItemFunction=0x%06X\n", SellItemFunction);
 			printf("BuyItemFunction=0x%06X\n", BuyItemFunction);
 			printf("PingLocation=0x%06X\n", PingLocation);
@@ -2586,6 +2581,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("TraderFunction=0x%06X\n", TraderFunction);
 			printf("ConnectionLocation=0x%06X\n", ConnectionLocation);
 			printf("StorageFunction=0x%06X\n", StorageFunction);
+			printf("GetItemValueFunction=0x%06X\n", GetItemValueFunction);
 			*/
 			break;
 
