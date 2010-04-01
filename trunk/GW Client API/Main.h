@@ -57,6 +57,7 @@ void SendPacket(CPacket* pak);
 void ReloadSkillbar();
 void SellItem(long itemId);
 void BuyItem(long id, long quantity, long value);
+long GetItemValue(long itemId);
 void RequestQuote(long id);
 void RequestQuoteSell(long id);
 bool TraderBuy();
@@ -90,13 +91,6 @@ struct LoggedSkillStruct {
 	float Distance;
 	long Ping;
 	long TargetId;
-};
-
-struct SellItemStruct {
-	long header;
-	long sessionId;
-	long random;
-	long itemId;
 };
 
 struct PartyPlayerInfo {
