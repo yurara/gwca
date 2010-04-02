@@ -2077,7 +2077,7 @@ void FindOffsets(){
 
 	byte ChangeTargetCode[] = { 0x33, 0xC0, 0x3B, 0xDA, 0x0F, 0x95, 0xC0, 0x33 };
 
-	byte MaxZoomStillCode[] = { 0xEB, 0x11, 0x68, 0x00, 0x80, 0x3B, 0x44, 0x8B, 0xCF };
+	byte MaxZoomStillCode[] = { 0x3B, 0x44, 0x8B, 0xCB };
 
 	byte MaxZoomMobileCode[] = { 0x50, 0xEB, 0x11, 0x68, 0x00, 0x80, 0x3B, 0x44, 0x8B, 0xCE };
 
@@ -2172,7 +2172,7 @@ void FindOffsets(){
 			ChangeTargetFunction = start-0x78;
 		}
 		if(!memcmp(start, MaxZoomStillCode, sizeof(MaxZoomStillCode))){
-			MaxZoomStill = start+3;
+			MaxZoomStill = start-2;
 		}
 		if(!memcmp(start, MaxZoomMobileCode, sizeof(MaxZoomMobileCode))){
 			MaxZoomMobile = start+4;
