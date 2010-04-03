@@ -37,7 +37,6 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_Casting || No parameters, returns a boolean which tells whether or not you're using a skill. ||
 || CA_SkillRecharge || Parameter = skillslot, returns an integer which is either a timestamp if the skill is recharging, or 0 if it's recharged. ||
 || CA_SkillAdrenaline || Parameter = skillslot, returns an integer telling how many points of adrenaline the specified skill has. ||
-|| CA_StoreVar ||  Obsolete, so don't use it. ||
 || CA_SetLogAndHwnd || Parameter = boolean to enable skill log, parameter 2 = hwnd of your script's window. ||
 || CA_GetAgentAndTargetPtr || No parameters, used for debugging purposes. ||
 || CA_GetSkillbarSkillId || Parameter = skillslot, obsolete. ||
@@ -55,6 +54,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || *Command* || *Description* ||
 || CA_Attack || Parameter = id of target, attacks the specified target with weapon. ||
 || CA_Move || Parameters = X and Y coords of location to move to, remember to pack the float values (or simply use MoveEx()) when using this command. ||
+|| CA_MoveOld || Same parameters as CA_Move. This command uses the old mechanics of Move - simply sending a CLICK_LOCATION packet. ||
 || CA_UseSkill || Parameter = skill slot, parameter 2 = target id. Works on all skills including attack skills. Remember that some skills that target yourself may require that specified (if so, use -2 as target id). Current target = -1. ||
 || CA_ChangeWeaponSet || Parameter = weapon slot, changes weapon set. ||
 || CA_ZoneMap || Parameter = zone id, optional parameter 2 = district number (use 0 for active district), zones to the outpost/city specified and if district number is provided also attempts to enter that district. Always uses current region and language. ||
@@ -62,34 +62,28 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GoNpc || Parameter = id of NPC, goes to specified NPC. ||
 || CA_GoPlayer || Parameter = id of player, goes to specified player (for use in outposts/cities). ||
 || CA_GoSignpost || Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name). ||
-|| CA_UseAttackSkill || Obsolete, please refer to CA_UseSkill. ||
 || CA_EnterChallenge || No parameters, enters the challenge if you're in a Challenge Mission outpost. ||
 || CA_OpenChest || No parameters, opens the nearest chest if you're within 'close range'. ||
 || CA_SetEventSkillMode || Obsolete, don't use it. ||
-|| CA_UseSkillbarSkill || Obsolete, please refer to CA_UseSkill. ||
 || CA_PickupItem || Parameter = id of item, picks up the specified item. ||
-|| CA_UseSkillbarAttackSkill || Obsolete, please refer to CA_UseSkill. ||
 || CA_Dialog || Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId ||
 || CA_ChangeTarget || Parameter = id of target, changes target. ||
-|| CA_StatusBot || Kinda obsolete. ||
 || CA_TargetNearestFoe || No parameters, targets the nearest foe. ||
 || CA_TargetNearestAlly || No parameters, targets the nearest ally. ||
 || CA_TargetNearestItem || No parameters, targets the nearest item/signpost/chest. ||
-|| CA_StatusDelay || Kinda obsolete aswell. ||
 || CA_TargetCalledTarget || No parameters, targets the currently called target of the party. ||
 || CA_UseHero1Skill || Parameter = skillslot, parameter 2 = id of target. ||
 || CA_UseHero2Skill || Parameter = skillslot, parameter 2 = id of target. ||
 || CA_UseHero3Skill || Parameter = skillslot, parameter 2 = id of target. ||
-|| CA_StatusMiss || Kinda obsolete, yay. ||
 || CA_CancelAction || No parameters, cancels your current action. Just like pressing ESC. ||
-|| CA_StatusTab || Yay for obsolete. ||
 || CA_GetNamePtr || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
 || CA_CommandHero1 || Parameters = X and Y floats packed of course. To unflag, set X and Y to $FLAG_RESET like this: Cmd($CA_CommandHero1, $FLAG_RESET, $FLAG_RESET)||
 || CA_CommandHero2 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || Same as CA_COMMANDHERO1. ||
 || CA_CommandAll || Same as CA_COMMANDHERO1. ||
-|| CA_ChangeDistrict || Parameter = region (0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese,4 = asia japanese), parameter 2 = language (experiment around with this!). ||
+|| CA_ChangeDistrict || Parameter = region (-1 = international, 0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese, 4 = asia japanese), parameter 2 = language (experiment around with this!). ||
 || CA_Resign || No parameters. ||
+|| CA_UpdateClientPosition || No parameters. Sends "/stuck" to chat effectively updating your client's position. ||
 || CA_ReturnToOutpost || No parameters. "Presses" the Return To Outpost button after resigning. ||
 || CA_GoAgent || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
 || CA_DonateFaction || Parameter = 0 for Kurzick, 1 for Luxon. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
