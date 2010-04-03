@@ -237,6 +237,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetItemReq || Parameter = item slot. Optional parameter = bag index (otherwise use CA_SetBag). Returns the attribute requirement of the item. ||
 || CA_GetItemReqById || Parameter = item id. Returns the attribute requirement of the item. ||
 || CA_GetItemReqByAgent || Parameter = agent id (or -1/-2). Returns the attribute requirement of the item. ||
+|| CA_GetDyePositionByColor || Parameter = dye color id (see GWCAConstants.au3 $DYE_), optional parameter 2 = starting bag. Returns the position, if found, of the specified dye as bag,slot. ||
 
 ----
 
@@ -291,3 +292,6 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TraderRequestSell || Parameter = bag index, parameter 2 = item slot. Sends a Request Quote on the specified item (remember to use the right trader for the item). Wait using CA_TraderCheck until the info is received. ||
 || CA_TraderRequestSellById || Parameter = item id. Same as CA_TraderRequestSell, but instead, simply takes an item id as input. ||
 || CA_TraderSell || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequestSell(ById) and waiting until item id and cost has been received before it works! ||
+|| CA_GetNumberOfFoesInRangeOfAgent || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of foes counted. ||
+|| CA_GetNumberOfAlliesInRangeOfAgent || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of allies counted. ||
+|| CA_GetNumberOfItemsInRange || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of items counted. ||
