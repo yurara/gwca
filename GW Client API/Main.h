@@ -54,6 +54,7 @@ extern AgentArray Agents;
 #include "GuildWarsFunctions.h"
 
 void SendPacket(CPacket* pak);
+void HandleCommands();
 void ReloadSkillbar();
 void SellItem(long itemId);
 void BuyItem(long id, long quantity, long value);
@@ -74,6 +75,8 @@ void TargetNextFoe();
 void GoAgent(long agentId);
 void UseHeroSkill(long HeroId, long SkillNumber, long Target);
 void UseSkillNew(long SkillId, long Target, long Event);
+void UseSkillSuperNew(long SkillSlot, long Target);
+void Move(float X, float Y);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
 void SetEngineHook(int Enable);

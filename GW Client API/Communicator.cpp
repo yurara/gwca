@@ -156,6 +156,7 @@ HRESULT GWCAServer::ListenConnectedPipes()
 
 	while (true)
 	{
+		Sleep(0);
 		ret = port.DequeuePacket(INFINITE, dwRead, completitionKey, pOverlapped);
 		if (ret != S_OK)
 		{
