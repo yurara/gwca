@@ -152,8 +152,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetModelState || Kinda obsolete. ||
 || CA_GetIsAttacking || Parameter = id of agent, returns boolean. ||
 || CA_GetIsKnockedDown || Parameter = id of agent, returns boolean. ||
-|| CA_GetIsMoving || Same as the other 'IS' commands. ||
-|| CA_GetIsDead || Same as the other 'IS' commands. ||
+|| CA_GetIsMoving || Same as the other 'Is' commands, but this one can even tell the truth through rubberbanding and random stuck! ||
+|| CA_GetIsDead || Same as the other 'Is' commands. ||
 || CA_GetIsCasting || Obsolete when there's CA_GetSkill, but whatever. ||
 || CA_GetFirstAgentByPlayerNumber || Parameter = player/model number, returns the first (id-wise) agent with that number. ||
 || CA_GetAllegiance || Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet. ||
