@@ -67,6 +67,9 @@ long GetNumberOfAgentsByPlayerNumber(long playerNumber);
 long GetNumberOfAliveEnemyAgents();
 long GetNextItem(unsigned long startId);
 long GetNearestItemByModelId(long modelId);
+long GetNumberOfFoesInRangeOfAgent(long agentId, float dist);
+long GetNumberOfAlliesInRangeOfAgent(long agentId, float dist);
+long GetNumberOfItemsInRangeOfAgent(long agentId, float dist);
 int IsAttackedMelee(long agentId);
 
 #endif

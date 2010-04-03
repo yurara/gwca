@@ -706,6 +706,75 @@ long GetNearestItemByModelId(long modelId){
 	return lLowest;
 }
 
+long GetNumberOfFoesInRangeOfAgent(long agentId, float dist){
+	if(agentId == NULL){return 0;}
+	if(dist == NULL){return 0;}
+
+	long lCount = 0;
+	float aDistance = 2500000000;
+	float aTemp = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
+		if(Agents[i]->Allegiance == 0x300){
+			aTemp = GetDistanceFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0 && aTemp < dist){lCount++;}
+		}
+	}
+	}
+	__except(1) {
+		return lCount;
+	}
+	return lCount;
+}
+
+long GetNumberOfAlliesInRangeOfAgent(long agentId, float dist){
+	if(agentId == NULL){return 0;}
+	if(dist == NULL){return 0;}
+
+	long lCount = 0;
+	float aDistance = 2500000000;
+	float aTemp = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
+		if(Agents[i]->Allegiance == 0x100){
+			aTemp = GetDistanceFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0 && aTemp < dist){lCount++;}
+		}
+	}
+	}
+	__except(1) {
+		return lCount;
+	}
+	return lCount;
+}
+
+long GetNumberOfItemsInRangeOfAgent(long agentId, float dist){
+	if(agentId == NULL){return 0;}
+	if(dist == NULL){return 0;}
+
+	long lCount = 0;
+	float aDistance = 2500000000;
+	float aTemp = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->Type == 0x400){
+			aTemp = GetDistanceFromAgentToAgent(agentId, i);
+			if(aDistance > aTemp && aTemp != 0 && aTemp < dist){lCount++;}
+		}
+	}
+	}
+	__except(1) {
+		return lCount;
+	}
+	return lCount;
+}
+
+
 int IsAttackedMelee(long agentId){
 	if(Agents[agentId] == NULL){return -10;}
 

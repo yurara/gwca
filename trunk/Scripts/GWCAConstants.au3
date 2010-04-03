@@ -75,7 +75,8 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem,  _
 	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderSell, _
 	$CA_GetItemExtraId, $CA_GetItemExtraIdById, $CA_GetConnection, _
-	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, _
+	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, $CA_GetDyePositionByColor, _
+	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
 	$CA_RequestsEnd
 
 

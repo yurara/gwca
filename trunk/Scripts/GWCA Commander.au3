@@ -9,14 +9,14 @@ $myGUI = GUICreate("GWCA Commander", 300, 100)
 $inputCmd = GUICtrlCreateCombo("", 5, 5, 290, 20, BitOr($GUI_SS_DEFAULT_COMBO, $CBS_SORT, $CBS_DROPDOWNLIST))
 GUICtrlSetFont(-1, 7.5)
 GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecharge|$CA_SkillAdrenaline|"& _
-					"$CA_StoreVar|$CA_SetLogAndHwnd|$CA_GetAgentAndTargetPtr|$CA_GetSkillbarSkillId|$CA_GetMyMaxHP|$CA_GetMyMaxEnergy|$CA_GetBuildNumber|"& _
+					"$CA_SetLogAndHwnd|$CA_GetAgentAndTargetPtr|$CA_GetSkillbarSkillId|$CA_GetMyMaxHP|$CA_GetMyMaxEnergy|$CA_GetBuildNumber|"& _
 					"$CA_ChangeMaxZoom|$CA_GetLastDialogId|$CA_SetEngineHook|"& _
 					"$CA_Attack|$CA_Move|$CA_UseSkill|"& _
-					"$CA_ChangeWeaponSet|$CA_ZoneMap|$CA_DropGold|$CA_GoNpc|$CA_GoPlayer|$CA_GoSignpost|$CA_UseAttackSkill|"& _
-					"$CA_EnterChallenge|$CA_OpenChest|$CA_SetEventSkillMode|$CA_UseSkillbarSkill|$CA_PickupItem|"& _
-					"$CA_UseSkillbarAttackSkill|$CA_Dialog|$CA_ChangeTarget|$CA_StatusBot|$CA_TargetNearestFoe|$CA_TargetNearestAlly|"& _
-					"$CA_TargetNearestItem|$CA_StatusDelay|$CA_TargetCalledTarget|$CA_UseHero1Skill|$CA_UseHero2Skill|$CA_UseHero3Skill|$CA_StatusMiss|"& _
-					"$CA_CancelAction|$CA_StatusTab|$CA_GetNamePtr|$CA_CommandHero1|$CA_CommandHero2|$CA_CommandHero3|$CA_CommandAll|$CA_ChangeDistrict|"& _
+					"$CA_ChangeWeaponSet|$CA_ZoneMap|$CA_DropGold|$CA_GoNpc|$CA_GoPlayer|$CA_GoSignpost|"& _
+					"$CA_EnterChallenge|$CA_OpenChest|$CA_SetEventSkillMode|$CA_PickupItem|"& _
+					"$CA_Dialog|$CA_ChangeTarget|$CA_TargetNearestFoe|$CA_TargetNearestAlly|"& _
+					"$CA_TargetNearestItem|$CA_TargetCalledTarget|$CA_UseHero1Skill|$CA_UseHero2Skill|$CA_UseHero3Skill|$CA_StatusMiss|"& _
+					"$CA_CancelAction|$CA_GetNamePtr|$CA_CommandHero1|$CA_CommandHero2|$CA_CommandHero3|$CA_CommandAll|$CA_ChangeDistrict|"& _
 					"$CA_Resign|$CA_ReturnToOutpost|"& _
 					"$CA_GetMapLoading|$CA_GetMapId|$CA_GetPing|$CA_GetLoggedIn|$CA_GetDead|$CA_GetBalthFaction|$CA_GetKurzFaction|$CA_GetLuxonFaction|"& _
 					"$CA_GetTitleTreasure|$CA_GetTitleLucky|$CA_GetTitleUnlucky|$CA_GetTitleWisdom|"& _
@@ -49,7 +49,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_GetTitleGamer|$CA_GetExperience|$CA_GetItemIdByAgent|$CA_GetItemInfoByAgent|$CA_GetItemLastModifierByAgent|$CA_GetNearestItemByModelId|")
 GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell|"& _
 					"$CA_GetItemExtraId|$CA_GetItemExtraIdById|$CA_GetConnection|$CA_OpenStorage|$CA_GetItemExtraIdByAgent|$CA_GetItemReq|$CA_GetItemReqById|"& _
-					"$CA_GetItemReqByAgent")
+					"$CA_GetItemReqByAgent|$CA_GetDyePositionByColor|$CA_GetNumberOfFoesInRangeOfAgent|$CA_GetNumberOfAlliesInRangeOfAgent|"& _
+					"$CA_GetNumberOfItemsInRangeOfAgent")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)

@@ -94,7 +94,8 @@ enum GWCA_COMMANDS{
 	CA_GetNearestNpcToCoords, CA_GetLoginNumber, CA_GetNumberOfAgentsByPlayerNumber, CA_GetNumberOfAliveEnemyAgents, CA_GetNextItem, 
 	CA_QuestCheck, CA_QuestCoords, CA_QuestActive, CA_AllocMem, CA_TraderCheck, CA_TraderBuy, CA_TraderSell,
 	CA_GetItemExtraId, CA_GetItemExtraIdById, CA_GetConnection,
-	CA_GetItemExtraIdByAgent, CA_GetItemReq, CA_GetItemReqById, CA_GetItemReqByAgent,
+	CA_GetItemExtraIdByAgent, CA_GetItemReq, CA_GetItemReqById, CA_GetItemReqByAgent, CA_GetDyePositionByColor,
+	CA_GetNumberOfFoesInRangeOfAgent, CA_GetNumberOfAlliesInRangeOfAgent, CA_GetNumberOfItemsInRangeOfAgent,
 	CA_RequestsEnd
 };
 

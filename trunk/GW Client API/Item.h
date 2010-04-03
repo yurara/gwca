@@ -176,6 +176,26 @@ public:
 		return 0;
 	}
 
+	long GetDyePositionByColor(short extraId, long mode, long startingBag = 1){
+			for(int i = startingBag;i < 17;i++){
+			Bag* pBag = GetBagPtr(i);
+			if(!pBag){ continue; }
+
+			Item** pItems = pBag->itemArray;
+			if(!pItems){ continue; }
+			Item* pCurrentItem;
+			for(int j = 0;j < pBag->slots;j++){
+				pCurrentItem = pItems[j];
+				if(!pCurrentItem){ continue; }
+				if(pCurrentItem->modelId == 146 && pCurrentItem->extraId == extraId){
+					if(mode == 1){ return i; }
+					if(mode == 2){ return j+1; }
+				}
+			}
+		}
+		return 0;
+	}
+
 	long FindEmptySlot(long startingBag, long mode){
 		for(int i = startingBag;i < 17;i++){
 			Bag* pBag = GetBagPtr(i);

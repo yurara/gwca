@@ -13,8 +13,6 @@ byte* PacketSendFunction = NULL;
 byte* CurrentTarget = NULL;
 byte* AgentArrayPtr = NULL;
 byte* AgentArrayMaxPtr = NULL;
-byte* MessageHandlerStart = NULL;
-byte* MessageHandlerReturn = NULL;
 byte* SkillLogStart = NULL;
 byte* SkillLogReturn = NULL;
 byte* WriteWhisperStart = NULL;
@@ -58,6 +56,8 @@ byte* TraderFunction = NULL;
 byte* ConnectionLocation = NULL;
 byte* StorageFunction = NULL;
 byte* GetItemValueFunction = NULL;
+byte* MoveFunction = NULL;
+byte* UseSkillFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -341,28 +341,25 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		AttackTarget(InWParam.i_Param);
 		break;
 	case CA_Move: //Move to x, y : No return
-		MovePlayer(InWParam.f_Param, InLParam.f_Param);
+		Move(InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_UseSkill: //Use skill : No return
 		ReloadSkillbar();
 		if(MySkillbar == NULL || InWParam.i_Param < 1 || InWParam.i_Param > 8){SendError(header); break;}
 		if(InLParam.i_Param == -1){
-			UseSkillNew(
-				MySkillbar->Skill[InWParam.i_Param-1].Id,
-				*(long*)CurrentTarget,
-				MySkillbar->Skill[InWParam.i_Param-1].Event);
+			UseSkillSuperNew(
+				InWParam.i_Param,
+				*(long*)CurrentTarget);
 		}
 		else if(InLParam.i_Param == -2){
-			UseSkillNew(
-				MySkillbar->Skill[InWParam.i_Param-1].Id,
-				myId,
-				MySkillbar->Skill[InWParam.i_Param-1].Event);
+			UseSkillSuperNew(
+				InWParam.i_Param,
+				myId);
 		}
 		else {
-			UseSkillNew(
-				MySkillbar->Skill[InWParam.i_Param-1].Id,
-				InLParam.i_Param,
-				MySkillbar->Skill[InWParam.i_Param-1].Event);
+			UseSkillSuperNew(
+				InWParam.i_Param,
+				InLParam.i_Param);
 		}
 		break;
 	case CA_ChangeWeaponSet: //Change weapon set : No return
@@ -1318,6 +1315,12 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemReq->attribute;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
+	case CA_GetDyePositionByColor: //Get dye position based on extraId : Return int/long & int/long
+		if(InWParam.i_Param==NULL) {SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetDyePositionByColor(InWParam.i_Param, 1, InLParam.i_Param);
+		OutLParam.i_Param = MyItemManager->GetDyePositionByColor(InWParam.i_Param, 2, InLParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
 
 		//Title related commands
 	case CA_GetTitleSunspear: //Get current Sunspear Title: Return int/long
@@ -1523,6 +1526,24 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_TraderSell: //Sell item to trader : Return int/boolean
 		OutWParam.d_Param = TraderSell() ? 1 : 0;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNumberOfFoesInRangeOfAgent: //Number of foes within specified range of specified agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		OutWParam.i_Param = GetNumberOfFoesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNumberOfAlliesInRangeOfAgent: //Number of allies within specified range of specified agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		OutWParam.i_Param = GetNumberOfAlliesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNumberOfItemsInRangeOfAgent: //Number of items within specified range of specified agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		OutWParam.i_Param = GetNumberOfItemsInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	}
@@ -1860,6 +1881,31 @@ void UseSkillNew(long SkillId, long Target, long Event){
 	}
 }
 
+void UseSkillSuperNew(long SkillSlot, long Target){
+	long lMyId = myId;
+	SkillSlot -= 1;
+
+	_asm {
+		MOV ECX,lMyId
+		MOV EDX,SkillSlot
+		PUSH 0
+		PUSH Target
+		CALL UseSkillFunction
+	}
+}
+
+void Move(float X, float Y){
+	float* fCoords = new float[3];
+	fCoords[0] = X;
+	fCoords[1] = Y;
+	fCoords[2] = 0;
+
+	_asm {
+		MOV ECX,fCoords
+		CALL MoveFunction
+	}
+}
+
 bool CompareAccName(wchar_t* cmpName){
 	if(wcscmp(cmpName, MySectionA->Email()) == NULL)
 		return true;
@@ -1881,7 +1927,7 @@ void ChangeMaxZoom(float fZoom){
 	VirtualProtect(MaxZoomStill, sizeof(float), dwOldProtection, NULL);
 	VirtualProtect(MaxZoomMobile, sizeof(float), PAGE_EXECUTE_READWRITE, &dwOldProtection);
 	memcpy(MaxZoomMobile, &fZoom, sizeof(float));
-	VirtualProtect(MaxZoomStill, sizeof(float), dwOldProtection, NULL);
+	VirtualProtect(MaxZoomMobile, sizeof(float), dwOldProtection, NULL);
 }
 
 void SetEngineHook(int Enable){
@@ -2056,8 +2102,6 @@ void FindOffsets(){
 
 	byte AgentBaseCode[] = { 0x56, 0x8B, 0xF1, 0x3B, 0xF0, 0x72, 0x04 };
 
-	byte MessageHandlerCode[] = { 0x8B, 0x86, 0xA4, 0x0C, 0x00, 0x00, 0x85, 0xC0, 0x0F };
-
 	byte SkillLogCode[] = { 0x8B, 0x46, 0x10, 0x5F, 0x40 };
 
 	byte MapIdLocationCode[] = { 0xB0, 0x7F, 0x8D, 0x55 };
@@ -2130,6 +2174,10 @@ void FindOffsets(){
 
 	byte GetItemValueCode[] = { 0x89, 0x45, 0xF8, 0x51, 0xDF, 0x6D, 0xF8, 0xD9 };
 
+	byte MoveFunctionCode[] = { 0xD9, 0x07, 0xD8, 0x5D, 0xF0, 0xDF, 0xE0, 0xF6, 0xC4, 0x01 };
+
+	byte UseSkillFunctionCode[] = { 0x8B, 0x14, 0x81, 0x89, 0x5D };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -2141,10 +2189,6 @@ void FindOffsets(){
 		}
 		if(!memcmp(start, PacketSendCode, sizeof(PacketSendCode))){
 			PacketSendFunction = start;
-		}
-		if(!memcmp(start, MessageHandlerCode, sizeof(MessageHandlerCode))){
-			MessageHandlerStart = start-0x95;
-			MessageHandlerReturn = MessageHandlerStart+9;
 		}
 		if(!memcmp(start, SkillLogCode, sizeof(SkillLogCode))){
 			SkillLogStart = start;
@@ -2257,10 +2301,15 @@ void FindOffsets(){
 		if(!memcmp(start, GetItemValueCode, sizeof(GetItemValueCode))){
 			GetItemValueFunction = start - 0x15;
 		}
+		if(!memcmp(start, MoveFunctionCode, sizeof(MoveFunctionCode))){
+			MoveFunction = start - 0x12;
+		}
+		if(!memcmp(start, UseSkillFunctionCode, sizeof(UseSkillFunctionCode))){
+			UseSkillFunction = start - 0x1C;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
-			MessageHandlerStart &&
 			SkillLogStart &&
 			MapIdLocation &&
 			WriteWhisperStart &&
@@ -2294,7 +2343,9 @@ void FindOffsets(){
 			TraderFunction &&
 			ConnectionLocation &&
 			StorageFunction &&
-			GetItemValueFunction){
+			GetItemValueFunction &&
+			MoveFunction &&
+			UseSkillFunction){
 			return;
 		}
 		start++;
@@ -2336,16 +2387,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			if(!AgentArrayPtr){
 				InjectErr("AgentArrayPtr");
 				return false;
-			}
-			if(!MessageHandlerStart){
-				InjectErr("MessageHandler");
-				return false;
-			}else{
-				//DWORD dwOldProtection;
-				//VirtualProtect(MessageHandlerStart, 9, PAGE_EXECUTE_READWRITE, &dwOldProtection);
-				//memset(MessageHandlerStart, 0x90, 9);
-				//VirtualProtect(MessageHandlerStart, 9, dwOldProtection, NULL);
-				//WriteJMP(MessageHandlerStart, (byte*)CustomMsgHandler);
 			}
 			if(!SkillLogStart){
 				InjectErr("SkillLog");
@@ -2530,6 +2571,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("GetItemValueFunction");
 				return false;
 			}
+			if(!MoveFunction){
+				InjectErr("MoveFunction");
+				return false;
+			}
+			if(!UseSkillFunction){
+				InjectErr("UseSkillFunction");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2543,8 +2592,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("CurrentTarget=0x%06X\n", CurrentTarget);
 			printf("AgentArrayPtr=0x%06X\n", AgentArrayPtr);
 			printf("AgentArrayMaxPtr=0x%06X\n", AgentArrayMaxPtr);
-			printf("MessageHandlerStart=0x%06X\n", MessageHandlerStart);
-			printf("MessageHandlerReturn=0x%06X\n", MessageHandlerReturn);
 			printf("SkillLogStart=0x%06X\n", SkillLogStart);
 			printf("SkillLogReturn=0x%06X\n", SkillLogReturn);
 			printf("WriteWhisperStart=0x%06X\n", WriteWhisperStart);
@@ -2582,6 +2629,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("ConnectionLocation=0x%06X\n", ConnectionLocation);
 			printf("StorageFunction=0x%06X\n", StorageFunction);
 			printf("GetItemValueFunction=0x%06X\n", GetItemValueFunction);
+			printf("MoveFunction=0x%06X\n", MoveFunction);
+			printf("UseSkillFunction=0x%06X\n", UseSkillFunction);
 			*/
 			break;
 
