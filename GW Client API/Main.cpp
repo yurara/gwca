@@ -58,11 +58,13 @@ byte* StorageFunction = NULL;
 byte* GetItemValueFunction = NULL;
 byte* MoveFunction = NULL;
 byte* UseSkillFunction = NULL;
+byte* UpdateAgentPositionFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
 
 AgentArray Agents;
+AgentMovementArray AgentMovements;
 
 BuffHandler MyBuffHandler;
 
@@ -343,6 +345,9 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_Move: //Move to x, y : No return
 		Move(InWParam.f_Param, InLParam.f_Param);
 		break;
+	case CA_MoveOld: //Move to x, y : No return
+		MovePlayer(InWParam.f_Param, InLParam.f_Param);
+		break;
 	case CA_UseSkill: //Use skill : No return
 		ReloadSkillbar();
 		if(MySkillbar == NULL || InWParam.i_Param < 1 || InWParam.i_Param > 8){SendError(header); break;}
@@ -502,6 +507,12 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_Resign: //Send /resign to chat, effectively resigning : No return
 		SendChat('/',"resign");
+		break;
+	case CA_UpdateAgentPosition: //Send /stuck to chat, effectively updating client position : No return
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		UpdateAgentPosition(InWParam.i_Param);
 		break;
 	case CA_ReturnToOutpost: //Send "Return to Outpost" packet : No return
 		ReturnToOutpost();
@@ -743,6 +754,13 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.d_Param = (DWORD)Agents[InWParam.i_Param];
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
+	case CA_GetAgentMovementPtr: //Get pointer to agent movement : Return ptr
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(AgentMovements[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		OutWParam.d_Param = (DWORD)AgentMovements[InWParam.i_Param];
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
 	case CA_GetType: //Get agent type : Return int/long
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
@@ -840,16 +858,9 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_GetIsMoving: //Check if agent is moving : Return int/bool
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
-		if(Agents[InWParam.i_Param]->ModelState == 0x0C||
-			Agents[InWParam.i_Param]->ModelState == 0x4C||
-			Agents[InWParam.i_Param]->ModelState == 0xCC)
-		{
-			OutWParam.i_Param = 1;
-		}else{
-			OutWParam.i_Param = 0;
-		}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(AgentMovements[InWParam.i_Param]==NULL){SendError(header); break;}
+		OutWParam.i_Param = (AgentMovements[InWParam.i_Param]->Moving1 > 0) ? 1 : 0;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsDead: //Check if agent is dead : Return int/bool
@@ -1904,6 +1915,27 @@ void Move(float X, float Y){
 		MOV ECX,fCoords
 		CALL MoveFunction
 	}
+
+	delete [] fCoords;
+}
+
+void UpdateAgentPosition(long agentId){
+	if(!AgentMovements[agentId]){ return; }
+
+	AgentMovement* pAg = AgentMovements[agentId];
+
+	UpdateAgentPositionStruct* pUAP = new UpdateAgentPositionStruct;
+	pUAP->Header = 0x21;
+	pUAP->AgentId = agentId;
+	pUAP->X = pAg->X;
+	pUAP->Y = pAg->Y;
+	pUAP->Zero1 = 0;
+	pUAP->Zero2 = 0;
+
+	_asm {
+		MOV ECX,pUAP
+		CALL UpdateAgentPositionFunction
+	}
 }
 
 bool CompareAccName(wchar_t* cmpName){
@@ -2178,6 +2210,8 @@ void FindOffsets(){
 
 	byte UseSkillFunctionCode[] = { 0x8B, 0x14, 0x81, 0x89, 0x5D };
 
+	byte UpdateAgentPositionCode[] = { 0x8B, 0x46, 0x04, 0x3B, 0x87, 0x54, 0x01 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -2307,6 +2341,9 @@ void FindOffsets(){
 		if(!memcmp(start, UseSkillFunctionCode, sizeof(UseSkillFunctionCode))){
 			UseSkillFunction = start - 0x1C;
 		}
+		if(!memcmp(start, UpdateAgentPositionCode, sizeof(UpdateAgentPositionCode))){
+			UpdateAgentPositionFunction = start - 0xA6;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2345,7 +2382,8 @@ void FindOffsets(){
 			StorageFunction &&
 			GetItemValueFunction &&
 			MoveFunction &&
-			UseSkillFunction){
+			UseSkillFunction &&
+			UpdateAgentPositionFunction){
 			return;
 		}
 		start++;
@@ -2579,6 +2617,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("UseSkillFunction");
 				return false;
 			}
+			if(!UpdateAgentPositionFunction){
+				InjectErr("UpdateAgentPositionFunction");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2631,6 +2673,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("GetItemValueFunction=0x%06X\n", GetItemValueFunction);
 			printf("MoveFunction=0x%06X\n", MoveFunction);
 			printf("UseSkillFunction=0x%06X\n", UseSkillFunction);
+			printf("UpdateAgentPositionFunction=0x%06X\n", UpdateAgentPositionFunction);
 			*/
 			break;
 
