@@ -355,7 +355,7 @@ Func MoveToEx($x, $y, $random = 50)
 		CmdCB($CA_GetIsMoving, -2)
 		If $cbVar[0] = 0 Then
 			$iBlocked += 1
-			Cmd($CA_UpdateClientPosition)
+			Cmd($CA_UpdateAgentPosition, -2)
 			MoveEx($x, $y, $random)
 		EndIf
 
