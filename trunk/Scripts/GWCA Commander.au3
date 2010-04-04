@@ -15,7 +15,7 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_ChangeWeaponSet|$CA_ZoneMap|$CA_DropGold|$CA_GoNpc|$CA_GoPlayer|$CA_GoSignpost|"& _
 					"$CA_EnterChallenge|$CA_OpenChest|$CA_SetEventSkillMode|$CA_PickupItem|"& _
 					"$CA_Dialog|$CA_ChangeTarget|$CA_TargetNearestFoe|$CA_TargetNearestAlly|"& _
-					"$CA_TargetNearestItem|$CA_TargetCalledTarget|$CA_UseHero1Skill|$CA_UseHero2Skill|$CA_UseHero3Skill|$CA_StatusMiss|"& _
+					"$CA_TargetNearestItem|$CA_TargetCalledTarget|$CA_UseHero1Skill|$CA_UseHero2Skill|$CA_UseHero3Skill|"& _
 					"$CA_CancelAction|$CA_GetNamePtr|$CA_CommandHero1|$CA_CommandHero2|$CA_CommandHero3|$CA_CommandAll|$CA_ChangeDistrict|"& _
 					"$CA_Resign|$CA_ReturnToOutpost|"& _
 					"$CA_GetMapLoading|$CA_GetMapId|$CA_GetPing|$CA_GetLoggedIn|$CA_GetDead|$CA_GetBalthFaction|$CA_GetKurzFaction|$CA_GetLuxonFaction|"& _
@@ -50,7 +50,7 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell|"& _
 					"$CA_GetItemExtraId|$CA_GetItemExtraIdById|$CA_GetConnection|$CA_OpenStorage|$CA_GetItemExtraIdByAgent|$CA_GetItemReq|$CA_GetItemReqById|"& _
 					"$CA_GetItemReqByAgent|$CA_GetDyePositionByColor|$CA_GetNumberOfFoesInRangeOfAgent|$CA_GetNumberOfAlliesInRangeOfAgent|"& _
-					"$CA_GetNumberOfItemsInRangeOfAgent")
+					"$CA_GetNumberOfItemsInRangeOfAgent|$CA_UpdateAgentPosition|$CA_MoveOld|$CA_GetAgentMovementPtr")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
@@ -87,7 +87,7 @@ While 1
 
 			If $sendCmd = $CA_MOVE OR $sendCmd = $CA_GETNEARESTAGENTTOCOORDS OR $sendCmd = $CA_GETNEARESTNPCTOCOORDS OR _
 				$sendCmd = $CA_COMMANDHERO1 OR $sendCmd = $CA_COMMANDHERO2 OR $sendCmd = $CA_COMMANDHERO3 OR _
-				$sendCmd = $CA_COMMANDALL Then
+				$sendCmd = $CA_COMMANDALL OR $sendCmd = $CA_MoveOld Then
 				$sendW = _FloatToInt($sendW)
 				$sendL = _FloatToInt($sendL)
 			EndIf

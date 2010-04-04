@@ -57,8 +57,9 @@ enum GWCA_COMMANDS{
 	CA_SetBag, CA_PrepareMoveItem, CA_MoveItem, 
 	CA_IdentifyItem, CA_IdentifyItemById, CA_SalvageItem, 
 	CA_SellItem, CA_SellItemById, CA_BuyIdKit, CA_BuySuperiorIdKit,
-	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, 
+	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, CA_TraderBuy, CA_TraderSell,
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
+	CA_UpdateAgentPosition, CA_MoveOld,
 	CA_CommandsEnd,
 
 	//Requests
@@ -92,10 +93,11 @@ enum GWCA_COMMANDS{
 	CA_GetNearestAgentByPlayerNumber, CA_GetNearestEnemyToAgentByAllegiance, CA_GetNearestAliveEnemyToAgent, 
 	CA_GetNearestSignpostToAgent, CA_GetNearestNpcToAgentByAllegiance, CA_GetNearestAgentToCoords,
 	CA_GetNearestNpcToCoords, CA_GetLoginNumber, CA_GetNumberOfAgentsByPlayerNumber, CA_GetNumberOfAliveEnemyAgents, CA_GetNextItem, 
-	CA_QuestCheck, CA_QuestCoords, CA_QuestActive, CA_AllocMem, CA_TraderCheck, CA_TraderBuy, CA_TraderSell,
+	CA_QuestCheck, CA_QuestCoords, CA_QuestActive, CA_AllocMem, CA_TraderCheck,
 	CA_GetItemExtraId, CA_GetItemExtraIdById, CA_GetConnection,
 	CA_GetItemExtraIdByAgent, CA_GetItemReq, CA_GetItemReqById, CA_GetItemReqByAgent, CA_GetDyePositionByColor,
 	CA_GetNumberOfFoesInRangeOfAgent, CA_GetNumberOfAlliesInRangeOfAgent, CA_GetNumberOfItemsInRangeOfAgent,
+	CA_GetAgentMovementPtr,
 	CA_RequestsEnd
 };
 

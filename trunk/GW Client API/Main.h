@@ -46,6 +46,7 @@ template <typename T> T ReadPtrChain(
 
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
+extern AgentMovementArray AgentMovements;
 
 #include "MapOverlay.h"
 #include "Item.h"
@@ -77,6 +78,7 @@ void UseHeroSkill(long HeroId, long SkillNumber, long Target);
 void UseSkillNew(long SkillId, long Target, long Event);
 void UseSkillSuperNew(long SkillSlot, long Target);
 void Move(float X, float Y);
+void UpdateAgentPosition(long agentId);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
 void SetEngineHook(int Enable);
@@ -94,6 +96,15 @@ struct LoggedSkillStruct {
 	float Distance;
 	long Ping;
 	long TargetId;
+};
+
+struct UpdateAgentPositionStruct {
+	long Header; // = 0x21
+	long AgentId;
+	float X;
+	float Y;
+	float Zero1;
+	float Zero2;
 };
 
 struct PartyPlayerInfo {

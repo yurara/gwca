@@ -40,8 +40,9 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_SetBag, $CA_PrepareMoveItem, $CA_MoveItem,  _
 	$CA_IdentifyItem, $CA_IdentifyItemById, $CA_SalvageItem,  _
 	$CA_SellItem, $CA_SellItemById, $CA_BuyIdKit, $CA_BuySuperiorIdKit, _
-	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, _
+	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, $CA_TraderBuy, $CA_TraderSell, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
+	$CA_UpdateAgentPosition, $CA_MoveOld, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -73,10 +74,11 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNearestAgentByPlayerNumber, $CA_GetNearestEnemyToAgentByAllegiance, $CA_GetNearestAliveEnemyToAgent,  _
 	$CA_GetNearestSignpostToAgent, $CA_GetNearestNpcToAgentByAllegiance, $CA_GetNearestAgentToCoords, _
 	$CA_GetNearestNpcToCoords, $CA_GetLoginNumber, $CA_GetNumberOfAgentsByPlayerNumber, $CA_GetNumberOfAliveEnemyAgents, $CA_GetNextItem,  _
-	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, $CA_TraderBuy, $CA_TraderSell, _
+	$CA_QuestCheck, $CA_QuestCoords, $CA_QuestActive, $CA_AllocMem, $CA_TraderCheck, _
 	$CA_GetItemExtraId, $CA_GetItemExtraIdById, $CA_GetConnection, _
 	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, $CA_GetDyePositionByColor, _
 	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
+	$CA_GetAgentMovementPtr, _
 	$CA_RequestsEnd
 
 
@@ -342,7 +344,6 @@ Func MoveToEx($x, $y, $random = 50)
 	CmdCB($CA_GETCOORDS, -2)
 	Do
 		Sleep(250)
-		$oldCoords = $cbVar
 		$cbType = "int"
 		CmdCB($CA_GETDEAD)
 		If $cbVar[0] = 1 Then Return
@@ -351,13 +352,16 @@ Func MoveToEx($x, $y, $random = 50)
 		$mState = CmdCB($CA_GetMapLoading)
 		If $mState[0] <> $mStateOld[0] Then Return
 
-		$cbType = "float"
-		CmdCB($CA_GETCOORDS, -2)
-		If $oldCoords[0] = $cbVar[0] AND $oldCoords[1] = $cbVar[1] Then
+		CmdCB($CA_GetIsMoving, -2)
+		If $cbVar[0] = 0 Then
 			$iBlocked += 1
+			Cmd($CA_UpdateClientPosition)
 			MoveEx($x, $y, $random)
 		EndIf
-	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 250 OR $iBlocked > 20
+
+		$cbType = "float"
+		CmdCB($CA_GETCOORDS, -2)
+	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 250 OR $iBlocked > 10
 EndFunc
 
 Func ComputeDistanceEx($x1, $y1, $x2, $y2)

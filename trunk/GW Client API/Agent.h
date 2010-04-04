@@ -68,12 +68,25 @@ struct Agent {
 	word Skill; //0 = not using a skill. Anything else is the Id of that skill
 };
 
+struct AgentMovement {
+	byte* vtable;
+	byte unknown1[12];
+	long AgentId;
+	byte unknown2[40];
+	long Moving1; //tells if you are stuck even if your client doesn't know
+	byte unknown3[8];
+	long Moving2; //exactly same as Moving1
+	byte unknown4[28];
+	float X2;
+	float Y2;
+	byte unknown5[8];
+	float X;
+	float Y;
+	//rest is shit - didn't bother to document
+};
+
 class AgentArray {
 public:
-	void SetBasePtr(dword pBasePtr){
-		mpBasePtr = pBasePtr;
-	}
-
 	void Reload(){
 		mpBasePtr = *(reinterpret_cast<dword*>(AgentArrayPtr));
 	}
@@ -88,6 +101,29 @@ public:
 
 	Agent* operator[](unsigned int aIndex){
 		Agent* pAgent = GetAgent(aIndex);
+		return pAgent;
+	}
+
+private:
+	dword mpBasePtr;
+};
+
+class AgentMovementArray {
+public:
+	void Reload(){
+		mpBasePtr = ReadPtrChain<dword>(*(dword*)(BasePointerLocation), 0x18, 0x8, 0xE8);
+	}
+
+	AgentMovement* GetAgent(unsigned int aIndex){
+		Reload();
+		if(mpBasePtr == NULL){return NULL;}
+		if(aIndex >= maxAgent){return NULL;}
+		AgentMovement* pAgent = (AgentMovement*)(*(dword*)(mpBasePtr + (4 * aIndex)));
+		return pAgent;
+	}
+
+	AgentMovement* operator[](unsigned int aIndex){
+		AgentMovement* pAgent = GetAgent(aIndex);
 		return pAgent;
 	}
 
