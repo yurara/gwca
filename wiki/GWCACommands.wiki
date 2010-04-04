@@ -140,6 +140,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetModelAnimation || Parameter = id of agent, returns integer. The model animation number depends on profession and sex, but can be used to determine emotes, etc. ||
 || CA_GetEnergy || Obsolete, as it only works for yourself. Just use CA_GetMyMaxEnergy. ||
 || CA_GetAgentPtr || Parameter = id of agent, returns pointer to the agent structure of target in GW memory. ||
+|| CA_GetAgentMovementPtr || Parameter = id of agent, returns pointer to the agent movement structure of target in GW memory. ||
 || CA_GetType || Parameter = id of agent, returns integer. 0xDB = players/npc's/monsters (living stuff), 0x200 = signposts/chests/solid objects, 0x400 = items that can be picked up. ||
 || CA_GetLevel || Parameter = id of agent, returns integer with the level. ||
 || CA_GetNameProperties || Obsolete. ||
