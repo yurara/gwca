@@ -83,7 +83,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_CommandAll || Same as CA_COMMANDHERO1. ||
 || CA_ChangeDistrict || Parameter = region (-1 = international, 0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese, 4 = asia japanese), parameter 2 = language (experiment around with this!). ||
 || CA_Resign || No parameters. ||
-|| CA_UpdateClientPosition || No parameters. Sends "/stuck" to chat effectively updating your client's position. ||
+|| CA_UpdateAgentPosition || Parameter = agent id (or -1/-2). Abuses the fact that the client actually knows where you are, even though it may not display the correct position. ||
 || CA_ReturnToOutpost || No parameters. "Presses" the Return To Outpost button after resigning. ||
 || CA_GoAgent || Parameter = id of agent. Goes to the specified target. Same as follow. Will not open NPC dialog or attack enemy. ||
 || CA_DonateFaction || Parameter = 0 for Kurzick, 1 for Luxon. Donates 5000 faction towards your faction. Not recently tested, but it should require open dialog with Faction Npc. ||
