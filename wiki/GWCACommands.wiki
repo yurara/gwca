@@ -289,4 +289,4 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TraderSell || No parameters. Optionally returns whether the packet was sent or not as boolean. Requires a CA_TraderRequestSell(ById) and waiting until item id and cost has been received before it works! ||
 || CA_GetNumberOfFoesInRangeOfAgent || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of foes counted. ||
 || CA_GetNumberOfAlliesInRangeOfAgent || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of allies counted. ||
-|| CA_GetNumberOfItemsInRange || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of items counted. ||
+|| CA_GetNumberOfItemsInRangeOfAgent || Parameter = agent id (or -1/-2), parameter 2 = radius as float. Returns the number of items counted. ||
