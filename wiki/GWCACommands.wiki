@@ -81,7 +81,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_CommandHero2 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || Same as CA_COMMANDHERO1. ||
 || CA_CommandAll || Same as CA_COMMANDHERO1. ||
-|| CA_ChangeDistrict || Parameter = region (-1 = international, 0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese, 4 = asia japanese), parameter 2 = language (experiment around with this!). ||
+|| CA_ChangeDistrict || Parameter = region (-2 = international, 0 = america, 1 = asia korean, 2 = europe, 3 = asia chinese, 4 = asia japanese), parameter 2 = language (experiment around with this!). ||
 || CA_Resign || No parameters. ||
 || CA_UpdateAgentPosition || Parameter = agent id (or -1/-2). Abuses the fact that the client actually knows where you are, even though it may not display the correct position. ||
 || CA_ReturnToOutpost || No parameters. "Presses" the Return To Outpost button after resigning. ||
