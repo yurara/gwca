@@ -289,6 +289,9 @@ public:
 	long SalvageSessionId(){
 		return ReadPtrChain<long>(BasePointer(), 0x18, 0x2C, 0x62C);
 	}
+	dword MapBoundariesPtr(){
+		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x14);
+	}
 };
 
 #endif

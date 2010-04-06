@@ -47,6 +47,12 @@ void SkipCinematic();
 void SetHeroMode(long HeroId, long Mode);
 void AbandonQuest(long QuestId);
 void DismissBuff(long BuffId);
+void TradePlayer(long AgentId);
+void SubmitOffer(long GoldOffer);
+void ChangeOffer();
+void OfferItem(long ItemId, long Quantity);
+void CancelTrade();
+void AcceptTrade();
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

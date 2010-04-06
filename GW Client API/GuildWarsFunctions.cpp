@@ -308,7 +308,7 @@ void SkipCinematic(){
 }
 
 void SetHeroMode(long HeroId, long Mode){
-	NEWPAK(0d, 0c);
+	NEWPAK(0d,0c);
 	newPak->Set<dword>(4, HeroId);
 	newPak->Set<dword>(8, Mode);
 	SendPacket(newPak);
@@ -323,6 +323,40 @@ void AbandonQuest(long QuestId){
 void DismissBuff(long BuffId){
 	NEWPAK(22,08);
 	newPak->Set<dword>(4, BuffId);
+	SendPacket(newPak);
+}
+
+void TradePlayer(long AgentId){
+	NEWPAK(42,08);
+	newPak->Set<dword>(4, AgentId);
+	SendPacket(newPak);
+}
+
+void SubmitOffer(long GoldOffer){
+	NEWPAK(AE,08);
+	newPak->Set<dword>(4, GoldOffer);
+	SendPacket(newPak);
+}
+
+void ChangeOffer(){
+	NEWPAK(B1,04);
+	SendPacket(newPak);
+}
+
+void OfferItem(long ItemId, long Quantity){
+	NEWPAK(AD,0c);
+	newPak->Set<dword>(4, ItemId);
+	newPak->Set<dword>(8, Quantity);
+	SendPacket(newPak);
+}
+
+void CancelTrade(){
+	NEWPAK(AC,04);
+	SendPacket(newPak);
+}
+
+void AcceptTrade(){
+	NEWPAK(B2,04);
 	SendPacket(newPak);
 }
 
