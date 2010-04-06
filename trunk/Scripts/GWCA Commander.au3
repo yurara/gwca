@@ -50,7 +50,8 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$CA_TraderBuy|$CA_TraderRequestSell|$CA_TraderRequestSellById|$CA_TraderSell|"& _
 					"$CA_GetItemExtraId|$CA_GetItemExtraIdById|$CA_GetConnection|$CA_OpenStorage|$CA_GetItemExtraIdByAgent|$CA_GetItemReq|$CA_GetItemReqById|"& _
 					"$CA_GetItemReqByAgent|$CA_GetDyePositionByColor|$CA_GetNumberOfFoesInRangeOfAgent|$CA_GetNumberOfAlliesInRangeOfAgent|"& _
-					"$CA_GetNumberOfItemsInRangeOfAgent|$CA_UpdateAgentPosition|$CA_MoveOld|$CA_GetAgentMovementPtr")
+					"$CA_GetNumberOfItemsInRangeOfAgent|$CA_UpdateAgentPosition|$CA_MoveOld|$CA_GetAgentMovementPtr|$CA_GetMapBoundariesPtr|"& _
+					"$CA_TradePlayer|$CA_SubmitOffer|$CA_ChangeOffer|$CA_OfferItem|$CA_CancelTrade|$CA_AcceptTrade")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)

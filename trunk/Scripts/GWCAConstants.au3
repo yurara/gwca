@@ -42,7 +42,8 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_SellItem, $CA_SellItemById, $CA_BuyIdKit, $CA_BuySuperiorIdKit, _
 	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, $CA_TraderBuy, $CA_TraderSell, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
-	$CA_UpdateAgentPosition, $CA_MoveOld, _
+	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
+	$CA_CancelTrade, $CA_AcceptTrade, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -78,7 +79,7 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetItemExtraId, $CA_GetItemExtraIdById, $CA_GetConnection, _
 	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, $CA_GetDyePositionByColor, _
 	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
-	$CA_GetAgentMovementPtr, _
+	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, _
 	$CA_RequestsEnd
 
 
@@ -341,7 +342,6 @@ Func MoveToEx($x, $y, $random = 50)
 	$cbType = "float"
 	MoveEx($x, $y, $random)
 
-	CmdCB($CA_GETCOORDS, -2)
 	Do
 		Sleep(250)
 		$cbType = "int"
@@ -458,6 +458,30 @@ Func _GWCAMemWrite($iv_Address, $ah_Handle, $v_Data, $sv_Type = 'dword')
 	EndIf
 EndFunc
 
+Func _GWCAMemRead($iv_Address, $ah_Handle, $sv_Type = 'dword')
+	If Not IsArray($ah_Handle) Then
+		SetError(1)
+        Return 0
+	EndIf
+
+	Local $v_Buffer = DllStructCreate($sv_Type)
+
+	If @Error Then
+		SetError(@Error + 1)
+		Return 0
+	EndIf
+
+	DllCall($ah_Handle[0], 'int', 'ReadProcessMemory', 'int', $ah_Handle[1], 'int', $iv_Address, 'ptr', DllStructGetPtr($v_Buffer), 'int', DllStructGetSize($v_Buffer), 'int', '')
+
+	If Not @Error Then
+		Local $v_Value = DllStructGetData($v_Buffer, 1)
+		Return $v_Value
+	Else
+		SetError(6)
+        Return 0
+	EndIf
+EndFunc
+
 Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 	If Not IsArray($hprocess) Then
 		$hprocess = _GWCAMemOpen($hprocess)
@@ -485,6 +509,26 @@ Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
 	Cmd($CA_SendChat, $ChatNr, $MemPtr)
 
 	If $MemPtrCreated = True Then Cmd($CA_FreeMem, 0, $MemPtr)
+EndFunc
+
+Func GetPlayerName($iAgent = -2)
+	Local $sRet = ""
+
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdCB($CA_GetName, $iAgent)
+	If Not @error AND $cbVar[0] <> 0 Then
+		$ahHndl = _GWCAMemOpen(WinGetProcess($sGW))
+		If Not @error Then
+			$sRet = _GWCAMemRead($cbVar[0], $ahHndl, "wchar[24]")
+			_GWCAMemClose($ahHndl)
+		EndIf
+	EndIf
+
+	$cbType = $oldCbType
+
+	Return $sRet
 EndFunc
 ; END OF FILE
 

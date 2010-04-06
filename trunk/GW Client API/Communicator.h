@@ -59,7 +59,8 @@ enum GWCA_COMMANDS{
 	CA_SellItem, CA_SellItemById, CA_BuyIdKit, CA_BuySuperiorIdKit,
 	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, CA_TraderBuy, CA_TraderSell,
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
-	CA_UpdateAgentPosition, CA_MoveOld,
+	CA_UpdateAgentPosition, CA_MoveOld, CA_TradePlayer, CA_SubmitOffer, CA_ChangeOffer, CA_OfferItem,
+	CA_CancelTrade, CA_AcceptTrade,
 	CA_CommandsEnd,
 
 	//Requests
@@ -97,7 +98,7 @@ enum GWCA_COMMANDS{
 	CA_GetItemExtraId, CA_GetItemExtraIdById, CA_GetConnection,
 	CA_GetItemExtraIdByAgent, CA_GetItemReq, CA_GetItemReqById, CA_GetItemReqByAgent, CA_GetDyePositionByColor,
 	CA_GetNumberOfFoesInRangeOfAgent, CA_GetNumberOfAlliesInRangeOfAgent, CA_GetNumberOfItemsInRangeOfAgent,
-	CA_GetAgentMovementPtr,
+	CA_GetAgentMovementPtr, CA_GetMapBoundariesPtr,
 	CA_RequestsEnd
 };
 

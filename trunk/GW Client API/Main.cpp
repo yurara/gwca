@@ -343,9 +343,11 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		AttackTarget(InWParam.i_Param);
 		break;
 	case CA_Move: //Move to x, y : No return
+		if(!MySectionA->MapBoundariesPtr()) {SendError(header); break;}
 		Move(InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_MoveOld: //Move to x, y : No return
+		if(!MySectionA->MapBoundariesPtr()) {SendError(header); break;}
 		MovePlayer(InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_UseSkill: //Use skill : No return
@@ -439,6 +441,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		TargetCalledTarget();
 		break;
 	case CA_UseHero1Skill: //Use hero 1 skill : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
 		if(InLParam.i_Param == -1){
@@ -447,11 +450,11 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		else if(InLParam.i_Param == -2){
 			InLParam.i_Param = myId;
 		}
-
 		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero2Skill: //Use hero 2 skill : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
 		if(InLParam.i_Param == -1){
@@ -460,11 +463,11 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		else if(InLParam.i_Param == -2){
 			InLParam.i_Param = myId;
 		}
-
 		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x28), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero3Skill: //Use hero 3 skill : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
 
 		if(InLParam.i_Param == -1){
@@ -473,7 +476,6 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		else if(InLParam.i_Param == -2){
 			InLParam.i_Param = myId;
 		}
-
 		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4C), InWParam.i_Param-1, InLParam.i_Param);
 	case CA_CancelAction: //Cancel movement : No return
@@ -491,12 +493,15 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_CommandHero1: //Command hero 1 to location : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x4), InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_CommandHero2: //Command hero 2 to location : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x28), InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_CommandHero3: //Command hero 3 to location : No return
+		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		CommandHero(*(long*)(MySectionA->HeroesStruct() + 0x4C), InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_CommandAll: //Command all to location : No return
@@ -1541,20 +1546,58 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_GetNumberOfFoesInRangeOfAgent: //Number of foes within specified range of specified agent : Return int/long
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		OutWParam.i_Param = GetNumberOfFoesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNumberOfAlliesInRangeOfAgent: //Number of allies within specified range of specified agent : Return int/long
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		OutWParam.i_Param = GetNumberOfAlliesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNumberOfItemsInRangeOfAgent: //Number of items within specified range of specified agent : Return int/long
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		OutWParam.i_Param = GetNumberOfItemsInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	
+		//Trade-related commands
+	case CA_TradePlayer: //Like pressing "Trade" button next to player's name : No return
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		else if(Agents[InWParam.i_Param]->LoginNumber==NULL) {SendError(header); break;}
+		TradePlayer(InWParam.i_Param);
+		break;
+	case CA_SubmitOffer: //Like pressing "Submit Offer" button in a trade but with gold amount : No return
+		SubmitOffer(InWParam.i_Param);
+		break;
+	case CA_ChangeOffer: //Like pressing "Change Offer" button in a trade : No return
+		ChangeOffer();
+		break;
+	case CA_OfferItem: //Puts the item (entire quantity) in trade window : No return
+		if(InLParam.i_Param != 0 && MyItemManager->GetItemPtr(InWParam.i_Param, InLParam.i_Param)){
+			OfferItem(MyItemManager->GetItemId(InWParam.i_Param, InLParam.i_Param),
+				MyItemManager->GetItemPtr(InWParam.i_Param, InLParam.i_Param)->quantity);
+		}
+		else if(MyItemManager->GetItemPtr(InWParam.i_Param)){
+			OfferItem(InWParam.i_Param,
+				MyItemManager->GetItemPtr(InWParam.i_Param)->quantity);
+		}
+		break;
+	case CA_CancelTrade: //Like pressing "Cancel Trade" button in a trade : No return
+		CancelTrade();
+		break;
+	case CA_AcceptTrade: //Like pressing "Accept" button in a trade - remember to Submit Offer first : No return
+		AcceptTrade();
+		break;
+	case CA_GetMapBoundariesPtr:
+		OutWParam.d_Param = (DWORD)MySectionA->MapBoundariesPtr();
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	}
