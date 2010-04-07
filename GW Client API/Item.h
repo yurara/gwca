@@ -254,7 +254,9 @@ public:
 
 	Bag* GetBagPtr(int iBag){
 		if(iBag < 1){ return 0; }
-		Bag* pBag = MySectionA->BagArrayPointer()[iBag];
+		Bag** pBags = MySectionA->BagArrayPointer();
+		if(!pBags){ return 0; }
+		Bag* pBag = pBags[iBag];
 		return pBag;
 	}
 
@@ -264,14 +266,17 @@ public:
 		if(iSlot > pBag->slots || iSlot < 1){ return 0; }
 
 		Item** pItems = pBag->itemArray;
+		if(!pItems){ return 0; }
+
 		Item* pItem = pItems[(iSlot - 1)];
 		return pItem;
 	}
 
 	Item* GetItemPtr(long itemId){
-		if(itemId > MySectionA->ItemArraySize()){ return NULL; }
+		if(itemId > MySectionA->ItemArraySize()){ return 0; }
 
 		Item** aItems = MySectionA->ItemArray();
+		if(!aItems){ return 0; }
 
 		return aItems[itemId];
 	}
