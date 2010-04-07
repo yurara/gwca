@@ -184,7 +184,8 @@ void _declspec(naked) TargetLogHook(){
 
 	if(	actionType == 0x39 ||
 		actionType == 0x03 ||
-		actionType == 0x2F ){
+		actionType == 0x2F ||
+		actionType == 0x37){
 		AgentTargets[agentCaster] = agentTarget;
 	}
 
@@ -872,7 +873,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
-		if(Agents[InWParam.i_Param]->ModelState == 0x400 || Agents[InWParam.i_Param]->HP == 0){
+		if((Agents[InWParam.i_Param]->Effects & 0x0010)){
 			OutWParam.i_Param = 1;
 		}else{
 			OutWParam.i_Param = 0;
@@ -1141,7 +1142,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		}
 		break;
 	case CA_MoveItem: //Move the item specified by CA_PrepareMoveItem : No return
-		if(!MoveItemId)  {SendError(header); break;}
+		if(!MoveItemId) {SendError(header); break;}
+		if(!MyItemManager->GetBagPtr(InWParam.i_Param)) {SendError(header); break;}
 		MoveItem(MoveItemId, MyItemManager->GetBagPtr(InWParam.i_Param)->id, (InLParam.i_Param - 1));
 		break;
 	case CA_GetItemInfo: //Get current bag item rarity and quantity : Return byte & byte
