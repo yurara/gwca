@@ -79,7 +79,8 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetItemExtraId, $CA_GetItemExtraIdById, $CA_GetConnection, _
 	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, $CA_GetDyePositionByColor, _
 	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
-	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, _
+	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, $CA_GetEffectCount, $CA_GetEffect, $CA_GetEffectByIndex, $CA_GetEffectDuration, _
+	$CA_GetTimeStamp, _
 	$CA_RequestsEnd
 
 
@@ -529,6 +530,26 @@ Func GetPlayerName($iAgent = -2)
 	$cbType = $oldCbType
 
 	Return $sRet
+EndFunc
+
+Func RechargeTimeLeft($iSkillSlot)
+	Local $iRet = 0
+
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	$aRecharge = CmdCB($CA_SkillRecharge, $iSkillSlot)
+	$aTimeStamp = CmdCB($CA_GetTimeStamp)
+	If $aRecharge[0] = 0 Then
+		$iRet = 0
+	Else
+		$iRet = ($aRecharge[0] - $aTimeStamp[0])
+	EndIf
+
+	$cbType = $oldCbType
+
+	Return $iRet
 EndFunc
 ; END OF FILE
 

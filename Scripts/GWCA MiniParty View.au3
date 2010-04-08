@@ -9,7 +9,7 @@ Opt("MouseCoordMode", 2)
 
 _GDIPlus_Startup()
 
-Global $numOfTeams = 2
+Global $numOfTeams = 3
 Global $teamSize = 8
 
 Global $gap = 5

@@ -68,7 +68,7 @@ public:
 	~BuffHandler(){};
 
 	int GetBuffCount(int Hero){ //Hero 0 = self
-		return ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (Hero * 36 + 8)) + 1;
+		return ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (Hero * 36 + 8));
 	}
 
 	Buff* GetBuff(int Hero, int index){ //Hero 0 = self
@@ -91,6 +91,74 @@ public:
 				if(GetBuff(i, j)->SkillId == SkillId && GetBuff(i, j)->BuffedAgent == AgentId)
 					return true;
 		return false;
+	}
+};
+
+struct Effect {
+	long SkillId; //skill id of the effect
+	long EffectType; //type classifier
+	// 0 = condition/shout, 8 = stance, 11 = maintained enchantment, 14 = enchantment/nature ritual
+	long EffectId; //unique identifier of effect
+	long AgentId; //non-zero means maintained enchantment - caster id
+	float Duration; //non-zero if effect has a duration
+	long TimeStamp; //GW-timestamp of when effect was applied - only with duration
+};
+
+class EffectManager {
+public:
+	EffectManager() {};
+	~EffectManager() {};
+
+	long GetEffectCount(long Hero) { //where 0 = player
+		if(Hero > ReadPtrChain<long>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4AC) || Hero < 0) { return 0; }
+		return ReadPtrChain<long>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (36 * Hero) + 28);
+	}
+
+	Effect* GetEffectsPtr(long Hero) { //where 0 = player
+		if(Hero > ReadPtrChain<long>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4AC) ||
+			!ReadPtrChain<dword>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4) || Hero < 0) { return NULL; }
+		return ReadPtrChain<Effect*>(MySectionA->BasePointer(), 0x18, 0x2C, 0x4A4, (36 * Hero) + 20);
+	}
+
+	Effect* GetEffect(long Hero, long lIndex) {
+		if(lIndex >= GetEffectCount(Hero)) { return NULL; }
+		return (!GetEffectsPtr(Hero)) ? NULL : &(GetEffectsPtr(Hero)[lIndex]);
+	}
+
+	Effect* GetPlayerEffect(long SkillId) {
+		if(!GetEffectCount(0) || !GetEffectsPtr(0)) { return NULL; }
+
+		Effect* pEffect;
+		for(int i = 0;i < GetEffectCount(0);i++){
+			pEffect = GetEffect(0, i);
+			if(pEffect->SkillId == SkillId) { return pEffect; }
+		}
+
+		return NULL;
+	}
+
+	float GetPlayerEffectDuration(long SkillId) {
+		if(!GetEffectCount(0) || !GetEffectsPtr(0)) { return NULL; }
+
+		Effect* pEffect;
+		for(int i = 0;i < GetEffectCount(0);i++){
+			pEffect = GetEffect(0, i);
+			if(pEffect->SkillId == SkillId) { return pEffect->Duration; }
+		}
+
+		return NULL;
+	}
+
+	float GetPlayerEffectDurationLeft(long SkillId) {
+		if(!GetEffectCount(0) || !GetEffectsPtr(0)) { return NULL; }
+
+		Effect* pEffect	;
+		for(int i = 0;i < GetEffectCount(0);i++){
+			pEffect = GetEffect(0, i);
+			if(pEffect->SkillId == SkillId) { return ((pEffect->Duration * 1000) - (float)(GetTimeStamp() - pEffect->TimeStamp)); }
+		}
+
+		return NULL;
 	}
 };
 
