@@ -30,6 +30,7 @@ struct ItemExtra;
 struct MapOverlay;
 struct Quest;
 
+long GetTimeStamp();
 template <typename T> T ReadPtrChain(
 									 dword pBase = 0,
 									 long pOffset1 = 0,

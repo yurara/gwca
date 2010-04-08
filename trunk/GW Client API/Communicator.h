@@ -98,7 +98,7 @@ enum GWCA_COMMANDS{
 	CA_GetItemExtraId, CA_GetItemExtraIdById, CA_GetConnection,
 	CA_GetItemExtraIdByAgent, CA_GetItemReq, CA_GetItemReqById, CA_GetItemReqByAgent, CA_GetDyePositionByColor,
 	CA_GetNumberOfFoesInRangeOfAgent, CA_GetNumberOfAlliesInRangeOfAgent, CA_GetNumberOfItemsInRangeOfAgent,
-	CA_GetAgentMovementPtr, CA_GetMapBoundariesPtr,
+	CA_GetAgentMovementPtr, CA_GetMapBoundariesPtr, CA_GetEffectCount, CA_GetEffect, CA_GetEffectByIndex, CA_GetEffectDuration, CA_GetTimeStamp,
 	CA_RequestsEnd
 };
 

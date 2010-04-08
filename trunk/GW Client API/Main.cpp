@@ -59,6 +59,7 @@ byte* GetItemValueFunction = NULL;
 byte* MoveFunction = NULL;
 byte* UseSkillFunction = NULL;
 byte* UpdateAgentPositionFunction = NULL;
+byte* TimeStampFunction = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -90,6 +91,7 @@ long TraderCostValue = 0;
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
 ItemManager* MyItemManager = new ItemManager();
+EffectManager* Effects = new EffectManager();
 
 HANDLE PacketMutex;
 HANDLE PartyMutex;
@@ -352,8 +354,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		MovePlayer(InWParam.f_Param, InLParam.f_Param);
 		break;
 	case CA_UseSkill: //Use skill : No return
-		ReloadSkillbar();
-		if(MySkillbar == NULL || InWParam.i_Param < 1 || InWParam.i_Param > 8){SendError(header); break;}
+		if(InWParam.i_Param < 1 || InWParam.i_Param > 8){SendError(header); break;}
 		if(InLParam.i_Param == -1){
 			UseSkillSuperNew(
 				InWParam.i_Param,
@@ -1567,6 +1568,14 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = GetNumberOfItemsInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
+	case CA_GetMapBoundariesPtr: //Returns the pointer to the structure that contains map boundaries : Return ptr
+		OutWParam.d_Param = (DWORD)MySectionA->MapBoundariesPtr();
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetTimeStamp: //Returns a GW timestamp : Return int/long
+		OutWParam.i_Param = GetTimeStamp();
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
 	
 		//Trade-related commands
 	case CA_TradePlayer: //Like pressing "Trade" button next to player's name : No return
@@ -1598,9 +1607,26 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_AcceptTrade: //Like pressing "Accept" button in a trade - remember to Submit Offer first : No return
 		AcceptTrade();
 		break;
-	case CA_GetMapBoundariesPtr:
-		OutWParam.d_Param = (DWORD)MySectionA->MapBoundariesPtr();
+
+		//Effect-monitor related commands
+	case CA_GetEffectCount: //Returns the number of effects currently on you : Return int/long
+		OutWParam.i_Param = Effects->GetEffectCount(0);
 		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetEffect: //Returns the effect id of effect by skill id on you : Return int/long
+		if(!Effects->GetPlayerEffect(InWParam.i_Param)) {SendError(header); break;}
+		OutWParam.i_Param = Effects->GetPlayerEffect(InWParam.i_Param)->EffectId;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetEffectByIndex: //Returns the skill id of effect by index on you : Return int/long
+		if(!Effects->GetEffect(0, InWParam.i_Param)) {SendError(header); break;}
+		OutWParam.i_Param = Effects->GetEffect(0, InWParam.i_Param)->SkillId;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetEffectDuration: //Returns the duration of effect and time left by skill id on you : Return float
+		OutWParam.f_Param = (Effects->GetPlayerEffectDuration(InWParam.i_Param) * 1000);
+		OutLParam.f_Param = Effects->GetPlayerEffectDurationLeft(InWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	}
 }
@@ -1938,6 +1964,7 @@ void UseSkillNew(long SkillId, long Target, long Event){
 }
 
 void UseSkillSuperNew(long SkillSlot, long Target){
+	if(!Agents[Target] && Target != 0){ return; }
 	long lMyId = myId;
 	SkillSlot -= 1;
 
@@ -1981,6 +2008,19 @@ void UpdateAgentPosition(long agentId){
 		MOV ECX,pUAP
 		CALL UpdateAgentPositionFunction
 	}
+}
+
+long GetTimeStamp(){
+	long lRet = 0;
+
+	_asm {
+		PUSHAD
+		CALL TimeStampFunction
+		MOV lRet,EAX
+		POPAD
+	}
+
+	return lRet;
 }
 
 bool CompareAccName(wchar_t* cmpName){
@@ -2257,6 +2297,8 @@ void FindOffsets(){
 
 	byte UpdateAgentPositionCode[] = { 0x8B, 0x46, 0x04, 0x3B, 0x87, 0x54, 0x01 };
 
+	byte TimeStampCode[] = { 0x8B, 0x46, 0x08, 0x5E, 0xC3 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -2389,6 +2431,9 @@ void FindOffsets(){
 		if(!memcmp(start, UpdateAgentPositionCode, sizeof(UpdateAgentPositionCode))){
 			UpdateAgentPositionFunction = start - 0xA6;
 		}
+		if(!memcmp(start, TimeStampCode, sizeof(TimeStampCode))){
+			TimeStampFunction = start - 0x37;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2428,7 +2473,8 @@ void FindOffsets(){
 			GetItemValueFunction &&
 			MoveFunction &&
 			UseSkillFunction &&
-			UpdateAgentPositionFunction){
+			UpdateAgentPositionFunction &&
+			TimeStampFunction){
 			return;
 		}
 		start++;
@@ -2666,6 +2712,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("UpdateAgentPositionFunction");
 				return false;
 			}
+			if(!TimeStampFunction){
+				InjectErr("TimeStampFunction");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2719,6 +2769,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("MoveFunction=0x%06X\n", MoveFunction);
 			printf("UseSkillFunction=0x%06X\n", UseSkillFunction);
 			printf("UpdateAgentPositionFunction=0x%06X\n", UpdateAgentPositionFunction);
+			printf("TimeStampFunction=0x%06X\n", TimeStampFunction);
 			*/
 			break;
 

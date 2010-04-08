@@ -143,7 +143,7 @@ While 1
 							If $specialSkill <> "None" Then ;If no special skill simply skip
 								CmdCB($CA_SKILLRECHARGE, $specialSkill)
 								If $cbVar[0] = 0 Then ;Check if recharging
-									Cmd(GetSkillMode(), $specialSkill, $aPrioritySkill[1]) ;Fire!
+									Cmd($CA_UseSkill, $specialSkill, $aPrioritySkill[1]) ;Fire!
 									$skillDelay = TimerInit() ;Reset the skill delay timer
 									$bUsed = True
 									ClearPrioritySkill()
@@ -163,7 +163,7 @@ While 1
 								EndIf
 								CmdCB($CA_SKILLRECHARGE, $i)
 								If $cbVar[0] = 0 Then ;Check if recharging
-									Cmd(GetSkillMode(), $i, $aPrioritySkill[1]) ;Fire!
+									Cmd($CA_UseSkill, $i, $aPrioritySkill[1]) ;Fire!
 									$skillDelay = TimerInit() ;Reset the skill delay timer
 									$bUsed = True
 									ClearPrioritySkill()
@@ -198,7 +198,7 @@ While 1
 							If $specialSkill <> "None" Then ;If no special skill simply skip
 								CmdCB($CA_SKILLRECHARGE, $specialSkill)
 								If $cbVar[0] = 0 Then ;Check if recharging
-									Cmd(GetSkillMode(), $specialSkill, $aPrioritySkill[1]) ;Fire!
+									Cmd($CA_UseSkill, $specialSkill, $aPrioritySkill[1]) ;Fire!
 									$skillDelay = TimerInit() ;Reset the skill delay timer
 									$bUsed = True
 									ClearPrioritySkill()
@@ -218,7 +218,7 @@ While 1
 								EndIf
 								CmdCB($CA_SKILLRECHARGE, $i)
 								If $cbVar[0] = 0 Then ;Check if recharging
-									Cmd(GetSkillMode(), $i, $aPrioritySkill[1]) ;Fire!
+									Cmd($CA_UseSkill, $i, $aPrioritySkill[1]) ;Fire!
 									$skillDelay = TimerInit() ;Reset the skill delay timer
 									$bUsed = True
 									ClearPrioritySkill()
