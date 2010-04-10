@@ -76,7 +76,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_UseHero2Skill || Parameter = skillslot, parameter 2 = id of target. ||
 || CA_UseHero3Skill || Parameter = skillslot, parameter 2 = id of target. ||
 || CA_CancelAction || No parameters, cancels your current action. Just like pressing ESC. ||
-|| CA_GetNamePtr || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
+|| CA_GetName || Parameter = id of target, returns a pointer to a wchar_t[] with the name of the player (can only be used for players), which can be ReadProcessMemory()'ed. ||
 || CA_CommandHero1 || Parameters = X and Y floats packed of course. To unflag, set X and Y to $FLAG_RESET like this: Cmd($CA_CommandHero1, $FLAG_RESET, $FLAG_RESET)||
 || CA_CommandHero2 || Same as CA_COMMANDHERO1. ||
 || CA_CommandHero3 || Same as CA_COMMANDHERO1. ||
