@@ -224,16 +224,20 @@ void SetAttribute(dword atr,dword val){
 	dword Value = val;
 	long id = myId;
 
-	if(AttriCount >= 8) { return; }
+	if(AttriCount >= 8) {
+		AttriCount = 0;
+		for(int i = 0;i < 8;i++){ AttriIds[i] = 0; AttriValues = 0; }
+	}
+
 	AttriIds[AttriCount] = Attribute;
 	AttriValues[AttriCount] = Value;
 	AttriCount++;
 
 	_asm{
-		MOV EDX,AttriCount  //attri count
-		LEA ECX,AttriValues//value
+		MOV EDX,DWORD PTR DS:[AttriCount]  //attri count
+		MOV ECX,AttriValues//value
 		PUSH ECX
-		LEA EAX,AttriIds//attribute
+		MOV EAX,AttriIds//attribute
 		PUSH EAX
 		MOV ECX,id //AgentId to change attris
 		CALL SetAttrisFunc
