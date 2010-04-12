@@ -160,7 +160,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetAllegiance || Parameter = id of agent, returns integer with the allegiance of agent. 0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet. ||
 || CA_GetNearestEnemyToAgentEx || Parameter = id of agent, returns id of nearest enemy to agent by team id (so, only for PvP) and float of distance. ||
 || CA_GetIsAttackedMelee || Parameter = id of agent, returns integer with estimate of whether agent is being attacked by melee. Kinda obsolete function. ||
-|| CA_GetNearestItemToAgentEx || Parameter = id of agent, returns id of item and distance as float. ||
+|| CA_GetNearestItemToAgentEx || Parameter = id of agent, returns agent id of item and distance as float. ||
 || CA_GetNearestAgentByPlayerNumber || Same as CA_GetFirstAgentByPlayerNumberexcept it returns the nearest agent to you. ||
 || CA_GetSpeed || Parameter = id of agent, returns float with current speed of agent (how far the agent moves per second in GW units). ||
 || CA_GetNearestEnemyToAgentByAllegiance || Parameter = id of agent, returns id of enemy and distance as float. Only works for yourself or your allies. ||
