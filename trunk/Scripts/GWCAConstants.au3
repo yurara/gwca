@@ -43,7 +43,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, $CA_TraderBuy, $CA_TraderSell, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
 	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
-	$CA_CancelTrade, $CA_AcceptTrade, _
+	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -80,7 +80,8 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetItemExtraIdByAgent, $CA_GetItemReq, $CA_GetItemReqById, $CA_GetItemReqByAgent, $CA_GetDyePositionByColor, _
 	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
 	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, $CA_GetEffectCount, $CA_GetEffect, $CA_GetEffectByIndex, $CA_GetEffectDuration, _
-	$CA_GetTimeStamp, _
+	$CA_GetTimeStamp, $CA_GetAgentDanger, $CA_GetTypeMap, $CA_GetAgentWeapons, $CA_GetMatchStatus, _
+	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, _
 	$CA_RequestsEnd
 
 
@@ -91,11 +92,24 @@ Global Enum $BAG_Backpack = 1, $BAG_BeltPouch, $BAG_Bag1, $BAG_Bag2, $BAG_Equipm
 
 Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers, $HERO_AcolyteJin, $HERO_Koss, $HERO_Dunkoro, $HERO_AcolyteSousuke, $HERO_Melonni, _
 			$HERO_ZhedShadowhoof, $HERO_GeneralMorgahn, $HERO_MargridTheSly, $HERO_Olias = 14, $HERO_Razah, $HERO_MOX, $HERO_Jora = 18, $HERO_PyreFierceshot, _
-			$HERO_Livia = 21, $HERO_Kahmu, $HERO_Gwen, $HERO_Xandra, $HERO_Vekk, $HERO_Ogden
+			$HERO_Livia = 21, $HERO_Hayda, $HERO_Kahmu, $HERO_Gwen, $HERO_Xandra, $HERO_Vekk, $HERO_Ogden
 
 Global Enum $HEROMODE_Fight, $HEROMODE_Guard, $HEROMODE_Avoid
 
 Global Enum $DYE_BLUE = 2, $DYE_GREEN, $DYE_PURPLE, $DYE_RED, $DYE_YELLOW, $DYE_BROWN, $DYE_ORANGE, $DYE_SILVER, $DYE_BLACK, $DYE_GRAY, $DYE_WHITE
+
+Global Enum $ATTRIB_FastCasting, $ATTRIB_IllusionMagic, $ATTRIB_DominationMagic, $ATTRIB_InspirationMagic, _
+			$ATTRIB_BloodMagic, $ATTRIB_DeathMagic, $ATTRIB_SoulReaping, $ATTRIB_Curses, _
+			$ATTRIB_AirMagic, $ATTRIB_EarthMagic, $ATTRIB_FireMagic, $ATTRIB_WaterMagic, $ATTRIB_EnergyStorage, _
+			$ATTRIB_HealingPrayers, $ATTRIB_SmitingPrayers, $ATTRIB_ProtectionPrayers, $ATTRIB_DivineFavor, _
+			$ATTRIB_Strength, $ATTRIB_AxeMastery, $ATTRIB_HammerMastery, $ATTRIB_Swordsmanship, $ATTRIB_Tactics, _
+			$ATTRIB_BeastMastery, $ATTRIB_Expertise, $ATTRIB_WildernessSurvival, $ATTRIB_Marksmanship, _
+			$ATTRIB_DaggerMastery, $ATTRIB_DeadlyArts, $ATTRIB_ShadowArts, _
+			$ATTRIB_Communing, $ATTRIB_RestorationMagic, $ATTRIB_ChannelingMagic, _
+			$ATTRIB_CriticalStrikes, _
+			$ATTRIB_SpawningPower, _
+			$ATTRIB_SpearMastery, $ATTRIB_Command, $ATTRIB_Motivation, $ATTRIB_Leadership, _
+			$ATTRIB_ScytheMastery, $ATTRIB_WindPrayers, $ATTRIB_EarthPrayers, $ATTRIB_Mysticism
 
 Global Enum $IS_NUMERIC = 0x00, _
 			$IS_TEXT = 0x01, _
@@ -196,7 +210,6 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 			$cbVar[0] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "wparam")), 1)
 			$cbVar[1] = DllStructGetData(DllStructCreate("int", DllStructGetPtr($InBuffer, "lparam")), 1)
 	EndSwitch
-
 
 	$bGWCA_INTERNAL = False
 
@@ -344,7 +357,7 @@ Func MoveToEx($x, $y, $random = 50)
 	MoveEx($x, $y, $random)
 
 	Do
-		Sleep(250)
+		Sleep(150)
 		$cbType = "int"
 		CmdCB($CA_GETDEAD)
 		If $cbVar[0] = 1 Then Return
@@ -362,7 +375,7 @@ Func MoveToEx($x, $y, $random = 50)
 
 		$cbType = "float"
 		CmdCB($CA_GETCOORDS, -2)
-	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 250 OR $iBlocked > 10
+	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 220 OR $iBlocked > 14
 EndFunc
 
 Func ComputeDistanceEx($x1, $y1, $x2, $y2)

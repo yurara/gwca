@@ -60,6 +60,7 @@ byte* MoveFunction = NULL;
 byte* UseSkillFunction = NULL;
 byte* UpdateAgentPositionFunction = NULL;
 byte* TimeStampFunction = NULL;
+byte* MatchDoneLocation = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -87,6 +88,10 @@ long PartyTeamSize = 8;
 
 long TraderCostId = 0;
 long TraderCostValue = 0;
+
+dword* AttriIds = new dword[8];
+dword* AttriValues = new dword[8];
+int AttriCount = 0;
 
 Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
@@ -218,11 +223,17 @@ void SetAttribute(dword atr,dword val){
 	dword Attribute = atr;
 	dword Value = val;
 	long id = myId;
+
+	if(AttriCount >= 8) { return; }
+	AttriIds[AttriCount] = Attribute;
+	AttriValues[AttriCount] = Value;
+	AttriCount++;
+
 	_asm{
-		MOV EDX,1  //attri count
-		LEA ECX,Value//value
+		MOV EDX,AttriCount  //attri count
+		LEA ECX,AttriValues//value
 		PUSH ECX
-		LEA EAX,Attribute//attribute
+		LEA EAX,AttriIds//attribute
 		PUSH EAX
 		MOV ECX,id //AgentId to change attris
 		CALL SetAttrisFunc
@@ -625,6 +636,10 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = MySectionA->Connection();
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
+	case CA_GetMatchStatus: //Get the value of the MatchDone variable : Return int/long
+		OutWParam.i_Param = MySectionA->MatchStatus();
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
 
 		//Agent Related Commands
 	case CA_GetAgentExist: //Check for agent existency : Return int/bool
@@ -704,11 +719,13 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetCombatMode: //Get agent's combat mode : Return byte
+		/*
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		OutWParam.i_Param = Agents[InWParam.i_Param]->CombatMode;
 		myGWCAServer->SetResponse(header, OutWParam);
+		*/
 		break;
 	case CA_GetModelMode: //Get agent's model mode : Return float
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
@@ -1028,9 +1045,13 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = AgentTargets[InWParam.i_Param];
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
-	case CA_SetAttribute: //Set Attribute (Attribute,Value)
-		if(InWParam.i_Param < 0 || InWParam.i_Param > 12){SendError(header); break;}
+	case CA_SetAttribute: //Set Attribute (Attribute,Value) : No return
+		if(InLParam.i_Param < 0 || InLParam.i_Param > 12){SendError(header); break;}
 		SetAttribute(InWParam.i_Param, InLParam.i_Param);
+		break;
+	case CA_ResetAttributes: //Reset attributes : No return
+		AttriCount = 0;
+		for(int i = 0;i < 8;i++){ AttriIds[i] = 0; AttriValues = 0; }
 		break;
 	case CA_PlayerHasBuff: //Player has buff : Return bool
 		if(InWParam.i_Param < 0 || InWParam.i_Param > 3500){SendError(header); break;}
@@ -1050,6 +1071,55 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(InWParam.i_Param < 0 || InWParam.i_Param > 3500){SendError(header); break;}
 		OutWParam.i_Param = MyBuffHandler.HasBuff(*(long*)(MySectionA->HeroesStruct() + 0x4C), InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetAgentDanger: //Get number of agents targetting agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		OutWParam.i_Param = GetAgentDanger(InWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetTypeMap: //Returns the type map of the agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		OutWParam.i_Param = Agents[InWParam.i_Param]->TypeMap;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetAgentWeapons: //Returns the item id's of agent's currently equiped weapon(s) : Return int/long & int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		OutWParam.i_Param = Agents[InWParam.i_Param]->WeaponItemId;
+		OutLParam.i_Param = Agents[InWParam.i_Param]->OffhandItemId;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNextAgent: //Returns next agent in iteration and the distance to it : Return int/long & float
+		OutWParam.i_Param = GetNextAgent(InWParam.i_Param);
+		if(OutWParam.i_Param){
+			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		}else{
+			OutLParam.f_Param = 0;
+		}
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_GetNextAlly: //Returns next ally in iteration and the distance to it : Return int/long & float
+		OutWParam.i_Param = GetNextAlly(InWParam.i_Param);
+		if(OutWParam.i_Param){
+			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		}else{
+			OutLParam.f_Param = 0;
+		}
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_GetNextFoe: //Returns next ally in iteration and the distance to it : Return int/long & float
+		OutWParam.i_Param = GetNextFoe(InWParam.i_Param);
+		if(OutWParam.i_Param){
+			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		}else{
+			OutLParam.f_Param = 0;
+		}
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 
 		//Item related commands
@@ -1254,8 +1324,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		}else{
 			SalvageItem(MyItemManager->FindSalvageKit(), MyItemManager->GetItemId(InWParam.i_Param, InLParam.i_Param));
 		}
-		break;
 		*/
+		break;
 	case CA_BuyItem: //Buy item by index and cost : No return
 		if(!MySectionA->MerchantItems()){break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > (int)MySectionA->MerchantItemsSize()){SendError(header); break;}
@@ -1266,6 +1336,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemIdByAgent: //Get item id and model id by agent id : Return int/long & int/long
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
@@ -1274,6 +1345,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemInfoByAgent: //Get item rarity and quantity by agent id : Return byte & byte
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
@@ -1282,6 +1354,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemLastModifierByAgent: //Get item last modifier and customized by agent id : Return byte & wchar_t*
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
@@ -1307,6 +1380,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemExtraIdByAgent: //Get item extra id by agent id : Return int/short
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
@@ -1327,6 +1401,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemReqByAgent : //Get item req and attribute by agent id : Return byte & byte
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
 		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
 		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
@@ -1421,7 +1496,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		FinishedLoading = false;
 		break;
 	case CA_MapIsLoaded:  //Map Is Loaded : Return bool/int
-		if(FinishedLoading == true){
+		if(FinishedLoading == true && MySectionA->MapBoundariesPtr()){
 			OutWParam.i_Param = 1;
 		}else{
 			OutWParam.i_Param = 0;
@@ -2299,6 +2374,8 @@ void FindOffsets(){
 
 	byte TimeStampCode[] = { 0x8B, 0x46, 0x08, 0x5E, 0xC3 };
 
+	byte MatchDoneLocationCode[] = { 0x75, 0x07, 0x33, 0xC0, 0xA3 };
+
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
 			AgentArrayPtr = (byte*)(*(dword*)(start+0xC));
@@ -2434,6 +2511,9 @@ void FindOffsets(){
 		if(!memcmp(start, TimeStampCode, sizeof(TimeStampCode))){
 			TimeStampFunction = start - 0x37;
 		}
+		if(!memcmp(start, MatchDoneLocationCode, sizeof(MatchDoneLocationCode))){
+			MatchDoneLocation = (byte*)(*(dword*)(start-4));
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2474,7 +2554,8 @@ void FindOffsets(){
 			MoveFunction &&
 			UseSkillFunction &&
 			UpdateAgentPositionFunction &&
-			TimeStampFunction){
+			TimeStampFunction &&
+			MatchDoneLocation){
 			return;
 		}
 		start++;
@@ -2716,6 +2797,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("TimeStampFunction");
 				return false;
 			}
+			if(!MatchDoneLocation){
+				InjectErr("MatchDoneLocation");
+				return false;
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2770,6 +2855,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("UseSkillFunction=0x%06X\n", UseSkillFunction);
 			printf("UpdateAgentPositionFunction=0x%06X\n", UpdateAgentPositionFunction);
 			printf("TimeStampFunction=0x%06X\n", TimeStampFunction);
+			printf("MatchDoneLocation=0x%06X\n", MatchDoneLocation);
 			*/
 			break;
 

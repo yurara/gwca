@@ -72,10 +72,14 @@ long GetNearestMapOverlayToCoords(float x, float y);
 long GetNumberOfAgentsByPlayerNumber(long playerNumber);
 long GetNumberOfAliveEnemyAgents();
 long GetNextItem(unsigned long startId);
+long GetNextAgent(unsigned long startId);
+long GetNextAlly(unsigned long startId);
+long GetNextFoe(unsigned long startId);
 long GetNearestItemByModelId(long modelId);
 long GetNumberOfFoesInRangeOfAgent(long agentId, float dist);
 long GetNumberOfAlliesInRangeOfAgent(long agentId, float dist);
 long GetNumberOfItemsInRangeOfAgent(long agentId, float dist);
+long GetAgentDanger(long agentId);
 int IsAttackedMelee(long agentId);
 
 #endif

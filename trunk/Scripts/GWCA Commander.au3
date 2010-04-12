@@ -16,7 +16,7 @@ GUICtrlSetData(-1,  "$CA_GetCurrentTarget|$CA_GetMyId|$CA_Casting|$CA_SkillRecha
 					"$CA_EnterChallenge|$CA_OpenChest|$CA_SetEventSkillMode|$CA_PickupItem|"& _
 					"$CA_Dialog|$CA_ChangeTarget|$CA_TargetNearestFoe|$CA_TargetNearestAlly|"& _
 					"$CA_TargetNearestItem|$CA_TargetCalledTarget|$CA_UseHero1Skill|$CA_UseHero2Skill|$CA_UseHero3Skill|"& _
-					"$CA_CancelAction|$CA_GetNamePtr|$CA_CommandHero1|$CA_CommandHero2|$CA_CommandHero3|$CA_CommandAll|$CA_ChangeDistrict|"& _
+					"$CA_CancelAction|$CA_GetName|$CA_CommandHero1|$CA_CommandHero2|$CA_CommandHero3|$CA_CommandAll|$CA_ChangeDistrict|"& _
 					"$CA_Resign|$CA_ReturnToOutpost|"& _
 					"$CA_GetMapLoading|$CA_GetMapId|$CA_GetPing|$CA_GetLoggedIn|$CA_GetDead|$CA_GetBalthFaction|$CA_GetKurzFaction|$CA_GetLuxonFaction|"& _
 					"$CA_GetTitleTreasure|$CA_GetTitleLucky|$CA_GetTitleUnlucky|$CA_GetTitleWisdom|"& _
@@ -51,8 +51,9 @@ GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$
 					"$CA_GetItemExtraId|$CA_GetItemExtraIdById|$CA_GetConnection|$CA_OpenStorage|$CA_GetItemExtraIdByAgent|$CA_GetItemReq|$CA_GetItemReqById|"& _
 					"$CA_GetItemReqByAgent|$CA_GetDyePositionByColor|$CA_GetNumberOfFoesInRangeOfAgent|$CA_GetNumberOfAlliesInRangeOfAgent|"& _
 					"$CA_GetNumberOfItemsInRangeOfAgent|$CA_UpdateAgentPosition|$CA_MoveOld|$CA_GetAgentMovementPtr|$CA_GetMapBoundariesPtr|"& _
-					"$CA_TradePlayer|$CA_SubmitOffer|$CA_ChangeOffer|$CA_OfferItem|$CA_CancelTrade|$CA_AcceptTrade|" & _
-					"$CA_GetEffectCount|$CA_GetEffect|$CA_GetEffectByIndex|$CA_GetEffectDuration|$CA_GetTimeStamp")
+					"$CA_TradePlayer|$CA_SubmitOffer|$CA_ChangeOffer|$CA_OfferItem|$CA_CancelTrade|$CA_AcceptTrade|$CA_GetAgentWeapons|$CA_GetMatchStatus|" & _
+					"$CA_GetEffectCount|$CA_GetEffect|$CA_GetEffectByIndex|$CA_GetEffectDuration|$CA_GetTimeStamp|$CA_GetAgentDanger|$CA_GetTypeMap|" & _
+					"$CA_GetNextAgent|$CA_GetNextAlly|$CA_GetNextFoe|$CA_ResetAttributes")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
