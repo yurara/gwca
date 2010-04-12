@@ -6,9 +6,10 @@
 	Also contains CSectionA class. */
 
 struct Agent {
-	byte unknown1[28];
+	byte* vtable;
+	byte unknown1[24];
 	byte unknown2[4]; //This actually points to the agent before but with a small offset
-	byte* NextAgent; //Pointer to the next agent (by id)
+	Agent* NextAgent; //Pointer to the next agent (by id)
 	byte unknown3[8];
 	long Id; //AgentId
 	float Z; //Z coord in float
@@ -53,19 +54,22 @@ struct Agent {
 	byte Hex; //Bitmap for the hex effect when targetted (apparently obsolete!)
 	byte unknown16[18];
 	long ModelState; //Different values for different states of the model.
-	byte CombatMode; //Kinda dodgy, don't rely on it too much.
-	byte unknown17[20];
+	long TypeMap; //Odd variable! 0x08 = dead, 0xC00 = boss, 0x40000 = spirit, 0x400000 = player
+	byte unknown17[16];
 	long InSpiritRange; //Tells if agent is within spirit range of you. Doesn't work anymore?
-	byte unknown18[12];
+	byte unknown18[16];
 	long LoginNumber; //Unique number in instance that only works for players
-	byte unknown19[4];
 	float ModelMode; //Float for the current mode the agent is in. Varies a lot
+	byte unknown19[4];
 	long ModelAnimation; //Id of the current animation
 	byte unknown20[32];
 	word Allegiance; //0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet
 	word WeaponType; //1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand, 12=staff, 14=staff
 	//Offset +0x1B4
 	word Skill; //0 = not using a skill. Anything else is the Id of that skill
+	byte unknown21[4];
+	word WeaponItemId;
+	word OffhandItemId;
 };
 
 struct AgentMovement {
@@ -291,6 +295,9 @@ public:
 	}
 	dword MapBoundariesPtr(){
 		return ReadPtrChain<dword>(BasePointer(), 0x18, 0x14);
+	}
+	long MatchStatus(){
+		return *(long*)(MatchDoneLocation);
 	}
 };
 

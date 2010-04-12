@@ -22,6 +22,7 @@ extern byte* MapIdLocation;
 extern byte* RegionLocation;
 extern byte* LanguageLocation;
 extern byte* ConnectionLocation;
+extern byte* MatchDoneLocation;
 
 struct Bag;
 struct Item;
@@ -48,6 +49,7 @@ template <typename T> T ReadPtrChain(
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
 extern AgentMovementArray AgentMovements;
+extern long* AgentTargets;
 
 #include "MapOverlay.h"
 #include "Item.h"
