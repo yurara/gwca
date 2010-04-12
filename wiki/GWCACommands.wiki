@@ -65,7 +65,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_EnterChallenge || No parameters, enters the challenge if you're in a Challenge Mission outpost. ||
 || CA_OpenChest || No parameters, opens the nearest chest if you're within 'close range'. ||
 || CA_SetEventSkillMode || Obsolete, don't use it. ||
-|| CA_PickupItem || Parameter = id of item, picks up the specified item. ||
+|| CA_PickupItem || Parameter = agent id of item, picks up the specified item. ||
 || CA_Dialog || Parameter = dialog option id, experimental function, requires knowledge about the NPC's dialog options. Can be found by using CA_GetLastDialogId ||
 || CA_ChangeTarget || Parameter = id of target, changes target. ||
 || CA_TargetNearestFoe || No parameters, targets the nearest foe. ||
