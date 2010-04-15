@@ -878,10 +878,14 @@ long GetAgentDanger(long agentId){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(!Agents[i]){ continue; }
-		if(	AgentTargets[i] == agentId &&
-			Agents[i]->Allegiance != Agents[agentId]->Allegiance &&
-			~(Agents[i]->Effects & 0x0010)){
-			lCount += 1;
+		if(AgentTargets[i] == agentId && ~(Agents[i]->Effects & 0x0010)){
+			if(Agents[i]->TeamId != 0){
+				if(Agents[i]->TeamId != Agents[agentId]->TeamId){
+					lCount++;
+				}
+			}else if(Agents[i]->Allegiance != Agents[agentId]->Allegiance){
+				lCount++;
+			}
 		}
 	}
 	}

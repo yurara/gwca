@@ -150,7 +150,6 @@ Func _FloatToInt($fFloat)
 EndFunc
 
 Func Cmd($uMsg, $wparam = 0, $lparam = 0)
-	Local $hPipe
 	Local $iRead = 0
 	Local $OutBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes sending buffer
 	Local $InBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes incoming buffer
@@ -167,14 +166,14 @@ Func Cmd($uMsg, $wparam = 0, $lparam = 0)
 		$hGWCA_STREAM = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
 	EndIf
 
-	_WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead)
+	If Not _WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead) Then
+		_GWCA_CloseStream()
+	EndIf
 
 	$bGWCA_INTERNAL = False
 EndFunc
 
 Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
-	Local $hPipe
-	Local $sPipe = "\\.\pipe\GWCA_"&WinGetProcess($sGW)
 	Local $iRead = 0
 	Local $OutBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes sending buffer
 	Local $InBuffer = DllStructCreate("WORD header;WORD type;BYTE wparam[4];BYTE lparam[4]") ;Pipes incoming buffer
@@ -193,8 +192,13 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 		$hGWCA_STREAM = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
 	EndIf
 
-	_WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead)
-	_WinAPI_ReadFile($hGWCA_STREAM,DllStructGetPtr($InBuffer),12,$iRead)
+	If Not _WinAPI_WriteFile($hGWCA_STREAM,DllStructGetPtr($OutBuffer),12,$iRead) Then
+		_GWCA_CloseStream()
+	EndIf
+
+	If Not _WinAPI_ReadFile($hGWCA_STREAM,DllStructGetPtr($InBuffer),12,$iRead) Then
+		_GWCA_CloseStream()
+	EndIf
 
 	Switch $cbType
 		Case "float"
