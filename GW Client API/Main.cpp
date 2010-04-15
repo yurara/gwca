@@ -1055,7 +1055,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_ResetAttributes: //Reset attributes : No return
 		AttriCount = 0;
-		for(int i = 0;i < 8;i++){ AttriIds[i] = 0; AttriValues = 0; }
+		for(int i = 0;i < 8;i++){ AttriIds[i] = 0; AttriValues[i] = 0; }
 		break;
 	case CA_PlayerHasBuff: //Player has buff : Return bool
 		if(InWParam.i_Param < 0 || InWParam.i_Param > 3500){SendError(header); break;}
