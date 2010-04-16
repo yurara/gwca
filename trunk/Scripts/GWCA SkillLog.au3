@@ -10,8 +10,9 @@
 Global $cGUI = GUICreate("GWCA - Skill log", 320, 220) ;GUI for communication
 Global $bLog = True
 
-GUIRegisterMsg(0x4A, "SkillLogCallback")
-GUIRegisterMsg(0x501, "SkillCancelCallback")
+GUIRegisterMsg($MSG_SkillLogCallback, "SkillLogCallback")
+GUIRegisterMsg($MSG_SkillCancelCallback, "SkillCancelCallback")
+GUIRegisterMsg($MSG_SkillCompleteCallback, "SkillCompleteCallback")
 
 $editLog = GUICtrlCreateEdit("", 0, 0, 320, 190, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL))
 $btnLogOnOff = GUICtrlCreateButton("Disable log", 5, 195, 60, 20)
@@ -66,6 +67,12 @@ EndFunc
 Func SkillCancelCallback($hwnd, $msg, $wparam, $lparam)
 	If $bLog Then
 		_LogAdd("Id "&Number($wparam)&" cancelled "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
+	EndIf
+EndFunc
+
+Func SkillCompleteCallback($hwnd, $msg, $wparam, $lparam)
+	If $bLog Then
+		_LogAdd("Id "&Number($wparam)&" completed "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
 	EndIf
 EndFunc
 
