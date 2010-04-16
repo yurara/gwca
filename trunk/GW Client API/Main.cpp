@@ -155,11 +155,9 @@ SkillCancelSkip:
 
 void _declspec(naked) SkillCompleteHook(){
 	SkillLogSkill* completeSkillPtr;
-	dword bECX;
 
 	_asm {
 		MOV completeSkillPtr,EDI
-		MOV bECX,ECX
 		PUSHAD
 	}
 
@@ -2278,7 +2276,7 @@ template <typename T> T ReadPtrChain(dword pBase, long pOffset1, long pOffset2, 
 
 void SendPacketQueueThread(){
 	while(true){
-		Sleep(0);
+		Sleep(10);
 
 		if(WaitForSingleObject(PacketMutex, 100) == WAIT_TIMEOUT) continue;
 		if(PacketQueue.size() < 1 || mapLoading == 2) goto nextLoop;
@@ -2338,7 +2336,7 @@ void SkillLogQueueThread(){
 	dword tTicks = 0;
 
 	while(true){
-		Sleep(0);
+		Sleep(10);
 
 		if(SkillLogQueue.size() > 0 && LogSkills){
 			SkillInfo.AgentId = SkillLogQueue.front().AgentId;
