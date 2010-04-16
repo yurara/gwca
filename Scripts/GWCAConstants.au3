@@ -165,8 +165,8 @@ Func Cmd($uMsg, $wparam = 0, $lparam = 0)
 	$bGWCA_INTERNAL = True
 	DllStructSetData($OutBuffer,"header",$uMsg)
 	DllStructSetData($OutBuffer,"type",BitOR($IS_COMMAND, $IS_NUMERIC))
-	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
-	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
+	DllStructSetData($OutBuffer,"wparam",Number($wparam)) ; set wparam
+	DllStructSetData($OutBuffer,"lparam",Number($lparam)) ; set lparam
 
 	If Not $hGWCA_STREAM Then
 		If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
@@ -191,8 +191,8 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 	$cbVar[1] = ""
 	DllStructSetData($OutBuffer,"header",$uMsg)
 	DllStructSetData($OutBuffer,"type",BitOR($IS_REQUEST, $IS_NUMERIC))
-	DllStructSetData($OutBuffer,"wparam",$wparam) ; set wparam
-	DllStructSetData($OutBuffer,"lparam",$lparam) ; set lparam
+	DllStructSetData($OutBuffer,"wparam",Number($wparam)) ; set wparam
+	DllStructSetData($OutBuffer,"lparam",Number($lparam)) ; set lparam
 
 	If Not $hGWCA_STREAM Then
 		If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
