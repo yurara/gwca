@@ -35,39 +35,41 @@ struct Agent {
 	float WeaponAttackSpeed; //The base attack speed in float of last attacks weapon. 1.33 = axe, sword, daggers etc.
 	float AttackSpeedModifier; //Attack speed modifier of the last attack. 0.67 = 33% increase (1-.33)
 	word PlayerNumber; //Selfexplanatory. All non-players have identifiers for their type. Two of the same mob = same number
-	byte unknown11[20];
+	byte unknown11[6];
+	Equipment** Equip;
+	byte unknown12[10];
 	byte Primary; //Primary profession 0-10 (None,W,R,Mo,N,Me,E,A,Rt,P,D)
 	byte Secondary; //Secondary profession 0-10 (None,W,R,Mo,N,Me,E,A,Rt,P,D)
 	byte Level; //Duh!
 	byte TeamId; //0=None, 1=Blue, 2=Red, 3=Yellow
-	byte unknown12[14];
+	byte unknown13[14];
 	float Energy; //Only works for yourself
 	long MaxEnergy; //Only works for yourself
-	byte unknown13[4];
-	float HPPips; //Regen/degen as float
 	byte unknown14[4];
+	float HPPips; //Regen/degen as float
+	byte unknown15[4];
 	//Offset +0x130
 	float HP; //Health in % where 1=100% and 0=0%
 	long MaxHP; //Only works for yourself
 	long Effects; //Bitmap for effects to display when targetted. DOES include hexes
-	byte unknown15[4];
+	byte unknown16[4];
 	byte Hex; //Bitmap for the hex effect when targetted (apparently obsolete!)
-	byte unknown16[18];
+	byte unknown17[18];
 	long ModelState; //Different values for different states of the model.
 	long TypeMap; //Odd variable! 0x08 = dead, 0xC00 = boss, 0x40000 = spirit, 0x400000 = player
-	byte unknown17[16];
-	long InSpiritRange; //Tells if agent is within spirit range of you. Doesn't work anymore?
 	byte unknown18[16];
+	long InSpiritRange; //Tells if agent is within spirit range of you. Doesn't work anymore?
+	byte unknown19[16];
 	long LoginNumber; //Unique number in instance that only works for players
 	float ModelMode; //Float for the current mode the agent is in. Varies a lot
-	byte unknown19[4];
+	byte unknown20[4];
 	long ModelAnimation; //Id of the current animation
-	byte unknown20[32];
+	byte unknown21[32];
 	word Allegiance; //0x100 = ally/non-attackable, 0x300 = enemy, 0x400 = spirit/pet, 0x500 = minion, 0x600 = npc/minipet
 	word WeaponType; //1=bow, 2=axe, 3=hammer, 4=daggers, 5=scythe, 6=spear, 7=sword, 10=wand, 12=staff, 14=staff
 	//Offset +0x1B4
 	word Skill; //0 = not using a skill. Anything else is the Id of that skill
-	byte unknown21[4];
+	byte unknown22[4];
 	word WeaponItemId;
 	word OffhandItemId;
 };

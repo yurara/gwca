@@ -43,7 +43,8 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_BuyItem, $CA_TraderRequest, $CA_TraderRequestSell, $CA_TraderRequestSellById, $CA_TraderBuy, $CA_TraderSell, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
 	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
-	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, _
+	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, $CA_SetEquipmentAgent, $CA_SetEquipmentModelId, $CA_SetEquipmentDye, _
+	$CA_SetEquipmentShinyness, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -81,11 +82,12 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNumberOfFoesInRangeOfAgent, $CA_GetNumberOfAlliesInRangeOfAgent, $CA_GetNumberOfItemsInRangeOfAgent, _
 	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, $CA_GetEffectCount, $CA_GetEffect, $CA_GetEffectByIndex, $CA_GetEffectDuration, _
 	$CA_GetTimeStamp, $CA_GetAgentDanger, $CA_GetTypeMap, $CA_GetAgentWeapons, $CA_GetMatchStatus, _
-	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, _
+	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, $CA_GetItemDmgMod, $CA_GetItemDmgModById, $CA_GetItemDmgModByAgent, _
+	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, _
 	$CA_RequestsEnd
 
 
-Global Enum $RARITY_WHITE = 0x3D, $RARITY_BLUE = 0x3F, $RARITY_PURPLE = 0x42, $RARITY_GOLD = 0x40, $RARITY_GREEN = 0x43
+Global Enum $RARITY_White = 0x3D, $RARITY_Blue = 0x3F, $RARITY_Purple = 0x42, $RARITY_Gold = 0x40, $RARITY_Green = 0x43
 
 Global Enum $BAG_Backpack = 1, $BAG_BeltPouch, $BAG_Bag1, $BAG_Bag2, $BAG_EquipmentPack, $BAG_UnclaimedItems = 7, $BAG_Storage1, $BAG_Storage2, _
 			$BAG_Storage3, $BAG_Storage4, $BAG_Storage5, $BAG_Storage6, $BAG_Storage7, $BAG_Storage8, $BAG_StorageAnniversary
@@ -96,7 +98,7 @@ Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers
 
 Global Enum $HEROMODE_Fight, $HEROMODE_Guard, $HEROMODE_Avoid
 
-Global Enum $DYE_BLUE = 2, $DYE_GREEN, $DYE_PURPLE, $DYE_RED, $DYE_YELLOW, $DYE_BROWN, $DYE_ORANGE, $DYE_SILVER, $DYE_BLACK, $DYE_GRAY, $DYE_WHITE
+Global Enum $DYE_Blue = 2, $DYE_Green, $DYE_Purple, $DYE_Red, $DYE_Yellow, $DYE_Brown, $DYE_Orange, $DYE_Silver, $DYE_Black, $DYE_Gray, $DYE_White
 
 Global Enum $ATTRIB_FastCasting, $ATTRIB_IllusionMagic, $ATTRIB_DominationMagic, $ATTRIB_InspirationMagic, _
 			$ATTRIB_BloodMagic, $ATTRIB_DeathMagic, $ATTRIB_SoulReaping, $ATTRIB_Curses, _
@@ -111,11 +113,18 @@ Global Enum $ATTRIB_FastCasting, $ATTRIB_IllusionMagic, $ATTRIB_DominationMagic,
 			$ATTRIB_SpearMastery, $ATTRIB_Command, $ATTRIB_Motivation, $ATTRIB_Leadership, _
 			$ATTRIB_ScytheMastery, $ATTRIB_WindPrayers, $ATTRIB_EarthPrayers, $ATTRIB_Mysticism
 
+Global Enum $EQUIP_Weapon, $EQUIP_Offhand, $EQUIP_Chest, $EQUIP_Legs, $EQUIP_Head, $EQUIP_Feet, $EQUIP_Hands
+
 Global Enum $IS_NUMERIC = 0x00, _
 			$IS_TEXT = 0x01, _
 			$IS_COMMAND = 0x02, _
 			$IS_REQUEST = 0x04, _
 			$IS_RESPONSE = 0x08
+
+Global Const $MSG_PartyCallback = 0x4A, _
+			 $MSG_SkillLogCallback = 0x4A, _
+			 $MSG_SkillCancelCallback = 0x501, _
+			 $MSG_SkillCompleteCallback = 0x502
 
 Global Const $FLAG_RESET = 0x7F800000
 
@@ -354,6 +363,8 @@ EndFunc
 Func MoveToEx($x, $y, $random = 50)
 	Local $iBlocked = 0
 
+	$oldCbType = $cbType
+
 	$cbType = "int"
 	$mState = CmdCB($CA_GetMapLoading)
 
@@ -364,11 +375,11 @@ Func MoveToEx($x, $y, $random = 50)
 		Sleep(150)
 		$cbType = "int"
 		CmdCB($CA_GETDEAD)
-		If $cbVar[0] = 1 Then Return
+		If $cbVar[0] = 1 Then ExitLoop
 
 		$mStateOld = $mState
 		$mState = CmdCB($CA_GetMapLoading)
-		If $mState[0] <> $mStateOld[0] Then Return
+		If $mState[0] <> $mStateOld[0] Then ExitLoop
 
 		CmdCB($CA_GetIsMoving, -2)
 		If $cbVar[0] = 0 Then
@@ -380,6 +391,8 @@ Func MoveToEx($x, $y, $random = 50)
 		$cbType = "float"
 		CmdCB($CA_GETCOORDS, -2)
 	Until ComputeDistanceEx($cbVar[0], $cbVar[1], $x, $y) < 220 OR $iBlocked > 14
+
+	$cbType = $oldCbType
 EndFunc
 
 Func ComputeDistanceEx($x1, $y1, $x2, $y2)

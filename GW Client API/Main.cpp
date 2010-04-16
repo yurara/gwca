@@ -61,6 +61,9 @@ byte* UseSkillFunction = NULL;
 byte* UpdateAgentPositionFunction = NULL;
 byte* TimeStampFunction = NULL;
 byte* MatchDoneLocation = NULL;
+byte* UpdateAgentEquipmentFunction = NULL;
+byte* SkillCompleteStart = NULL;
+byte* SkillCompleteReturn = NULL;
 
 dword FlagLocation = 0;
 dword PacketLocation = 0;
@@ -76,13 +79,14 @@ wchar_t* pName;
 long MoveItemId = NULL;
 long TmpVariable = NULL;
 long CurrentBag = 1;
+long EquipAgent = 0;
 
 long LastDialogId = 0;
 byte EngineHookSave[32];
 
 bool FinishedLoading = false;
 
-long* AgentTargets = new long[2560];
+short* AgentTargets = new short[2560];
 
 long PartyTeamSize = 8;
 
@@ -103,6 +107,7 @@ HANDLE PartyMutex;
 std::vector<CPacket*> PacketQueue;
 std::vector<SkillLogSkill> SkillLogQueue;
 std::vector<SkillLogSkill> SkillCancelQueue;
+std::vector<SkillLogSkill> SkillCompleteQueue;
 std::vector<PartyInfo*> PartyInfoQueue;
 std::vector<long> TeamAgents;
 
@@ -145,6 +150,27 @@ void _declspec(naked) SkillCancelHook(){
 SkillCancelSkip:
 		POPAD
 		JMP SkillCancelReturn
+	}
+}
+
+void _declspec(naked) SkillCompleteHook(){
+	SkillLogSkill* completeSkillPtr;
+	dword bECX;
+
+	_asm {
+		MOV completeSkillPtr,EDI
+		MOV bECX,ECX
+		PUSHAD
+	}
+
+	SkillCompleteQueue.push_back(*completeSkillPtr);
+
+	_asm {
+		POPAD
+		MOV ESI,ECX
+		MOV EAX,DWORD PTR DS:[EDI]
+		MOV ECX,DWORD PTR DS:[ESI+4]
+		JMP SkillCompleteReturn
 	}
 }
 
@@ -193,7 +219,7 @@ void _declspec(naked) TargetLogHook(){
 		actionType == 0x03 ||
 		actionType == 0x2F ||
 		actionType == 0x37){
-		AgentTargets[agentCaster] = agentTarget;
+		AgentTargets[agentCaster] = (short)agentTarget;
 	}
 
 	_asm {
@@ -276,6 +302,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	//printf("New Message: Header(%X)\n", header);
 	//printf("WParam: %i, %f, %u\n", InWParam.i_Param, InWParam.f_Param, InWParam.d_Param);
 	//printf("LParam: %i, %f, %u\n\n", InLParam.i_Param, InLParam.f_Param, InLParam.d_Param);
+
+	__try {
 
 	switch(header){
 		//Stuff related to you
@@ -1096,7 +1124,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		OutWParam.i_Param = Agents[InWParam.i_Param]->WeaponItemId;
 		OutLParam.i_Param = Agents[InWParam.i_Param]->OffhandItemId;
-		myGWCAServer->SetResponse(header, OutWParam);
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetNextAgent: //Returns next agent in iteration and the distance to it : Return int/long & float
 		OutWParam.i_Param = GetNextAgent(InWParam.i_Param);
@@ -1419,6 +1447,25 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutLParam.i_Param = MyItemManager->GetDyePositionByColor(InWParam.i_Param, 2, InLParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
+	case CA_GetItemDmgMod: //Get the item dmg mod for offhands/shields : Return int/long
+		if(InLParam.i_Param != 0){CurrentBag = InLParam.i_Param;}
+		if(!CurrentBag || !MyItemManager->GetItemPtr(CurrentBag, InWParam.i_Param))  {SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetOffhandDamageMod(MyItemManager->GetItemId(CurrentBag, InWParam.i_Param));
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetItemDmgModById: //Get the item dmg mod for offhands/shields by id : Return int/long
+		if(!MyItemManager->GetItemPtr(InWParam.i_Param)) {SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetOffhandDamageMod(InWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetItemDmgModByAgent: //Get the item dmg mod for offhands/shields by agent : Return int/long
+		if(InWParam.i_Param == 0 ){SendError(header); break;}
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
+		OutWParam.i_Param = MyItemManager->GetOffhandDamageMod(MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->id);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
 
 		//Title related commands
 	case CA_GetTitleSunspear: //Get current Sunspear Title: Return int/long
@@ -1707,6 +1754,57 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutLParam.f_Param = Effects->GetPlayerEffectDurationLeft(InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
+
+		//Visual-equipment related commands
+	case CA_GetEquipmentModelId: //Returns the model id of the specified equipment of agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		if(InLParam.i_Param < 0 || InLParam.i_Param > 7) {SendError(header); break;}
+		OutWParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].ModelId;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetEquipmentDyeInfo: //Returns the dye id and shinyness of the specified equipment of agent : Return short & byte
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		if(InLParam.i_Param < 0 || InLParam.i_Param > 7) {SendError(header); break;}
+		OutWParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].Dye.DyeId;
+		OutLParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].Dye.Shinyness;
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_SetEquipmentAgent: //Sets the current agent to work with : No return
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		EquipAgent = InWParam.i_Param;
+		break;
+	case CA_SetEquipmentModelId: //Sets the equipment of agent and updates it : No return
+		if(!Agents[EquipAgent]) {SendError(header); break;}
+		if(InWParam.i_Param < 0 || InWParam.i_Param > 7) {SendError(header); break;}
+		if(Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].ModelId == 0) {SendError(header); break;}
+		Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].ModelId = InLParam.i_Param;
+		UpdateAgentEquipment(EquipAgent, InWParam.i_Param);
+		break;
+	case CA_SetEquipmentDye: //Sets the dye of equipment of agent and updates it : No return
+		if(!Agents[EquipAgent]) {SendError(header); break;}
+		if(InWParam.i_Param < 0 || InWParam.i_Param > 7) {SendError(header); break;}
+		if(Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].ModelId == 0) {SendError(header); break;}
+		Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].Dye.DyeId = InLParam.i_Param;
+		UpdateAgentEquipment(EquipAgent, InWParam.i_Param);
+		break;
+	case CA_SetEquipmentShinyness: //Sets the shinyness of equipment of agent and updates it : No return
+		if(!Agents[EquipAgent]) {SendError(header); break;}
+		if(InWParam.i_Param < 0 || InWParam.i_Param > 7) {SendError(header); break;}
+		if(Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].ModelId == 0) {SendError(header); break;}
+		Agents[EquipAgent]->Equip[0]->Items[InWParam.i_Param].Dye.Shinyness = InLParam.i_Param;
+		UpdateAgentEquipment(EquipAgent, InWParam.i_Param);
+		break;
+	}
+
+	}
+	__except(1) {
+		return;
 	}
 }
 
@@ -2102,6 +2200,18 @@ long GetTimeStamp(){
 	return lRet;
 }
 
+void UpdateAgentEquipment(long agentId, long equipIndex){
+	if(!Agents[agentId]){ return; }
+
+	Equipment* CpsAgent = Agents[agentId]->Equip[0];
+
+	_asm {
+		PUSH equipIndex
+		MOV ECX,CpsAgent
+		CALL UpdateAgentEquipmentFunction
+	}
+}
+
 bool CompareAccName(wchar_t* cmpName){
 	if(wcscmp(cmpName, MySectionA->Email()) == NULL)
 		return true;
@@ -2168,7 +2278,7 @@ template <typename T> T ReadPtrChain(dword pBase, long pOffset1, long pOffset2, 
 
 void SendPacketQueueThread(){
 	while(true){
-		Sleep(10);
+		Sleep(0);
 
 		if(WaitForSingleObject(PacketMutex, 100) == WAIT_TIMEOUT) continue;
 		if(PacketQueue.size() < 1 || mapLoading == 2) goto nextLoop;
@@ -2228,7 +2338,7 @@ void SkillLogQueueThread(){
 	dword tTicks = 0;
 
 	while(true){
-		Sleep(10);
+		Sleep(0);
 
 		if(SkillLogQueue.size() > 0 && LogSkills){
 			SkillInfo.AgentId = SkillLogQueue.front().AgentId;
@@ -2260,6 +2370,13 @@ void SkillLogQueueThread(){
 			SkillCancelQueue.erase(SkillCancelQueue.begin());
 		}else{
 			SkillCancelQueue.clear();
+		}
+
+		if(SkillCompleteQueue.size() > 0 && LogSkills){
+			PostMessage(ScriptHwnd, 0x502, SkillCompleteQueue.front().AgentId, SkillCompleteQueue.front().Skill);
+			SkillCompleteQueue.erase(SkillCompleteQueue.begin());
+		}else{
+			SkillCompleteQueue.clear();
 		}
 
 		if(WaitForSingleObject(PartyMutex, 50) != WAIT_TIMEOUT){
@@ -2379,6 +2496,10 @@ void FindOffsets(){
 	byte TimeStampCode[] = { 0x8B, 0x46, 0x08, 0x5E, 0xC3 };
 
 	byte MatchDoneLocationCode[] = { 0x75, 0x07, 0x33, 0xC0, 0xA3 };
+
+	byte UpdateAgentEquipmentCode[] = { 0xC2, 0x04, 0x00, 0x83, 0xFB, 0x07 };
+
+	byte SkillCompleteCode[] = { 0x74, 0x1D, 0x6A, 0x00, 0x6A, 0x40 };
 
 	while(start!=end){
 		if(!memcmp(start, AgentBaseCode, sizeof(AgentBaseCode))){
@@ -2518,6 +2639,13 @@ void FindOffsets(){
 		if(!memcmp(start, MatchDoneLocationCode, sizeof(MatchDoneLocationCode))){
 			MatchDoneLocation = (byte*)(*(dword*)(start-4));
 		}
+		if(!memcmp(start, UpdateAgentEquipmentCode, sizeof(UpdateAgentEquipmentCode))){
+			UpdateAgentEquipmentFunction = start - 0x50;
+		}
+		if(!memcmp(start, SkillCompleteCode, sizeof(SkillCompleteCode))){
+			SkillCompleteStart = start - 16;
+			SkillCompleteReturn = SkillCompleteStart + 7;
+		}
 		if(	CurrentTarget &&
 			BaseOffset &&
 			PacketSendFunction &&
@@ -2559,7 +2687,9 @@ void FindOffsets(){
 			UseSkillFunction &&
 			UpdateAgentPositionFunction &&
 			TimeStampFunction &&
-			MatchDoneLocation){
+			MatchDoneLocation &&
+			UpdateAgentEquipmentFunction &&
+			SkillCompleteStart){
 			return;
 		}
 		start++;
@@ -2805,6 +2935,20 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 				InjectErr("MatchDoneLocation");
 				return false;
 			}
+			if(!UpdateAgentEquipmentFunction){
+				InjectErr("UpdateAgentEquipmentFunction");
+				return false;
+			}
+			if(!SkillCompleteStart){
+				InjectErr("SkillCompleteStart");
+				return false;
+			}else{
+				DWORD dwOldProtection;
+				VirtualProtect(SkillCompleteStart, 7, PAGE_EXECUTE_READWRITE, &dwOldProtection);
+				memset(SkillCompleteStart, 0x90, 7);
+				VirtualProtect(SkillCompleteStart, 7, dwOldProtection, NULL);
+				WriteJMP(SkillCompleteStart, (byte*)SkillCompleteHook);
+			}
 
 			myGWCAServer->SetRequestFunction(HandleMessages);
 
@@ -2860,6 +3004,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 			printf("UpdateAgentPositionFunction=0x%06X\n", UpdateAgentPositionFunction);
 			printf("TimeStampFunction=0x%06X\n", TimeStampFunction);
 			printf("MatchDoneLocation=0x%06X\n", MatchDoneLocation);
+			printf("UpdateAgentEquipmentFunction=0x%06X\n", UpdateAgentEquipmentFunction);
+			printf("SkillCompleteStart=0x%06X\n", SkillCompleteStart);
+			printf("SkillCompleteReturn=0x%06X\n", SkillCompleteReturn);
 			*/
 			break;
 

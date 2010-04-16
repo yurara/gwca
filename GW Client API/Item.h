@@ -38,12 +38,41 @@ struct Item {
 	short extraId;
 	byte unknown4[8];
 	long modelId;
-	byte unknown5[8];
+	byte* modStruct;
+	byte unknown5[4];
 	ItemExtra* extraItemInfo;
 	byte unknown6[15];
 	byte quantity;
 	byte unknown7[2];
 	byte slot;
+};
+
+struct DyeInfo {
+	byte unknown1;
+	byte Shinyness;
+	short DyeId;
+};
+
+struct EquipmentItemData {
+	long ModelId;
+	DyeInfo Dye;
+	long Value;
+	byte unknown[4];
+};
+
+struct Equipment {
+	byte* vtable;
+	byte unknown1[32];
+	EquipmentItemData Items[7];
+	/* EquipmentItemData Weapon;
+	EquipmentItemData Offhand;
+	EquipmentItemData Chest;
+	EquipmentItemData Legs;
+	EquipmentItemData Head;
+	EquipmentItemData Feet;
+	EquipmentItemData Hands; */
+	byte unknown2[32];
+	long ItemIds[7];
 };
 
 class ItemManager {
@@ -247,6 +276,22 @@ public:
 					if(mode == 1){ return i; }
 					if(mode == 2){ return j+1; }
 				}
+			}
+		}
+		return 0;
+	}
+
+	long GetOffhandDamageMod(long itemId){
+		Item* pItem = GetItemPtr(itemId);
+		if(!pItem){ return 0; }
+		byte* pItemMods = pItem->modStruct;
+		if(!pItemMods){ return 0; }
+
+		byte DmgModSignature[] = { 0xA8, 0x0A, 0x0A, 0x01, 0xAC, 0x0A, 0x0A, 0x01 };
+
+		for(int i = 1;i < 140;i++){
+			if(!memcmp(pItemMods + i, DmgModSignature, sizeof(DmgModSignature))){
+				return pItemMods[i + 8];
 			}
 		}
 		return 0;

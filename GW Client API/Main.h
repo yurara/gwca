@@ -27,6 +27,7 @@ extern byte* MatchDoneLocation;
 struct Bag;
 struct Item;
 struct ItemExtra;
+struct Equipment;
 
 struct MapOverlay;
 struct Quest;
@@ -49,7 +50,7 @@ template <typename T> T ReadPtrChain(
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
 extern AgentMovementArray AgentMovements;
-extern long* AgentTargets;
+extern short* AgentTargets;
 
 #include "MapOverlay.h"
 #include "Item.h"
@@ -82,6 +83,7 @@ void UseSkillNew(long SkillId, long Target, long Event);
 void UseSkillSuperNew(long SkillSlot, long Target);
 void Move(float X, float Y);
 void UpdateAgentPosition(long agentId);
+void UpdateAgentEquipment(long agentId, long equipIndex);
 void ChangeMaxZoom(float fZoom);
 wchar_t* GetAgentName(int agentId);
 void SetEngineHook(int Enable);

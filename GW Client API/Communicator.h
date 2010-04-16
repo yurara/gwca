@@ -60,7 +60,8 @@ enum GWCA_COMMANDS{
 	CA_BuyItem, CA_TraderRequest, CA_TraderRequestSell, CA_TraderRequestSellById, CA_TraderBuy, CA_TraderSell,
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
 	CA_UpdateAgentPosition, CA_MoveOld, CA_TradePlayer, CA_SubmitOffer, CA_ChangeOffer, CA_OfferItem,
-	CA_CancelTrade, CA_AcceptTrade, CA_ResetAttributes,
+	CA_CancelTrade, CA_AcceptTrade, CA_ResetAttributes, CA_SetEquipmentAgent, CA_SetEquipmentModelId, CA_SetEquipmentDye,
+	CA_SetEquipmentShinyness,
 	CA_CommandsEnd,
 
 	//Requests
@@ -100,7 +101,8 @@ enum GWCA_COMMANDS{
 	CA_GetNumberOfFoesInRangeOfAgent, CA_GetNumberOfAlliesInRangeOfAgent, CA_GetNumberOfItemsInRangeOfAgent,
 	CA_GetAgentMovementPtr, CA_GetMapBoundariesPtr, CA_GetEffectCount, CA_GetEffect, CA_GetEffectByIndex, CA_GetEffectDuration, CA_GetTimeStamp,
 	CA_GetAgentDanger, CA_GetTypeMap, CA_GetAgentWeapons, CA_GetMatchStatus,
-	CA_GetNextAgent, CA_GetNextAlly, CA_GetNextFoe,
+	CA_GetNextAgent, CA_GetNextAlly, CA_GetNextFoe, CA_GetItemDmgMod, CA_GetItemDmgModById, CA_GetItemDmgModByAgent,
+	CA_GetEquipmentModelId, CA_GetEquipmentDyeInfo,
 	CA_RequestsEnd
 };
 
