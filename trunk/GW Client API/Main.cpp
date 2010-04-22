@@ -1158,6 +1158,14 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = Agents[InWParam.i_Param]->ExtraType;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
+	case CA_PrepareNearestPlayerNumberToCoords: //Sets up the CA_GetNearestPlayerNumberToCoords command : No return
+		TmpVariable = InWParam.i_Param;
+		break;
+	case CA_GetNearestPlayerNumberToCoords: //Requires CA_PrepareNearestPlayerNumberToCoords : Return int/long
+		if(TmpVariable == 0) {SendError(header); break;}
+		OutWParam.i_Param = GetNearestPlayerNumberToCoords((word)TmpVariable, InWParam.f_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
 
 		//Item related commands
 	case CA_GetGold: //Get gold : Return int/long & int/long

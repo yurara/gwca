@@ -83,7 +83,8 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetAgentMovementPtr, $CA_GetMapBoundariesPtr, $CA_GetEffectCount, $CA_GetEffect, $CA_GetEffectByIndex, $CA_GetEffectDuration, _
 	$CA_GetTimeStamp, $CA_GetAgentDanger, $CA_GetTypeMap, $CA_GetAgentWeapons, $CA_GetMatchStatus, _
 	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, $CA_GetItemDmgMod, $CA_GetItemDmgModById, $CA_GetItemDmgModByAgent, _
-	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, _
+	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, $CA_GetExtraType, _
+	$CA_PrepareNearestPlayerNumberToCoords, $CA_GetNearestPlayerNumberToCoords, _
 	$CA_RequestsEnd
 
 
@@ -265,6 +266,18 @@ Func GetNearestMapOverlayToCoords($x, $y)
 
 	$cbType = "int"
 	CmdCB($CA_GetNearestMapOverlayToCoords, _FloatToInt($x), _FloatToInt($y))
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
+Func GetNearestPlayerNumberToCoords($plNum, $x, $y)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdCB($CA_PrepareNearestPlayerNumberToCoords, $plNum)
+	CmdCB($CA_GetNearestPlayerNumberToCoords, _FloatToInt($x), _FloatToInt($y))
 
 	$cbType = $oldCbType
 
