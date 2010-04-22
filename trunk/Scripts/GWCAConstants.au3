@@ -370,7 +370,7 @@ Func MoveToEx($x, $y, $random = 50)
 
 	$cbType = "float"
 	MoveEx($x, $y, $random)
-
+	PingSleep()
 	Do
 		Sleep(150)
 		$cbType = "int"
@@ -580,6 +580,16 @@ Func RechargeTimeLeft($iSkillSlot)
 	$cbType = $oldCbType
 
 	Return $iRet
+EndFunc
+
+Func PingSleep($msExtra = 0)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdCB($CA_GetPing)
+	Sleep($cbVar[0] + $msExtra)
+
+	$cbType = $oldCbType
 EndFunc
 ; END OF FILE
 

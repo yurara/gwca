@@ -86,7 +86,7 @@ byte EngineHookSave[32];
 
 bool FinishedLoading = false;
 
-short* AgentTargets = new short[2560];
+long* AgentTargets = new long[2560];
 
 long PartyTeamSize = 8;
 
@@ -217,7 +217,7 @@ void _declspec(naked) TargetLogHook(){
 		actionType == 0x03 ||
 		actionType == 0x2F ||
 		actionType == 0x37){
-		AgentTargets[agentCaster] = (short)agentTarget;
+		AgentTargets[agentCaster] = agentTarget;
 	}
 
 	_asm {
@@ -1150,6 +1150,13 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 			OutLParam.f_Param = 0;
 		}
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_GetExtraType: //Returns the 'extra type' of the agent : Return int/long
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		OutWParam.i_Param = Agents[InWParam.i_Param]->ExtraType;
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 
 		//Item related commands
@@ -2096,15 +2103,17 @@ void TargetNextPartyMember(){
 	_asm {
 		MOV ECX,0
 		MOV EAX,TargetFunctions
-		ADD EAX,0x63
+		ADD EAX,0x66
 		CALL EAX
 	}
 }
 
 void TargetNextFoe(){
+	long* crashFixer = new long[3];
 	_asm {
 		MOV EAX,TargetFunctions
 		ADD EAX,0x57
+		MOV EDI,crashFixer
 		CALL EAX
 	}
 }

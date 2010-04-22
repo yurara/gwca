@@ -50,7 +50,7 @@ template <typename T> T ReadPtrChain(
 extern CSectionA* MySectionA;
 extern AgentArray Agents;
 extern AgentMovementArray AgentMovements;
-extern short* AgentTargets;
+extern long* AgentTargets;
 
 #include "MapOverlay.h"
 #include "Item.h"

@@ -665,6 +665,28 @@ long GetNearestMapOverlayToCoords(float x, float y){
 	return lLowest;
 }
 
+long GetNearestPlayerNumberToCoords(word playerNum, float x, float y){
+	float aDistance = 2500000000;
+	float aTemp = 0;
+	
+	long lLowest = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent;i++){
+		if(Agents[i] == NULL){continue;}
+		if(Agents[i]->PlayerNumber != playerNum){continue;}
+		aTemp = (pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+		if(aDistance > aTemp){
+			lLowest = i;
+			aDistance = aTemp;
+		}
+	}
+	}
+	__except(1) {
+		return false;
+	}
+	return lLowest;
+}
+
 long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	long lCount = 0;
 	__try {
@@ -878,7 +900,7 @@ long GetAgentDanger(long agentId){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(!Agents[i]){ continue; }
-		if(AgentTargets[i] == agentId && ~(Agents[i]->Effects & 0x0010)){
+		if(AgentTargets[i] == agentId && Agents[i]->HP != 0 && !(Agents[i]->Effects & 0x0010)){
 			if(Agents[i]->TeamId != 0){
 				if(Agents[i]->TeamId != Agents[agentId]->TeamId){
 					lCount++;
