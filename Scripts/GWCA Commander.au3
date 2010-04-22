@@ -54,7 +54,8 @@ GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$
 					"$CA_TradePlayer|$CA_SubmitOffer|$CA_ChangeOffer|$CA_OfferItem|$CA_CancelTrade|$CA_AcceptTrade|$CA_GetAgentWeapons|$CA_GetMatchStatus|" & _
 					"$CA_GetEffectCount|$CA_GetEffect|$CA_GetEffectByIndex|$CA_GetEffectDuration|$CA_GetTimeStamp|$CA_GetAgentDanger|$CA_GetTypeMap|" & _
 					"$CA_GetNextAgent|$CA_GetNextAlly|$CA_GetNextFoe|$CA_ResetAttributes|$CA_GetItemDmgMod|$CA_GetItemDmgModById|$CA_GetItemDmgModByAgent|" & _
-					"$CA_SetEquipmentAgent|$CA_SetEquipmentModelId|$CA_SetEquipmentDye|$CA_GetEquipmentModelId|$CA_SetEquipmentShinyness|$CA_GetEquipmentDyeInfo")
+					"$CA_SetEquipmentAgent|$CA_SetEquipmentModelId|$CA_SetEquipmentDye|$CA_GetEquipmentModelId|$CA_SetEquipmentShinyness|$CA_GetEquipmentDyeInfo|"& _
+					"$CA_GetExtraType|$CA_PrepareNearestPlayerNumberToCoords|$CA_GetNearestPlayerNumberToCoords")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)
