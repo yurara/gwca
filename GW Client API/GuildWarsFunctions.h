@@ -53,6 +53,7 @@ void ChangeOffer();
 void OfferItem(long ItemId, long Quantity);
 void CancelTrade();
 void AcceptTrade();
+void LockHero(long HeroId, long TargetId);
 
 long GetNearestAgentToAgent(long agentId);
 long GetNearestEnemyToAgent(long agentId);

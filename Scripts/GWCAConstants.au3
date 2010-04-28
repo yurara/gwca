@@ -44,7 +44,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
 	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
 	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, $CA_SetEquipmentAgent, $CA_SetEquipmentModelId, $CA_SetEquipmentDye, _
-	$CA_SetEquipmentShinyness, _
+	$CA_SetEquipmentShinyness, $CA_WriteWhisper, $CA_LockHero, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -197,7 +197,7 @@ Func CmdCB($uMsg, $wparam = 0, $lparam = 0)
 
 	If Not $hGWCA_STREAM Then
 		If Not _NamedPipes_WaitNamedPipe("\\.\pipe\GWCA_"&WinGetProcess($sGW), 1000) Then
-			Return
+			Return SetError(1, 0, $cbVar)
 		EndIf
 		$hGWCA_STREAM = _WinAPI_CreateFile("\\.\pipe\GWCA_"&WinGetProcess($sGW), 2, 6)
 	EndIf
@@ -526,33 +526,30 @@ Func _GWCAMemRead($iv_Address, $ah_Handle, $sv_Type = 'dword')
 	EndIf
 EndFunc
 
-Func SendChat($hprocess, $ChatNr, $Message, $MemPtr = "create")
+Func SendChat($hprocess, $Message)
+	Local $ownHandle = True
+
 	If Not IsArray($hprocess) Then
 		$hprocess = _GWCAMemOpen($hprocess)
 		If Not IsArray($hprocess) Then Return
+		$ownHandle = False
 	EndIf
 
-	$MemPtrCreated = False
-
-	$StringInString = StringInStr($Message, "/")
-	If $StringInString = 1 Then
-		$ChatNr = 14
-		$Message = StringSplit($Message, "/")
-		$Message = $Message[2]
-	EndIf
+	$oldCbType = $cbType
+	$cbType = "int"
 
 	$StringLen = StringLen($Message)
-	If $MemPtr = "create" Then
-		$MemPtrCreated = True
-		$MemPtr = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
-		$MemPtr = $MemPtr[1]
-	EndIf
+	$MemPtr = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
+	$MemPtr = $MemPtr[0]
 
 	_GWCAMemWrite($MemPtr, $hprocess, $Message, "wchar[" & $StringLen + 1 & "]")
 
-	Cmd($CA_SendChat, $ChatNr, $MemPtr)
+	Cmd($CA_SendChat, $MemPtr)
 
-	If $MemPtrCreated = True Then Cmd($CA_FreeMem, 0, $MemPtr)
+	If $MemPtr <> 0 Then Cmd($CA_FreeMem, $MemPtr)
+	If Not $ownHandle Then _GWCAMemClose($hprocess)
+
+	$cbType = $oldCbType
 EndFunc
 
 Func GetPlayerName($iAgent = -2)
@@ -601,6 +598,34 @@ Func PingSleep($msExtra = 0)
 	$cbType = "int"
 	CmdCB($CA_GetPing)
 	Sleep($cbVar[0] + $msExtra)
+
+	$cbType = $oldCbType
+EndFunc
+
+Func WriteWhisper($hprocess, $Name, $Message)
+	If Not IsArray($hprocess) Then
+		$hprocess = _GWCAMemOpen($hprocess)
+		If Not IsArray($hprocess) Then Return
+	EndIf
+
+	$oldCbType = $cbType
+	$cbType = "int"
+
+	$StringLen = StringLen($Name)
+	$MemPtr = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
+	$MemPtr = $MemPtr[0]
+
+	$StringLen2 = StringLen($Message)
+	$MemPtr2 = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
+	$MemPtr2 = $MemPtr2[0]
+
+	_GWCAMemWrite($MemPtr, $hprocess, $Name, "wchar[" & $StringLen + 1 & "]")
+	_GWCAMemWrite($MemPtr2, $hprocess, $Message, "wchar[" & $StringLen2 + 1 & "]")
+
+	Cmd($CA_WriteWhisper, $MemPtr2, $MemPtr)
+
+	If $MemPtr <> 0 Then Cmd($CA_FreeMem, $MemPtr)
+	If $MemPtr2 <> 0 Then Cmd($CA_FreeMem, $MemPtr2)
 
 	$cbType = $oldCbType
 EndFunc

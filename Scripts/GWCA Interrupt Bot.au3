@@ -468,12 +468,12 @@ Func LockOnOff()
 				Else
 					$lock = $cbVar[0]
 					GUICtrlSetData($itemLock, "Lock on")
-					;Cmd($CA_STATUSBOT, 0, 1)
+					WriteWhisper(WinGetProcess($sGW), "Bot", "Locked on "&$lock)
 				EndIf
 			Case Else
 				$lock = 0
 				GUICtrlSetData($itemLock, "Lock off")
-				;Cmd($CA_STATUSBOT, 0, 2)
+				WriteWhisper(WinGetProcess($sGW), "Bot", "Lock is off")
 		EndSwitch
 	Else
 		HotKeySet(@HotKeyPressed)
@@ -486,7 +486,7 @@ Func BotOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		$bEnabled = Not $bEnabled
 		If $bEnabled Then
-			;Cmd($CA_STATUSBOT, 1, 0)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Interrupt Bot enabled!")
 			GUICtrlSetData($btnOnOff, "Disable bot") ;Disable most of the GUI and update button text
 			GUICtrlSetState($editSkills, $GUI_DISABLE)
 			GUICtrlSetState($editSpecial, $GUI_DISABLE)
@@ -526,7 +526,7 @@ Func BotOnOff()
 
 		Else
 			Cmd($CA_SETLOGANDHWND, 0, 0) ;Turn her off :\
-			;Cmd($CA_STATUSBOT, 2, 0)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Interrupt Bot disabled!")
 			GUICtrlSetData($btnOnOff, "Enable bot") ;Enable the GUI and update button text
 			GUICtrlSetState($editSkills, $GUI_ENABLE)
 			GUICtrlSetState($editSpecial, $GUI_ENABLE)
@@ -559,10 +559,10 @@ EndFunc
 Func DelayOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		If GUICtrlRead($checkDelay) = 1 Then
-			;Cmd($CA_STATUSDELAY, 0)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Delay is off")
 			GUICtrlSetState($checkDelay, $GUI_UNCHECKED)
 		Else
-			;Cmd($CA_STATUSDELAY, 1)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Delay is on")
 			GUICtrlSetState($checkDelay, $GUI_CHECKED)
 		EndIf
 	Else
@@ -576,11 +576,11 @@ Func MissOnOff()
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		If $miss Then
 			$miss = Not $miss
-			;Cmd($CA_STATUSMISS, 0)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Random miss is off")
 			GUICtrlSetData($itemMiss, "Miss off")
 		Else
 			$miss = Not $miss
-			;Cmd($CA_STATUSMISS, 1)
+			WriteWhisper(WinGetProcess($sGW), "Bot", "Random miss is on")
 			GUICtrlSetData($itemMiss, "Miss on")
 		EndIf
 	Else
@@ -723,7 +723,7 @@ Func SwapTab()
 
 		GUICtrlSetData($itemTab, "Swap ("&$iTab&")")
 		LoadTab($iTab)
-		;Cmd($CA_STATUSTAB, $iTab)
+		WriteWhisper(WinGetProcess($sGW), "Bot", "Switched to tab "&$iTab)
 	Else
 		HotKeySet(@HotKeyPressed)
 		Send(@HotKeyPressed)

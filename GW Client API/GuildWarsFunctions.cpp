@@ -360,6 +360,13 @@ void AcceptTrade(){
 	SendPacket(newPak);
 }
 
+void LockHero(long HeroId, long TargetId){
+	NEWPAK(0e,0c);
+	newPak->Set<dword>(4, HeroId);
+	newPak->Set<dword>(8, TargetId);
+	SendPacket(newPak);
+}
+
 long GetNearestAgentToAgent(long agentId){
 	if(Agents[agentId] == NULL){return 0;}
 

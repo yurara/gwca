@@ -383,7 +383,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 
 		//Packet Related Commands
 	case CA_Attack: //Attack : No return
-		if(InWParam.i_Param == -1){AttackTarget(*(long*)CurrentTarget);}
+		convertAgParam(InWParam.i_Param);
 		AttackTarget(InWParam.i_Param);
 		break;
 	case CA_Move: //Move to x, y : No return
@@ -425,28 +425,16 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		DropGold(InWParam.i_Param);
 		break;
 	case CA_GoNpc: //Go to NPC : No return
-		if(InWParam.i_Param == -1){
-			GoNPC(*(long*)CurrentTarget);
-		}
-		else {
-			GoNPC(InWParam.i_Param);
-		}
+		convertAgParam(InWParam.i_Param);
+		GoNPC(InWParam.i_Param);
 		break;
 	case CA_GoPlayer: //Go to player : No return
-		if(InWParam.i_Param == -1){
-			GoPlayer(*(long*)CurrentTarget);
-		}
-		else {
-			GoPlayer(InWParam.i_Param);
-		}
+		convertAgParam(InWParam.i_Param);
+		GoPlayer(InWParam.i_Param);
 		break;
 	case CA_GoSignpost: //Go to signpost : No return
-		if(InWParam.i_Param == -1){
-			GoSignpost(*(long*)CurrentTarget);
-		}
-		else {
-			GoSignpost(InWParam.i_Param);
-		}
+		convertAgParam(InWParam.i_Param);
+		GoSignpost(InWParam.i_Param);
 		break;
 	case CA_EnterChallenge: //Enter challenge mission : No return
 		EnterChallenge();
@@ -455,12 +443,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OpenChest();
 		break;
 	case CA_PickupItem: //Pick up item : No return
-		if(InWParam.i_Param == -1){
-			PickUpItem(*(long*)CurrentTarget);
-		}
-		else {
-			PickUpItem(InWParam.i_Param);
-		}
+		convertAgParam(InWParam.i_Param);
+		PickUpItem(InWParam.i_Param);
 		break;
 	case CA_Dialog: //Dialog packet : No return
 		Dialog(InWParam.i_Param);
@@ -486,52 +470,25 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_UseHero1Skill: //Use hero 1 skill : No return
 		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
-
-		if(InLParam.i_Param == -1){
-			InLParam.i_Param = *(long*)CurrentTarget;
-		}
-		else if(InLParam.i_Param == -2){
-			InLParam.i_Param = myId;
-		}
-		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
+		convertAgParam(InLParam.i_Param);
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero2Skill: //Use hero 2 skill : No return
 		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
-
-		if(InLParam.i_Param == -1){
-			InLParam.i_Param = *(long*)CurrentTarget;
-		}
-		else if(InLParam.i_Param == -2){
-			InLParam.i_Param = myId;
-		}
-		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
+		convertAgParam(InLParam.i_Param);
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x28), InWParam.i_Param-1, InLParam.i_Param);
 		break;
 	case CA_UseHero3Skill: //Use hero 3 skill : No return
 		if(!MySectionA->HeroesStruct()) {SendError(header); break;}
 		if(InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
-
-		if(InLParam.i_Param == -1){
-			InLParam.i_Param = *(long*)CurrentTarget;
-		}
-		else if(InLParam.i_Param == -2){
-			InLParam.i_Param = myId;
-		}
-		if(Agents[InLParam.i_Param] == NULL) {SendError(header); break;}
+		convertAgParam(InLParam.i_Param);
 		UseHeroSkill(*(long*)(MySectionA->HeroesStruct() + 0x4C), InWParam.i_Param-1, InLParam.i_Param);
 	case CA_CancelAction: //Cancel movement : No return
 		CancelAction();
 		break;
 	case CA_GetName: //Get name of agent : Return wchar_t*
-		if(InWParam.i_Param == -1){
-			InWParam.i_Param = *(long*)CurrentTarget;
-		}
-		else if(InWParam.i_Param == -2){
-			InWParam.i_Param = myId;
-		}
-		if(Agents[InWParam.i_Param] == NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.d_Param = (dword)GetAgentName(InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -557,18 +514,14 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		SendChat('/',"resign");
 		break;
 	case CA_UpdateAgentPosition: //Send /stuck to chat, effectively updating client position : No return
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		UpdateAgentPosition(InWParam.i_Param);
 		break;
 	case CA_ReturnToOutpost: //Send "Return to Outpost" packet : No return
 		ReturnToOutpost();
 		break;
 	case CA_GoAgent: //Go to target : No return
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		GoAgent(InWParam.i_Param);
 		break;
 	case CA_DonateFaction: //Donate faction : No return
@@ -596,11 +549,17 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		DismissBuff(MyBuffHandler.GetBuff(InWParam.i_Param,InLParam.i_Param)->BuffId);
 		break;
 	case CA_SendChat: // Send Chat : No return
-		if(InLParam.d_Param == 0){break;}
-		SendChat((char)(InWParam.i_Param + 33),(wchar_t*)InLParam.d_Param);
+		if(InWParam.i_Param == 0) {SendError(header); break;}
+		SendChat(*(char*)(InWParam.i_Param), (wchar_t*)(InWParam.i_Param + 2));
 		break;
 	case CA_OpenStorage: //Open the storage : No return
 		OpenStorage();
+		break;
+	case CA_WriteWhisper: //Write client-side only whisper : No return
+		/*
+		if(InWParam.d_Param == 0 || InLParam.d_Param == 0) {SendError(header); break;}
+		WriteWhisper((wchar_t*)InWParam.d_Param, (wchar_t*)InLParam.d_Param);
+		*/
 		break;
 
 		//SectionA related commands
@@ -683,68 +642,50 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetProfessions: //Get agent's primary and secondary profession : Return byte & byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Primary;
 		OutLParam.i_Param = Agents[InWParam.i_Param]->Secondary;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetPlayerNumber: //Get player number of agent : Return word
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->PlayerNumber;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetHP: //Get HP of agent : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->HP;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetRotation: //Get rotation of agent in radian : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->Rotation;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetSkill: //Get agent's current skill : Return word
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Skill;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetCoords: //Get X,Y coords of agent : Return float & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->X;
 		OutLParam.f_Param = Agents[InWParam.i_Param]->Y;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetWeaponSpeeds: //Get weapon speeds of agent (weapon attack speed, attack speed modifier) : Return float & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->WeaponAttackSpeed;
 		OutLParam.f_Param = Agents[InWParam.i_Param]->AttackSpeedModifier;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetSpiritRange: //Is agent in spirit range of me : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->InSpiritRange;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetTeamId: //Get team ID of agent (0 = none) : Return byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->TeamId;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -758,81 +699,59 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		*/
 		break;
 	case CA_GetModelMode: //Get agent's model mode : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->ModelMode;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetHpPips: //Get agent's health pips : Return int
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = static_cast<int>(((Agents[InWParam.i_Param]->HPPips / 0.0038) > 0.0) ? floor((Agents[InWParam.i_Param]->HPPips / 0.0038) + 0.5) : ceil((Agents[InWParam.i_Param]->HPPips / 0.0038) - 0.5));
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetEffects: //Get agent's effect bit map : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Effects;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetHex: //Get agent's hex bit map : Return byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = 0;
 		if((Agents[InWParam.i_Param]->Effects & 0x0800)) OutWParam.i_Param += 1;
 		if((Agents[InWParam.i_Param]->Effects & 0x0400)) OutWParam.i_Param += 1;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetModelAnimation: //Get agent's model animation : Return int/dword
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->ModelAnimation;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetEnergy: //Get agent's energy - ONLY WORKS FOR YOURSELF! : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = Agents[InWParam.i_Param]->Energy;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetAgentPtr: //Get pointer to agent : Return ptr
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.d_Param = (DWORD)Agents[InWParam.i_Param];
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetAgentMovementPtr: //Get pointer to agent movement : Return ptr
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(AgentMovements[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.d_Param = (DWORD)AgentMovements[InWParam.i_Param];
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetType: //Get agent type : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Type;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetLevel: //Get agent level : Return byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Level;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNameProperties: //Get agent's name properties : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->NameProperties;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -845,24 +764,18 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetMyDistanceToAgent: //Get distance between agent and you : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = GetDistanceFromAgentToAgent(myId, InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNearestAgentToAgent: //Get nearest agent to agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestAgentToAgent(InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetDistanceFromAgentToAgent: //Get distance from agent (OutWParam.i_Param) to agent (OutLParam.i_Param) : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(InLParam.i_Param == -1){InLParam.i_Param = *(long*)CurrentTarget;}
-		else if(InLParam.i_Param == -2){InLParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
+		convertAgParam(InLParam.i_Param);
 
 		if(InWParam.i_Param < 1 || (unsigned int)InWParam.i_Param > maxAgent || Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
 		if(InLParam.i_Param < 1 || (unsigned int)InLParam.i_Param > maxAgent || Agents[InLParam.i_Param]==NULL)  {SendError(header); break;}
@@ -871,24 +784,18 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNearestAgentToAgentEx: //Get nearest agent to agent AND the distance between them : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestAgentToAgent(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetModelState: //Get model state of agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->ModelState;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsAttacking: //Check if agent is attacking : Return int/bool
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if(Agents[InWParam.i_Param]->ModelState == 0x60||
 			Agents[InWParam.i_Param]->ModelState == 0x440||
 			Agents[InWParam.i_Param]->ModelState == 0x460)
@@ -900,9 +807,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsKnockedDown: //Check if agent is knocked down : Return int/bool
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if(Agents[InWParam.i_Param]->ModelState == 0x450){
 			OutWParam.i_Param = 1;
 		}else{
@@ -911,16 +816,12 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsMoving: //Check if agent is moving : Return int/bool
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(AgentMovements[InWParam.i_Param]==NULL){SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = (AgentMovements[InWParam.i_Param]->Moving1 > 0) ? 1 : 0;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsDead: //Check if agent is dead : Return int/bool
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if((Agents[InWParam.i_Param]->Effects & 0x0010)){
 			OutWParam.i_Param = 1;
 		}else{
@@ -929,9 +830,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetIsCasting: //Check if agent is casting/using skill : Return int/bool
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if(Agents[InWParam.i_Param]->Skill != NULL){
 			OutWParam.i_Param = 1;
 		}else{
@@ -950,32 +849,24 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		}
 		break;
 	case CA_GetAllegiance: //Get agents allegiance and team : Return word & byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Allegiance;
 		OutLParam.i_Param = Agents[InWParam.i_Param]->TeamId;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetNearestEnemyToAgentEx: //Get nearest enemy (by TeamId) to agent and the distance between them : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestEnemyToAgent(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetIsAttackedMelee: //Check if agent is under attack from enemy melee (by TeamId) : Return int
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = IsAttackedMelee(InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNearestItemToAgentEx: //Get nearest item to agent : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestItemToAgent(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
@@ -990,47 +881,35 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		}
 		break;
 	case CA_GetSpeed: //Get current speed of agent : Return float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.f_Param = sqrt(pow(Agents[InWParam.i_Param]->MoveX, 2) + pow(Agents[InWParam.i_Param]->MoveY, 2));
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNearestEnemyToAgentByAllegiance: //Get nearest enemy to agent by allegiance and the distance between them : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestEnemyToAgentByAllegiance(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetNearestAliveEnemyToAgent: //Get nearest alive enemy to agent and the distance between them : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestAliveEnemyToAgent(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetWeaponType: //Get weapon type : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->WeaponType;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNearestSignpostToAgent: //Get nearest signpost to agent : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestSignpostToAgent(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetNearestNpcToAgentByAllegiance: //Get nearest npc to agent by allegiance : Return int/long & float
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNearestNpcToAgentByAllegiance(InWParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(InWParam.i_Param, OutWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
@@ -1044,9 +923,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetLoginNumber: //Get login number of agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->LoginNumber;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -1069,9 +946,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetTarget: //Get target of agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL){SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = AgentTargets[InWParam.i_Param];
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -1103,23 +978,17 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetAgentDanger: //Get number of agents targetting agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetAgentDanger(InWParam.i_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetTypeMap: //Returns the type map of the agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->TypeMap;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetAgentWeapons: //Returns the item id's of agent's currently equiped weapon(s) : Return int/long & int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->WeaponItemId;
 		OutLParam.i_Param = Agents[InWParam.i_Param]->OffhandItemId;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
@@ -1152,9 +1021,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetExtraType: //Returns the 'extra type' of the agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = Agents[InWParam.i_Param]->ExtraType;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -1381,27 +1248,21 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemIdByAgent: //Get item id and model id by agent id : Return int/long & int/long
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->id;
 		OutLParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->modelId;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemInfoByAgent: //Get item rarity and quantity by agent id : Return byte & byte
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemInfo->rarity;
 		OutLParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->quantity;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetItemLastModifierByAgent: //Get item last modifier and customized by agent id : Return byte & wchar_t*
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemInfo->lastModifier;
 		OutLParam.d_Param = (DWORD)MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->customized;
@@ -1425,9 +1286,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemExtraIdByAgent: //Get item extra id by agent id : Return int/short
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraId;
 		myGWCAServer->SetResponse(header, OutWParam);
@@ -1446,9 +1305,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemReqByAgent : //Get item req and attribute by agent id : Return byte & byte
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemReq->requirement;
 		OutWParam.i_Param = MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->extraItemReq->attribute;
@@ -1472,9 +1329,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetItemDmgModByAgent: //Get the item dmg mod for offhands/shields by agent : Return int/long
-		if(InWParam.i_Param == 0 ){SendError(header); break;}
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
 		if(!MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)){SendError(header); break;}
 		OutWParam.i_Param = MyItemManager->GetOffhandDamageMod(MyItemManager->GetItemPtrByAgentId(InWParam.i_Param)->id);
 		myGWCAServer->SetResponse(header, OutWParam);
@@ -1687,23 +1542,17 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNumberOfFoesInRangeOfAgent: //Number of foes within specified range of specified agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNumberOfFoesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNumberOfAlliesInRangeOfAgent: //Number of allies within specified range of specified agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNumberOfAlliesInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNumberOfItemsInRangeOfAgent: //Number of items within specified range of specified agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL)  {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		OutWParam.i_Param = GetNumberOfItemsInRangeOfAgent(InWParam.i_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
@@ -1715,13 +1564,23 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OutWParam.i_Param = GetTimeStamp();
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
+	case CA_LockHero: //Lock hero on agent : No return
+		convertAgParam(InLParam.i_Param);
+		switch(InWParam.i_Param){
+		case 1:
+			InWParam.i_Param = *(long*)(MySectionA->HeroesStruct() + 0x4); break;
+		case 2:
+			InWParam.i_Param = *(long*)(MySectionA->HeroesStruct() + 0x28); break;
+		case 3:
+			InWParam.i_Param = *(long*)(MySectionA->HeroesStruct() + 0x4C); break;
+		}
+		LockHero(InWParam.i_Param, InLParam.i_Param);
+		break;
 	
 		//Trade-related commands
 	case CA_TradePlayer: //Like pressing "Trade" button next to player's name : No return
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
-		else if(Agents[InWParam.i_Param]->LoginNumber==NULL) {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
+		if(Agents[InWParam.i_Param]->LoginNumber==NULL) {SendError(header); break;}
 		TradePlayer(InWParam.i_Param);
 		break;
 	case CA_SubmitOffer: //Like pressing "Submit Offer" button in a trade but with gold amount : No return
@@ -1770,26 +1629,20 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 
 		//Visual-equipment related commands
 	case CA_GetEquipmentModelId: //Returns the model id of the specified equipment of agent : Return int/long
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if(InLParam.i_Param < 0 || InLParam.i_Param > 7) {SendError(header); break;}
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].ModelId;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetEquipmentDyeInfo: //Returns the dye id and shinyness of the specified equipment of agent : Return short & byte
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		if(InLParam.i_Param < 0 || InLParam.i_Param > 7) {SendError(header); break;}
 		OutWParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].Dye.DyeId;
 		OutLParam.i_Param = Agents[InWParam.i_Param]->Equip[0]->Items[InLParam.i_Param].Dye.Shinyness;
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_SetEquipmentAgent: //Sets the current agent to work with : No return
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL) {SendError(header); break;}
+		convertAgParam(InWParam.i_Param);
 		EquipAgent = InWParam.i_Param;
 		break;
 	case CA_SetEquipmentModelId: //Sets the equipment of agent and updates it : No return
