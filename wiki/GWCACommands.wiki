@@ -95,7 +95,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TargetNextFoe || No parameters. Functions like the GW Control: Targetting - Next Foe ||
 || CA_SkipCinematic || No parameters. Skips the current cinematic/cutscene. ||
 || CA_DismissBuff || Parameter = Hero (from 0 = self to 3 = Hero3), parameter 2 = index of the buff in order it was casted. ||
-|| CA_SendChat || Parameter = channel (0=all to 4=ally ), parameter 2 = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
+|| CA_SendChat || Parameter = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
+|| CA_WriteWhisper || Parameter = pointer to message, parameter 2 = pointer to sender. Use wrapper function WriteWhisper() in GWCAConstants.au3 ||
 || CA_OpenStorage || No parameters. Experimental function which visually opens your storage. Note: only works after opening your storage once! Else GW will crash! ||
 
 ----
@@ -309,6 +310,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_TradePlayer || Parameter = agent id (or -1/-2). Like pressing the "Trade" button next to a player's name. ||
 || CA_GetMapBoundariesPtr || No parameters. Returns a pointer to the structure that defines the boundaries of the current map. If return is zero, the client hasn't fully loaded the zone. ||
 || CA_GetTimeStamp || No parameters. Returns the current internal time stamp. Used in skill recharges, effects durations and other things. ||
+|| CA_LockHero || Parameter = hero index, parameter 2 = agent target (or -1/-2). Set to 0 to un-lock the target of the hero. ||
 
 ----
 
