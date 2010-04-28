@@ -45,6 +45,10 @@ template <typename T> T ReadPtrChain(
 #define myId *(long*)(AgentArrayPtr-0x54)
 #define buildNumber *(long*)BuildNumber
 
+#define convertAgParam(param) if(param == -1){param = *(long*)CurrentTarget;} \
+		else if(param == -2){param = myId;} \
+		if(Agents[param]==NULL){SendError(header); break;}
+
 #include "Agent.h"
 
 extern CSectionA* MySectionA;
