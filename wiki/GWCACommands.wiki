@@ -311,6 +311,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetMapBoundariesPtr || No parameters. Returns a pointer to the structure that defines the boundaries of the current map. If return is zero, the client hasn't fully loaded the zone. ||
 || CA_GetTimeStamp || No parameters. Returns the current internal time stamp. Used in skill recharges, effects durations and other things. ||
 || CA_LockHero || Parameter = hero index, parameter 2 = agent target (or -1/-2). Set to 0 to un-lock the target of the hero. ||
+|| CA_CancelMaintainedEnchantment || Parameter = skill id. Cancels the specified self-targetting or in other way targetting you maintained enchantment. ||
 
 ----
 
