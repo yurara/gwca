@@ -521,7 +521,9 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		ReturnToOutpost();
 		break;
 	case CA_GoAgent: //Go to target : No return
-		convertAgParam(InWParam.i_Param);
+		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
+		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
+		if(Agents[InWParam.i_Param]==NULL){SendError(header);break;}
 		GoAgent(InWParam.i_Param);
 		break;
 	case CA_DonateFaction: //Donate faction : No return
@@ -1604,6 +1606,10 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_AcceptTrade: //Like pressing "Accept" button in a trade - remember to Submit Offer first : No return
 		AcceptTrade();
+		break;
+	case CA_CancelMaintainedEnchantment: //Cancels a maintained enchantment that is self-targetted or used on self : No return
+		if(!Effects->GetPlayerEffect(InWParam.i_Param)) {SendError(header); break;}
+		DismissBuff(Effects->GetPlayerEffect(InWParam.i_Param)->EffectId);
 		break;
 
 		//Effect-monitor related commands

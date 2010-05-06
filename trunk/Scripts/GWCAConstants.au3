@@ -44,7 +44,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_OpenChest, $CA_AcceptAllItems, $CA_PickupItem, $CA_DropItem, $CA_DropItemById, $CA_OpenStorage, _
 	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
 	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, $CA_SetEquipmentAgent, $CA_SetEquipmentModelId, $CA_SetEquipmentDye, _
-	$CA_SetEquipmentShinyness, $CA_WriteWhisper, $CA_LockHero, _
+	$CA_SetEquipmentShinyness, $CA_WriteWhisper, $CA_LockHero, $CA_CancelMaintainedEnchantment, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _

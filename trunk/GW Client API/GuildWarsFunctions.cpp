@@ -699,7 +699,7 @@ long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->HP == 0){continue;}
+		if((Agents[i]->Effects & 0x0010)){continue;}
 		if(Agents[i]->PlayerNumber == playerNumber){lCount++;}
 	}
 	}
@@ -714,7 +714,7 @@ long GetNumberOfAliveEnemyAgents(){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
+		if((Agents[i]->Effects & 0x0010)){continue;}
 		if(Agents[i]->Allegiance == 0x300){lCount++;}
 	}
 	}
@@ -841,7 +841,7 @@ long GetNumberOfFoesInRangeOfAgent(long agentId, float dist){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
+		if((Agents[i]->Effects & 0x0010)){continue;}
 		if(Agents[i]->Allegiance == 0x300){
 			aTemp = GetDistanceFromAgentToAgent(agentId, i);
 			if(aDistance > aTemp && aTemp != 0 && aTemp < dist){lCount++;}
@@ -864,7 +864,7 @@ long GetNumberOfAlliesInRangeOfAgent(long agentId, float dist){
 	__try {
 	for(unsigned int i = 1;i < maxAgent;i++){
 		if(Agents[i] == NULL){continue;}
-		if(Agents[i]->HP == 0 && (Agents[i]->Effects & 0x0010)){continue;}
+		if((Agents[i]->Effects & 0x0010)){continue;}
 		if(Agents[i]->Allegiance == 0x100){
 			aTemp = GetDistanceFromAgentToAgent(agentId, i);
 			if(aDistance > aTemp && aTemp != 0 && aTemp < dist){lCount++;}
