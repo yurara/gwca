@@ -84,7 +84,7 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetTimeStamp, $CA_GetAgentDanger, $CA_GetTypeMap, $CA_GetAgentWeapons, $CA_GetMatchStatus, _
 	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, $CA_GetItemDmgMod, $CA_GetItemDmgModById, $CA_GetItemDmgModByAgent, _
 	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, $CA_GetExtraType, _
-	$CA_PrepareNearestPlayerNumberToCoords, $CA_GetNearestPlayerNumberToCoords, _
+	$CA_PrepareNearestPlayerNumberToCoords, $CA_GetNearestPlayerNumberToCoords, $CA_GetSkillType, $CA_GetFirstAgentByPlayerNumberByTeam, _
 	$CA_RequestsEnd
 
 
@@ -115,6 +115,10 @@ Global Enum $ATTRIB_FastCasting, $ATTRIB_IllusionMagic, $ATTRIB_DominationMagic,
 			$ATTRIB_ScytheMastery, $ATTRIB_WindPrayers, $ATTRIB_EarthPrayers, $ATTRIB_Mysticism
 
 Global Enum $EQUIP_Weapon, $EQUIP_Offhand, $EQUIP_Chest, $EQUIP_Legs, $EQUIP_Head, $EQUIP_Feet, $EQUIP_Hands
+
+Global Enum $SKILLTYPE_Stance = 3, $SKILLTYPE_Hex, $SKILLTYPE_Spell, $SKILLTYPE_Enchantment, $SKILLTYPE_Signet, $SKILLTYPE_Well = 9, _
+			$SKILLTYPE_Skill, $SKILLTYPE_Ward, $SKILLTYPE_Glyph, $SKILLTYPE_Attack = 14, $SKILLTYPE_Shout, $SKILLTYPE_Preparation = 19, _
+			$SKILLTYPE_Trap = 21, $SKILLTYPE_Ritual, $SKILLTYPE_ItemSpell = 24, $SKILLTYPE_WeaponSpell, $SKILLTYPE_Chant = 27, $SKILLTYPE_EchoRefrain
 
 Global Enum $IS_NUMERIC = 0x00, _
 			$IS_TEXT = 0x01, _
@@ -603,9 +607,12 @@ Func PingSleep($msExtra = 0)
 EndFunc
 
 Func WriteWhisper($hprocess, $Name, $Message)
+	Local $ownHandle = True
+
 	If Not IsArray($hprocess) Then
 		$hprocess = _GWCAMemOpen($hprocess)
 		If Not IsArray($hprocess) Then Return
+		$ownHandle = False
 	EndIf
 
 	$oldCbType = $cbType
@@ -616,7 +623,7 @@ Func WriteWhisper($hprocess, $Name, $Message)
 	$MemPtr = $MemPtr[0]
 
 	$StringLen2 = StringLen($Message)
-	$MemPtr2 = CmdCB($CA_AllocMem, ($StringLen + 1) * 2)
+	$MemPtr2 = CmdCB($CA_AllocMem, ($StringLen2 + 1) * 2)
 	$MemPtr2 = $MemPtr2[0]
 
 	_GWCAMemWrite($MemPtr, $hprocess, $Name, "wchar[" & $StringLen + 1 & "]")
@@ -626,6 +633,8 @@ Func WriteWhisper($hprocess, $Name, $Message)
 
 	If $MemPtr <> 0 Then Cmd($CA_FreeMem, $MemPtr)
 	If $MemPtr2 <> 0 Then Cmd($CA_FreeMem, $MemPtr2)
+
+	If Not $ownHandle Then _GWCAMemClose($hprocess)
 
 	$cbType = $oldCbType
 EndFunc

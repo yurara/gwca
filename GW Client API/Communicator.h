@@ -103,7 +103,7 @@ enum GWCA_COMMANDS{
 	CA_GetAgentDanger, CA_GetTypeMap, CA_GetAgentWeapons, CA_GetMatchStatus,
 	CA_GetNextAgent, CA_GetNextAlly, CA_GetNextFoe, CA_GetItemDmgMod, CA_GetItemDmgModById, CA_GetItemDmgModByAgent,
 	CA_GetEquipmentModelId, CA_GetEquipmentDyeInfo, CA_GetExtraType,
-	CA_PrepareNearestPlayerNumberToCoords, CA_GetNearestPlayerNumberToCoords,
+	CA_PrepareNearestPlayerNumberToCoords, CA_GetNearestPlayerNumberToCoords, CA_GetSkillType, CA_GetFirstAgentByPlayerNumberByTeam,
 	CA_RequestsEnd
 };
 

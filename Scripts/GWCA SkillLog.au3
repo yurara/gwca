@@ -7,14 +7,14 @@
 #include <WindowsConstants.au3>
 #include "GWCAConstants.au3"
 
-Global $cGUI = GUICreate("GWCA - Skill log", 320, 220) ;GUI for communication
+Global $cGUI = GUICreate("GWCA - Skill log", 340, 220) ;GUI for communication
 Global $bLog = True
 
 GUIRegisterMsg($MSG_SkillLogCallback, "SkillLogCallback")
 GUIRegisterMsg($MSG_SkillCancelCallback, "SkillCancelCallback")
 GUIRegisterMsg($MSG_SkillCompleteCallback, "SkillCompleteCallback")
 
-$editLog = GUICtrlCreateEdit("", 0, 0, 320, 190, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL))
+$editLog = GUICtrlCreateEdit("", 0, 0, 340, 190, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL))
 $btnLogOnOff = GUICtrlCreateButton("Disable log", 5, 195, 60, 20)
 $btnClear = GUICtrlCreateButton("Clear log", 70, 195, 60, 20)
 
@@ -72,7 +72,7 @@ EndFunc
 
 Func SkillCompleteCallback($hwnd, $msg, $wparam, $lparam)
 	If $bLog Then
-		_LogAdd("Id "&Number($wparam)&" completed "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
+		;_LogAdd("Id "&Number($wparam)&" completed "&ReadSkillName(@ScriptDir&"\new list.txt", $lparam))
 	EndIf
 EndFunc
 
