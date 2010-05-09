@@ -558,10 +558,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		OpenStorage();
 		break;
 	case CA_WriteWhisper: //Write client-side only whisper : No return
-		/*
 		if(InWParam.d_Param == 0 || InLParam.d_Param == 0) {SendError(header); break;}
 		WriteWhisper((wchar_t*)InWParam.d_Param, (wchar_t*)InLParam.d_Param);
-		*/
 		break;
 
 		//SectionA related commands
@@ -1034,6 +1032,11 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(TmpVariable == 0) {SendError(header); break;}
 		OutWParam.i_Param = GetNearestPlayerNumberToCoords((word)TmpVariable, InWParam.f_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetFirstAgentByPlayerNumberByTeam: //Returns the first agent by player number and team and distance : Return int/long & float
+		OutWParam.i_Param = GetFirstAgentByPlayerNumberByTeam(InWParam.i_Param, InLParam.i_Param);
+		OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 
 		//Item related commands
@@ -1610,6 +1613,12 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_CancelMaintainedEnchantment: //Cancels a maintained enchantment that is self-targetted or used on self : No return
 		if(!Effects->GetPlayerEffect(InWParam.i_Param)) {SendError(header); break;}
 		DismissBuff(Effects->GetPlayerEffect(InWParam.i_Param)->EffectId);
+		break;
+	case CA_GetSkillType: //Returns the skill type of the specified skill : Return byte
+		if(InWParam.i_Param == NULL) {SendError(header); break;}
+		if(!((SkillType*)(SkillTypeBase + (InWParam.i_Param * 160)))) {SendError(header); break;}
+		OutWParam.i_Param = ((SkillType*)(SkillTypeBase + (InWParam.i_Param * 160)))->Type;
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 
 		//Effect-monitor related commands

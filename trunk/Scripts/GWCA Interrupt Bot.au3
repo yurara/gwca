@@ -443,6 +443,8 @@ Func GetSkillMode()
 EndFunc
 
 Func LockOnOff()
+	Local $sName = ""
+
 	If WinActive($sGW) OR WinActive("GWCA Tool - Interrupt Bot") Then
 		#cs
 		$cbType = "int"
@@ -468,7 +470,9 @@ Func LockOnOff()
 				Else
 					$lock = $cbVar[0]
 					GUICtrlSetData($itemLock, "Lock on")
-					WriteWhisper(WinGetProcess($sGW), "Bot", "Locked on "&$lock)
+					$sName = GetPlayerName($lock)
+					If $sName = "" Then $sName = String($lock)
+					WriteWhisper(WinGetProcess($sGW), "Bot", "Locked on "&$sName)
 				EndIf
 			Case Else
 				$lock = 0
