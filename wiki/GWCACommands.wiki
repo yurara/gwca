@@ -194,6 +194,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetExtraType || Paramter = agent id (or -1/-2). Returns the extra type of the agent as integer. This number can be used for distinguishing between chests and signposts for example. ||
 || CA_PrepareNearestPlayerNumberToCoords || Parameter = player/model number. Sets up the CA_GetNearestPlayerNumberToCoords command. But please use the wrapper function GetNearestPlayerNumberToCoords() in GWCAConstants.au3 instead! ||
 || CA_GetNearestPlayerNumberToCoords || Parameters = coordinate set in packed floats. Requires previous call to CA_PrepareNearestPlayerNumberToCoords. But please use the wrapper function GetNearestPlayerNumberToCoords() in GWCAConstants.au3 instead! ||
+|| CA_GetFirstAgentByPlayerNumberByTeam || Parameter = player/model number, parameter 2 = team id. Returns the first agent (iteration-wise) with the specified player/model number and team id making you able to easily identify your Ghostly Hero etc. in PvP. ||
 
 ----
 
@@ -312,6 +313,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetTimeStamp || No parameters. Returns the current internal time stamp. Used in skill recharges, effects durations and other things. ||
 || CA_LockHero || Parameter = hero index, parameter 2 = agent target (or -1/-2). Set to 0 to un-lock the target of the hero. ||
 || CA_CancelMaintainedEnchantment || Parameter = skill id. Cancels the specified self-targetting or in other way targetting you maintained enchantment. ||
+|| CA_GetSkillType || Parameter = skill id. Returns the type of the specified skill. See the $SKILLTYPE_ variables in GWCAConstants.au3 for use. ||
 
 ----
 
