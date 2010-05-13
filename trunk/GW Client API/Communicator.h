@@ -61,7 +61,7 @@ enum GWCA_COMMANDS{
 	CA_OpenChest, CA_AcceptAllItems, CA_PickupItem, CA_DropItem, CA_DropItemById, CA_OpenStorage,
 	CA_UpdateAgentPosition, CA_MoveOld, CA_TradePlayer, CA_SubmitOffer, CA_ChangeOffer, CA_OfferItem,
 	CA_CancelTrade, CA_AcceptTrade, CA_ResetAttributes, CA_SetEquipmentAgent, CA_SetEquipmentModelId, CA_SetEquipmentDye,
-	CA_SetEquipmentShinyness, CA_WriteWhisper, CA_LockHero, CA_CancelMaintainedEnchantment,
+	CA_SetEquipmentShinyness, CA_WriteWhisper, CA_LockHero, CA_CancelMaintainedEnchantment, CA_EnterChallengeForeign,
 	CA_CommandsEnd,
 
 	//Requests

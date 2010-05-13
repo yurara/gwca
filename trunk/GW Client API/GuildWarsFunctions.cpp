@@ -194,6 +194,12 @@ void EnterChallenge(){
 	SendPacket(newPak);
 }
 
+void EnterChallengeForeign(){
+	NEWPAK(9d,08);
+	newPak->Set<byte>(4,0);
+	SendPacket(newPak);
+}
+
 void CancelAction(){
 	NEWPAK(21,04);
 	SendPacket(newPak);

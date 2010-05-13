@@ -439,6 +439,9 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_EnterChallenge: //Enter challenge mission : No return
 		EnterChallenge();
 		break;
+	case CA_EnterChallengeForeign: //Accepts the Foreign Characters window : No return
+		EnterChallengeForeign();
+		break;
 	case CA_OpenChest: //Open chest : No return
 		OpenChest();
 		break;
@@ -521,9 +524,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		ReturnToOutpost();
 		break;
 	case CA_GoAgent: //Go to target : No return
-		if(InWParam.i_Param == -1){InWParam.i_Param = *(long*)CurrentTarget;}
-		else if(InWParam.i_Param == -2){InWParam.i_Param = myId;}
-		if(Agents[InWParam.i_Param]==NULL){SendError(header);break;}
+		convertAgParam(InWParam.i_Param);
 		GoAgent(InWParam.i_Param);
 		break;
 	case CA_DonateFaction: //Donate faction : No return
@@ -2000,6 +2001,7 @@ void GoAgent(long agentId){
 	_asm {
 		MOV ECX,agentId
 		MOV EDX,1
+		PUSH 0
 		CALL pGoAgent
 	}
 }
