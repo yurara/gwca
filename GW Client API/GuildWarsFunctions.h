@@ -25,6 +25,7 @@ void ExchangeAmber();
 void OpenChest();
 void GoSignpost(long id);
 void EnterChallenge();
+void EnterChallengeForeign();
 void GoPlayer(long id);
 void UseAttackSkill(dword SkillID, dword TargetID, dword Event = 0);
 void CancelAction();
