@@ -65,6 +65,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GoPlayer || Parameter = id of player, goes to specified player (for use in outposts/cities). ||
 || CA_GoSignpost || Parameter = id of signpost/chest, goes to specified signpost/chest (yellow name). ||
 || CA_EnterChallenge || No parameters, enters the challenge if you're in a Challenge Mission outpost. ||
+|| CA_EnterChallengeForeign || No parameters, used after CA_EnterChallenge, it allows you to skip past the foreign character window. ||
 || CA_OpenChest || No parameters, opens the nearest chest if you're within 'close range'. ||
 || CA_SetEventSkillMode || Obsolete, don't use it. ||
 || CA_PickupItem || Parameter = agent id of item, picks up the specified item. ||
@@ -152,7 +153,7 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetMyNearestAgent || No parameters, returns id of your nearest agent. ||
 || CA_GetMyDistanceToAgent || Parameter = id of agent, returns float with distance. ||
 || CA_GetNearestAgentToAgent || Parameter = id of agent, returns id of the nearest agent to the specified agent. ||
-|| CA_GetDistanceFromAgentToAgent || Obsolete, so don't bother using it. ||
+|| CA_GetDistanceFromAgentToAgent || Parameter = id of agent, parameter 2 = id of other agent. Returns the distance between the two agents as a float. ||
 || CA_GetNearestAgentToAgentEx || Parameter = id of agent, same as CA_GetNearestAgentToAgent, but also returns float with distance between them. ||
 || CA_GetModelState || Kinda obsolete. ||
 || CA_GetIsAttacking || Parameter = id of agent, returns boolean. ||
