@@ -1014,7 +1014,7 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		}
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
-	case CA_GetNextFoe: //Returns next ally in iteration and the distance to it : Return int/long & float
+	case CA_GetNextFoe: //Returns next foe in iteration and the distance to it : Return int/long & float
 		OutWParam.i_Param = GetNextFoe(InWParam.i_Param);
 		if(OutWParam.i_Param){
 			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
@@ -1039,6 +1039,21 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	case CA_GetFirstAgentByPlayerNumberByTeam: //Returns the first agent by player number and team and distance : Return int/long & float
 		OutWParam.i_Param = GetFirstAgentByPlayerNumberByTeam(InWParam.i_Param, InLParam.i_Param);
 		OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_GetNearestAliveEnemyToCoords: //Returns the nearest alive enemy to coordinates : Return int/long
+		if(InWParam.f_Param==NULL) {SendError(header); break;}
+		if(InLParam.f_Param==NULL) {SendError(header); break;}
+		OutWParam.i_Param = GetNearestAliveEnemyToCoords(InWParam.f_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNextAliveFoe: //Returns next alive foe in iteration and the distance to it : Return int/long & float
+		OutWParam.i_Param = GetNextAliveFoe(InWParam.i_Param);
+		if(OutWParam.i_Param){
+			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		}else{
+			OutLParam.f_Param = 0;
+		}
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 

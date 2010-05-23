@@ -85,6 +85,7 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, $CA_GetItemDmgMod, $CA_GetItemDmgModById, $CA_GetItemDmgModByAgent, _
 	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, $CA_GetExtraType, _
 	$CA_PrepareNearestPlayerNumberToCoords, $CA_GetNearestPlayerNumberToCoords, $CA_GetSkillType, $CA_GetFirstAgentByPlayerNumberByTeam, _
+	$CA_GetNearestAliveEnemyToCoords, $CA_GetNextAliveFoe, _
 	$CA_RequestsEnd
 
 
@@ -282,6 +283,17 @@ Func GetNearestPlayerNumberToCoords($plNum, $x, $y)
 	$cbType = "int"
 	CmdCB($CA_PrepareNearestPlayerNumberToCoords, $plNum)
 	CmdCB($CA_GetNearestPlayerNumberToCoords, _FloatToInt($x), _FloatToInt($y))
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
+Func GetNearestAliveEnemyToCoords($x, $y)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdCB($CA_GetNearestAliveEnemyToCoords, _FloatToInt($x), _FloatToInt($y))
 
 	$cbType = $oldCbType
 
