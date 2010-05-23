@@ -196,6 +196,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_PrepareNearestPlayerNumberToCoords || Parameter = player/model number. Sets up the CA_GetNearestPlayerNumberToCoords command. But please use the wrapper function GetNearestPlayerNumberToCoords() in GWCAConstants.au3 instead! ||
 || CA_GetNearestPlayerNumberToCoords || Parameters = coordinate set in packed floats. Requires previous call to CA_PrepareNearestPlayerNumberToCoords. But please use the wrapper function GetNearestPlayerNumberToCoords() in GWCAConstants.au3 instead! ||
 || CA_GetFirstAgentByPlayerNumberByTeam || Parameter = player/model number, parameter 2 = team id. Returns the first agent (iteration-wise) with the specified player/model number and team id making you able to easily identify your Ghostly Hero etc. in PvP. ||
+|| CA_GetNearestAliveEnemyToCoords || Parameters = coordinate set in packed floats. Returns the nearest alive enemy to the specified coordinates and the distance to the enemy. ||
+|| CA_GetNextAliveFoe || Parameter = starting id. Returns the agent id of the next valid alive foe. For looping through all alive foes, use this command with the returned agent id again. ||
 
 ----
 
