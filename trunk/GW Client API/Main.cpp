@@ -354,15 +354,17 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetMyMaxHP: //Get your own max health (and current health): Return int/long & int
-		if(Agents[myId]==NULL) {SendError(header); break;}
-		OutWParam.i_Param = Agents[myId]->MaxHP;
-		OutLParam.i_Param = (int)(floor(Agents[myId]->MaxHP * Agents[myId]->HP));
+		if(InWParam.i_Param == 0) {InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
+		OutWParam.i_Param = Agents[InWParam.i_Param]->MaxHP;
+		OutLParam.i_Param = (int)(floor(Agents[InWParam.i_Param]->MaxHP * Agents[InWParam.i_Param]->HP));
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetMyMaxEnergy: //Get your own max energy (and current energy): Return int/long & int
-		if(Agents[myId]==NULL) {SendError(header); break;}
-		OutWParam.i_Param = Agents[myId]->MaxEnergy;
-		OutLParam.i_Param = (int)(floor(Agents[myId]->MaxEnergy * Agents[myId]->Energy));
+		if(InWParam.i_Param == 0) {InWParam.i_Param = myId;}
+		convertAgParam(InWParam.i_Param);
+		OutWParam.i_Param = Agents[InWParam.i_Param]->MaxEnergy;
+		OutLParam.i_Param = (int)(floor(Agents[InWParam.i_Param]->MaxEnergy * Agents[InWParam.i_Param]->Energy));
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetBuildNumber: //Get build number of GW : Return int/long
