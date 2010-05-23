@@ -2477,3 +2477,13 @@
 3155|Pain (attack) (Signet of Spirits)
 3156|Soldier's Stance (PvP)
 3157|Destructive Was Glaive (PvP) 
+3159|Charm Drake
+3163|Keiran's Sniper Shot
+3164|Falken Punch
+3165|Golem Pilebunker
+3166|Drunken Stumbling
+3170|Koro's Gaze
+3171|Ebon Vanguard Assassin Support (NPC)
+3172|Ebon Vanguard Battle Standard of Power
+3173|Loose Magic
+3174|Well-Supplied 
