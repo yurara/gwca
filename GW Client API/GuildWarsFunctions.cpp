@@ -700,6 +700,31 @@ long GetNearestPlayerNumberToCoords(word playerNum, float x, float y){
 	return lLowest;
 }
 
+long GetNearestAliveEnemyToCoords(float x, float y){
+	float aDistance = 2500000000;
+	float aTemp = 0;
+
+	long lLowest = 0;
+	__try {
+	for(unsigned int i = 1;i < maxAgent; i++){
+		if((Agents[i] == NULL) || (Agents[i]->Effects & 0x0010)){continue;}
+		if((Agents[i]->Allegiance == 0x300))
+		{
+			aTemp = sqrt(pow((Agents[i]->Y - y), 2) + pow((Agents[i]->X - x), 2));
+			if(aDistance > aTemp){
+				lLowest = i;
+				aDistance = aTemp;
+			}
+		}
+	}
+	}
+	__except(1) 
+	{
+		return false;
+	}
+	return lLowest;
+}
+
 long GetNumberOfAgentsByPlayerNumber(long playerNumber){
 	long lCount = 0;
 	__try {
@@ -808,6 +833,30 @@ long GetNextFoe(unsigned long startId){
 		}
 	}
 	}__except(1) {
+		return false;
+	}
+	return lReturn;
+}
+
+long GetNextAliveFoe(unsigned long startId){
+	if(startId + 1 < maxAgent){
+		startId++;
+	} else {
+		return false;
+	}
+	long lReturn = 0;
+	__try 
+	{
+	for(unsigned int i = startId;i < maxAgent;i++)
+	{
+		if((Agents[i] == NULL) || (Agents[i]->Effects & 0x0010)){continue;}
+		if(Agents[i]->Type == 0xDB && Agents[i]->Allegiance == 0x300){
+			lReturn = i;
+			break;
+		}
+	}
+	}__except(1) 
+	{
 		return false;
 	}
 	return lReturn;
