@@ -57,7 +57,8 @@ GUICtrlSetData(-1,	"$CA_GetRegionAndLanguage|$CA_TraderRequest|$CA_TraderCheck|$
 					"$CA_SetEquipmentAgent|$CA_SetEquipmentModelId|$CA_SetEquipmentDye|$CA_GetEquipmentModelId|$CA_SetEquipmentShinyness|$CA_GetEquipmentDyeInfo|"& _
 					"$CA_GetExtraType|$CA_PrepareNearestPlayerNumberToCoords|$CA_GetNearestPlayerNumberToCoords|$CA_WriteWhisper|$CA_LockHero|"& _
 					"$CA_CancelMaintainedEnchantment|$CA_GetSkillType|$CA_GetFirstAgentByPlayerNumberByTeam|$CA_EnterChallengeForeign|"& _
-					"$CA_GetNearestAliveEnemyToCoords|$CA_GetNextAliveFoe")
+					"$CA_GetNearestAliveEnemyToCoords|$CA_GetNextAliveFoe|$CA_GetHeroCasting|$CA_GetHeroSkillRecharge|$CA_GetHeroSkillAdrenaline|"& _
+					"$CA_GetHeroSkillId|$CA_GetHeroAgentId|$CA_GetNearestAliveEnemyToCoordsByPlayerNumber|$CA_GetNearestAliveAgentByPlayerNumber")
 $inputWparam = GUICtrlCreateInput("", 5, 28, 150, 20)
 $inputLparam = GUICtrlCreateInput("", 5, 51, 150, 20)
 $btnSend = GUICtrlCreateButton("Send MSG", 4, 73)

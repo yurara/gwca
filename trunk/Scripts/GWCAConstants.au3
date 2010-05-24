@@ -85,7 +85,9 @@ Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetNextAgent, $CA_GetNextAlly, $CA_GetNextFoe, $CA_GetItemDmgMod, $CA_GetItemDmgModById, $CA_GetItemDmgModByAgent, _
 	$CA_GetEquipmentModelId, $CA_GetEquipmentDyeInfo, $CA_GetExtraType, _
 	$CA_PrepareNearestPlayerNumberToCoords, $CA_GetNearestPlayerNumberToCoords, $CA_GetSkillType, $CA_GetFirstAgentByPlayerNumberByTeam, _
-	$CA_GetNearestAliveEnemyToCoords, $CA_GetNextAliveFoe, _
+	$CA_GetNearestAliveEnemyToCoords, $CA_GetNextAliveFoe, $CA_GetHeroCasting, $CA_GetHeroSkillRecharge, $CA_GetHeroSkillAdrenaline, _
+	$CA_GetHeroSkillId, $CA_GetHeroAgentId, $CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber, $CA_GetNearestAliveEnemyToCoordsByPlayerNumber, _
+	$CA_GetNearestAliveAgentByPlayerNumber, _
 	$CA_RequestsEnd
 
 
@@ -283,6 +285,18 @@ Func GetNearestPlayerNumberToCoords($plNum, $x, $y)
 	$cbType = "int"
 	CmdCB($CA_PrepareNearestPlayerNumberToCoords, $plNum)
 	CmdCB($CA_GetNearestPlayerNumberToCoords, _FloatToInt($x), _FloatToInt($y))
+
+	$cbType = $oldCbType
+
+	Return $cbVar[0]
+EndFunc
+
+Func GetNearestAliveEnemyToCoordsByPlayerNumber($plNum, $x, $y)
+	$oldCbType = $cbType
+
+	$cbType = "int"
+	CmdCB($CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber, $plNum)
+	CmdCB($CA_GetNearestAliveEnemyToCoordsByPlayerNumber, _FloatToInt($x), _FloatToInt($y))
 
 	$cbType = $oldCbType
 
@@ -596,6 +610,26 @@ Func RechargeTimeLeft($iSkillSlot)
 	$cbType = "int"
 
 	$aRecharge = CmdCB($CA_SkillRecharge, $iSkillSlot)
+	$aTimeStamp = CmdCB($CA_GetTimeStamp)
+	If $aRecharge[0] = 0 Then
+		$iRet = 0
+	Else
+		$iRet = ($aRecharge[0] - $aTimeStamp[0])
+	EndIf
+
+	$cbType = $oldCbType
+
+	Return $iRet
+EndFunc
+
+Func HeroRechargeTimeLeft($iHeroIndex, $iSkillSlot)
+	Local $iRet = 0
+
+	$oldCbType = $cbType
+
+	$cbType = "int"
+
+	$aRecharge = CmdCB($CA_GetHeroSkillRecharge, $iHeroIndex, $iSkillSlot)
 	$aTimeStamp = CmdCB($CA_GetTimeStamp)
 	If $aRecharge[0] = 0 Then
 		$iRet = 0
