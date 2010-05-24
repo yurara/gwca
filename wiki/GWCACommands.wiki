@@ -48,6 +48,11 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_ChangeMaxZoom || Parameter = integer with zoom value, changes your max zoom. Default is 750, default for observer mode is 1400. ||
 || CA_GetLastDialogId || No parameters. Returns an integer with the id of the latest dialog option pressed. To be used with CA_Dialog. ||
 || CA_SetEngineHook || Parameter = boolean whether to turn on or off. Disables rendering of graphics completely lowering CPU usage to 0-1%. Big thanks to ACB for this! ||
+|| CA_GetHeroCasting || Parameter = hero index. Returns the Casting variable of specified hero, just like CA_Casting for yourself. ||
+|| CA_GetHeroSkillRecharge || Parameter = hero index, parameter 2 = skill slot. Returns a timestamp of when the skill finishes recharging or 0 if recharged. Use HeroRechargeTimeLeft() to cope easier. ||
+|| CA_GetHeroSkillAdrenaline || Parameter = hero index, parameter 2 = skill slot. Returns the current amount of adrenaline points (not strikes) of the specified skill. ||
+|| CA_GetHeroSkillId || Parameter = hero index, parameter 2 = skill slot. Returns the skill id of the specified skill. ||
+|| CA_GetHeroAgentId || Parameter = hero index. Returns the agent id of the specified hero. ||
 
 ----
 
@@ -198,6 +203,9 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_GetFirstAgentByPlayerNumberByTeam || Parameter = player/model number, parameter 2 = team id. Returns the first agent (iteration-wise) with the specified player/model number and team id making you able to easily identify your Ghostly Hero etc. in PvP. ||
 || CA_GetNearestAliveEnemyToCoords || Parameters = coordinate set in packed floats. Returns the nearest alive enemy to the specified coordinates and the distance to the enemy. ||
 || CA_GetNextAliveFoe || Parameter = starting id. Returns the agent id of the next valid alive foe. For looping through all alive foes, use this command with the returned agent id again. ||
+|| CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber || Internal command used in GetNearestAliveEnemyToCoordsByPlayerNumber(). Please use this function instead! ||
+|| CA_GetNearestAliveEnemyToCoordsByPlayerNumber || Internal command. Requires previous call to CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber, but please use the GetNearestAliveEnemyToCoordsByPlayerNumber() function instead! ||
+|| CA_GetNearestAliveAgentByPlayerNumber || Parameter = player/model number. Returns the nearest alive agent with specified player/model number and your distance to it. ||
 
 ----
 
