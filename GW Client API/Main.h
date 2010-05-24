@@ -64,7 +64,6 @@ extern long* AgentTargets;
 
 void SendPacket(CPacket* pak);
 void HandleCommands();
-void ReloadSkillbar();
 void SellItem(long itemId);
 void BuyItem(long id, long quantity, long value);
 long GetItemValue(long itemId);

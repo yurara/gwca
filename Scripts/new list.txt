@@ -2486,4 +2486,26 @@
 3171|Ebon Vanguard Assassin Support (NPC)
 3172|Ebon Vanguard Battle Standard of Power
 3173|Loose Magic
-3174|Well-Supplied 
+3174|Well-Supplied
+3175|Guild Monument Protected
+3176|Strong Natural Resistance
+3177|Elite Regeneration
+3178|Elite Regeneration
+3179|Mantra of Signets (PvP)
+3180|Shatter Delusions (PvP)
+3181|Illusionary Weaponry (PvP)
+3182|Panic (PvP)
+3183|Migraine (PvP)
+3184|Accumulated Pain (PvP)
+3185|Psychic Instability (PvP)
+3186|Shared Burden (PvP)
+3187|Stolen Speed (PvP)
+3188|Unnatural Signet (PvP)
+3189|Spiritual Pain (PvP)
+3190|Frustration (PvP)
+3191|Mistrust (PvP)
+3192|Enchanter's Conundrum (PvP)
+3193|Signet of Clumsiness (PvP)
+3194|Mirror of Disenchantment (PvP)
+3195|Wandering Eye (PvP)
+3196|Calculated Risk (PvP) 

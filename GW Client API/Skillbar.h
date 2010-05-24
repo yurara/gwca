@@ -53,6 +53,7 @@ struct Skillbar {
 	SkillbarSkill Skill[8]; //Array holding all 8 skills
 	byte unknown[12];
 	dword Casting; //Bool that is true when you're casting
+	byte unknown2[8];
 };
 
 struct Buff {
@@ -62,7 +63,41 @@ struct Buff {
 	long BuffedAgent; //the agent that is buffed
 };
 
-class BuffHandler{
+class SkillbarHandler {
+public:
+	SkillbarHandler(){};
+	~SkillbarHandler(){};
+
+	Skillbar* GetPlayerSkillbar(){
+		return GetSkillbar(myId);
+	}
+
+	Skillbar* GetHeroSkillbar(int HeroIndex){
+		return GetSkillbar(GetHeroAgentId(HeroIndex));
+	}
+
+	int GetHeroAgentId(int HeroIndex){
+		if(HeroIndex > ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x528)){return 0;}
+		return ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x520, (36 * (HeroIndex - 1)) + 4);
+	}
+
+private:
+	int GetArraySize(){
+		return ReadPtrChain<int>(MySectionA->BasePointer(), 0x18, 0x2C, 0x694);
+	}
+
+	Skillbar* GetSkillbar(unsigned int agentId){
+		Skillbar* pBar = ReadPtrChain<Skillbar*>(MySectionA->BasePointer(), 0x18, 0x2C, 0x68C);
+		for(int i = 0;i < GetArraySize();i++){
+			if(pBar[i].AgentId == agentId){
+				return &(pBar[i]);
+			}
+		}
+		return NULL;
+	}
+};
+
+class BuffHandler {
 public:
 	BuffHandler(){};
 	~BuffHandler(){};

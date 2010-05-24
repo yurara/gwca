@@ -104,7 +104,9 @@ enum GWCA_COMMANDS{
 	CA_GetNextAgent, CA_GetNextAlly, CA_GetNextFoe, CA_GetItemDmgMod, CA_GetItemDmgModById, CA_GetItemDmgModByAgent,
 	CA_GetEquipmentModelId, CA_GetEquipmentDyeInfo, CA_GetExtraType,
 	CA_PrepareNearestPlayerNumberToCoords, CA_GetNearestPlayerNumberToCoords, CA_GetSkillType, CA_GetFirstAgentByPlayerNumberByTeam,
-	CA_GetNearestAliveEnemyToCoords, CA_GetNextAliveFoe,
+	CA_GetNearestAliveEnemyToCoords, CA_GetNextAliveFoe, CA_GetHeroCasting, CA_GetHeroSkillRecharge, CA_GetHeroSkillAdrenaline,
+	CA_GetHeroSkillId, CA_GetHeroAgentId, CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber, CA_GetNearestAliveEnemyToCoordsByPlayerNumber,
+	CA_GetNearestAliveAgentByPlayerNumber,
 	CA_RequestsEnd
 };
 

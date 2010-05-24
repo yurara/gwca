@@ -97,10 +97,10 @@ dword* AttriIds = new dword[8];
 dword* AttriValues = new dword[8];
 int AttriCount = 0;
 
-Skillbar* MySkillbar = NULL;
 CSectionA* MySectionA = new CSectionA();
 ItemManager* MyItemManager = new ItemManager();
 EffectManager* Effects = new EffectManager();
+SkillbarHandler* Skillbars = new SkillbarHandler();
 
 HANDLE PacketMutex;
 HANDLE PartyMutex;
@@ -315,29 +315,26 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 	//	break;
 	case CA_GetCurrentTarget: //Current Target : No return
 		OutWParam.i_Param = *(long*)CurrentTarget;
-		myGWCAServer->SetResponse(header,OutWParam);
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetMyId: //Get your own agent ID : Return int
 		OutWParam.i_Param = myId;
-		myGWCAServer->SetResponse(header,OutWParam);
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_Casting: //Check if you're casting : Return int/bool
-		ReloadSkillbar();
-		if(MySkillbar==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MySkillbar->Casting;
-		myGWCAServer->SetResponse(header,OutWParam);
+		if(!Skillbars->GetPlayerSkillbar()) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetPlayerSkillbar()->Casting;
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_SkillRecharge: //Check if skill is recharging : Return int/long
-		ReloadSkillbar();
-		if(MySkillbar==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MySkillbar->Skill[InWParam.i_Param-1].Recharge;
-		myGWCAServer->SetResponse(header,OutWParam);
+		if(!Skillbars->GetPlayerSkillbar() || InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetPlayerSkillbar()->Skill[InWParam.i_Param-1].Recharge;
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_SkillAdrenaline: //Check adrenaline points of a skill : Return int/long
-		ReloadSkillbar();
-		if(MySkillbar==NULL) {SendError(header); break;}
-		OutWParam.i_Param = MySkillbar->Skill[InWParam.i_Param-1].Adrenaline;
-		myGWCAServer->SetResponse(header,OutWParam);
+		if(!Skillbars->GetPlayerSkillbar() || InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetPlayerSkillbar()->Skill[InWParam.i_Param-1].Adrenaline;
+		myGWCAServer->SetResponse(header, OutWParam);
 	case CA_SetLogAndHwnd: //Set SkillLog and Script hWnd : No return
 		LogSkills = InWParam.i_Param != 0;
 		ScriptHwnd = (HWND)InLParam.i_Param;
@@ -348,9 +345,8 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetSkillbarSkillId: //Get skill id of skills on your Skillbar : Return int/dword
-		ReloadSkillbar();
-		if(MySkillbar==NULL || InWParam.i_Param < 1 || InWParam.i_Param > 8)  {SendError(header); break;}
-		OutWParam.i_Param = MySkillbar->Skill[InWParam.i_Param-1].Id;
+		if(!Skillbars->GetPlayerSkillbar() || InWParam.i_Param < 1 || InWParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetPlayerSkillbar()->Skill[InWParam.i_Param-1].Id;
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetMyMaxHP: //Get your own max health (and current health): Return int/long & int
@@ -381,6 +377,30 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		break;
 	case CA_SetEngineHook: //Enable or disable graphics rendering : No return
 		SetEngineHook(InWParam.i_Param);
+		break;
+	case CA_GetHeroCasting: //Returns the casting variable for the hero's skillbar : Return int/long
+		if(!Skillbars->GetHeroSkillbar(InWParam.i_Param)) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetHeroSkillbar(InWParam.i_Param)->Casting;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetHeroSkillRecharge: //Returns the recharge of specified skill of hero : Return int/long
+		if(!Skillbars->GetHeroSkillbar(InWParam.i_Param) || InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetHeroSkillbar(InWParam.i_Param)->Skill[InLParam.i_Param-1].Recharge;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetHeroSkillAdrenaline: //Returns the adrenaline of specified skill of hero : Return int/long
+		if(!Skillbars->GetHeroSkillbar(InWParam.i_Param) || InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetHeroSkillbar(InWParam.i_Param)->Skill[InLParam.i_Param-1].Adrenaline;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetHeroSkillId: //Returns the skill id of specified skill of hero : Return int/long
+		if(!Skillbars->GetHeroSkillbar(InWParam.i_Param) || InLParam.i_Param < 1 || InLParam.i_Param > 8) {SendError(header); break;}
+		OutWParam.i_Param = Skillbars->GetHeroSkillbar(InWParam.i_Param)->Skill[InLParam.i_Param-1].Id;
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetHeroAgentId: //Returns the agent id of the specified hero : Return int/long
+		OutWParam.i_Param = Skillbars->GetHeroAgentId(InWParam.i_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 
 		//Packet Related Commands
@@ -1042,13 +1062,28 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
 		break;
 	case CA_GetNearestAliveEnemyToCoords: //Returns the nearest alive enemy to coordinates : Return int/long
-		if(InWParam.f_Param==NULL) {SendError(header); break;}
-		if(InLParam.f_Param==NULL) {SendError(header); break;}
 		OutWParam.i_Param = GetNearestAliveEnemyToCoords(InWParam.f_Param, InLParam.f_Param);
 		myGWCAServer->SetResponse(header, OutWParam);
 		break;
 	case CA_GetNextAliveFoe: //Returns next alive foe in iteration and the distance to it : Return int/long & float
 		OutWParam.i_Param = GetNextAliveFoe(InWParam.i_Param);
+		if(OutWParam.i_Param){
+			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
+		}else{
+			OutLParam.f_Param = 0;
+		}
+		myGWCAServer->SetResponse(header, OutWParam, OutLParam);
+		break;
+	case CA_PrepareNearestAliveEnemyToCoordsByPlayerNumber: //Sets up the following command : No return
+		TmpVariable = InWParam.i_Param;
+		break;
+	case CA_GetNearestAliveEnemyToCoordsByPlayerNumber: //Returns the nearest alive agent to coordinates : Return int/long
+		if(TmpVariable == 0) {SendError(header); break;}
+		OutWParam.i_Param = GetNearestAliveEnemyToCoordsByPlayerNumber((word)TmpVariable, InWParam.f_Param, InLParam.f_Param);
+		myGWCAServer->SetResponse(header, OutWParam);
+		break;
+	case CA_GetNearestAliveAgentByPlayerNumber: //Returns the nearest alive agent by player number and distance : Return int/long & float
+		OutWParam.i_Param = GetNearestAliveAgentByPlayerNumber(InWParam.i_Param);
 		if(OutWParam.i_Param){
 			OutLParam.f_Param = GetDistanceFromAgentToAgent(myId, OutWParam.i_Param);
 		}else{
@@ -1724,10 +1759,6 @@ void _declspec(naked) EngineHookEx(){
 	_asm MOV EBP,ESP
 	_asm SUB ESP,0x14
 	_asm JMP EngineExRet
-}
-
-void ReloadSkillbar(){
-	MySkillbar = (Skillbar*)(MySectionA->SkillbarPtr());
 }
 
 void SellItem(long itemId){
