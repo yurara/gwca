@@ -584,6 +584,12 @@ void HandleMessages( WORD header, Param_t InWParam = Param_t(), Param_t InLParam
 		if(InWParam.d_Param == 0 || InLParam.d_Param == 0) {SendError(header); break;}
 		WriteWhisper((wchar_t*)InWParam.d_Param, (wchar_t*)InLParam.d_Param);
 		break;
+	case CA_PrepareZoneMapEx: //Sets up the next call to CA_ZoneMap2 : No return
+		TmpVariable = InWParam.i_Param;
+		break;
+	case CA_ZoneMapEx: //Requires previous call to CA_PrepareZoneMap2. Zones map with region+language parameters : No return
+		MoveMap(TmpVariable, InWParam.i_Param, 0, InLParam.i_Param);
+		break;
 
 		//SectionA related commands
 	case CA_GetMapLoading: //Check if map is loading : Return int/long
