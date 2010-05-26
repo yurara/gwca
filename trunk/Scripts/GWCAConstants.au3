@@ -45,6 +45,7 @@ Global Enum $CA_DisconnectPipe = 0x001, $CA_AliveRequest, $CA_IsAlive, _
 	$CA_UpdateAgentPosition, $CA_MoveOld, $CA_TradePlayer, $CA_SubmitOffer, $CA_ChangeOffer, $CA_OfferItem, _
 	$CA_CancelTrade, $CA_AcceptTrade, $CA_ResetAttributes, $CA_SetEquipmentAgent, $CA_SetEquipmentModelId, $CA_SetEquipmentDye, _
 	$CA_SetEquipmentShinyness, $CA_WriteWhisper, $CA_LockHero, $CA_CancelMaintainedEnchantment, $CA_EnterChallengeForeign, _
+	$CA_PrepareZoneMapEx, $CA_ZoneMapEx, _
 	$CA_CommandsEnd
 Global Enum $CA_RequestsBegin = 0x301,  _
 	$CA_GetCurrentTarget,  _
@@ -96,7 +97,7 @@ Global Enum $RARITY_White = 0x3D, $RARITY_Blue = 0x3F, $RARITY_Purple = 0x42, $R
 Global Enum $BAG_Backpack = 1, $BAG_BeltPouch, $BAG_Bag1, $BAG_Bag2, $BAG_EquipmentPack, $BAG_UnclaimedItems = 7, $BAG_Storage1, $BAG_Storage2, _
 			$BAG_Storage3, $BAG_Storage4, $BAG_Storage5, $BAG_Storage6, $BAG_Storage7, $BAG_Storage8, $BAG_StorageAnniversary
 
-Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahklora, $HERO_MasterOfWhispers, $HERO_AcolyteJin, $HERO_Koss, $HERO_Dunkoro, $HERO_AcolyteSousuke, $HERO_Melonni, _
+Global Enum $HERO_Norgu = 1, $HERO_Goren, $HERO_Tahlkora, $HERO_MasterOfWhispers, $HERO_AcolyteJin, $HERO_Koss, $HERO_Dunkoro, $HERO_AcolyteSousuke, $HERO_Melonni, _
 			$HERO_ZhedShadowhoof, $HERO_GeneralMorgahn, $HERO_MargridTheSly, $HERO_Olias = 14, $HERO_Razah, $HERO_MOX, $HERO_Jora = 18, $HERO_PyreFierceshot, _
 			$HERO_Livia = 21, $HERO_Hayda, $HERO_Kahmu, $HERO_Gwen, $HERO_Xandra, $HERO_Vekk, $HERO_Ogden
 
@@ -122,6 +123,10 @@ Global Enum $EQUIP_Weapon, $EQUIP_Offhand, $EQUIP_Chest, $EQUIP_Legs, $EQUIP_Hea
 Global Enum $SKILLTYPE_Stance = 3, $SKILLTYPE_Hex, $SKILLTYPE_Spell, $SKILLTYPE_Enchantment, $SKILLTYPE_Signet, $SKILLTYPE_Well = 9, _
 			$SKILLTYPE_Skill, $SKILLTYPE_Ward, $SKILLTYPE_Glyph, $SKILLTYPE_Attack = 14, $SKILLTYPE_Shout, $SKILLTYPE_Preparation = 19, _
 			$SKILLTYPE_Trap = 21, $SKILLTYPE_Ritual, $SKILLTYPE_ItemSpell = 24, $SKILLTYPE_WeaponSpell, $SKILLTYPE_Chant = 27, $SKILLTYPE_EchoRefrain
+
+Global Enum $REGION_International = -2, $REGION_America = 0, $REGION_Korea, $REGION_Europe, $REGION_China, $REGION_Japan
+
+Global Enum $LANGUAGE_English = 0, $LANGUAGE_French = 2, $LANGUAGE_German, $LANGUAGE_Italian, $LANGUAGE_Spanish, $LANGUAGE_Polish = 9, $LANGUAGE_Russian
 
 Global Enum $IS_NUMERIC = 0x00, _
 			$IS_TEXT = 0x01, _
@@ -684,5 +689,11 @@ Func WriteWhisper($hprocess, $Name, $Message)
 
 	$cbType = $oldCbType
 EndFunc
+
+Func ZoneMapEx($iMapId, $iRegion, $iLanguage)
+	Cmd($CA_PrepareZoneMapEx, $iMapId)
+	Cmd($CA_ZoneMapEx, $iRegion, $iLanguage)
+EndFunc
+
 ; END OF FILE
 
