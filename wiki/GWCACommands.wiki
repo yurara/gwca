@@ -104,6 +104,8 @@ The commands follow a distinct identifier pattern because they are a custom enum
 || CA_SendChat || Parameter = pointer to text. Use SendChat() in GWCAConstants.au3 as wrapper function. ||
 || CA_WriteWhisper || Parameter = pointer to message, parameter 2 = pointer to sender. Use wrapper function WriteWhisper() in GWCAConstants.au3 ||
 || CA_OpenStorage || No parameters. Experimental function which visually opens your storage. Note: only works after opening your storage once! Else GW will crash! ||
+|| CA_PrepareZoneMapEx || Internal command. Please use ZoneMapEx() function instead of this. ||
+|| CA_ZoneMapEx || Internal command. Requires previous call to CA_PrepareZoneMapEx, so please use ZoneMapEx() function instead of this. ||
 
 ----
 
